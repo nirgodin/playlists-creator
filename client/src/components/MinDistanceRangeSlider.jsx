@@ -1,17 +1,27 @@
-import { useState } from "react";
+import * as React from 'react';
+import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { Slider } from "@mui/material";
 
 const MinDistanceRangeSlider = (props) => {
+    const [minMaxValues, setminMaxValues] = useState([0, 100]);
+    React.useEffect(
+        () => {
+            let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
+            newBody[props.title]['value'] = `${minMaxValues[0]}-${minMaxValues[1]}`;
+            props.setBody([newBody]);    
+        }
+    )
+
     const handleChange = (event, newValue, activeThumb) => {
         if (!Array.isArray(newValue)) {
             return;
         }
 
         if (activeThumb === 0) {
-            props.setValue([Math.min(newValue[0], props.value[1] - props.minDistance), props.value[1]]);
+            setminMaxValues([Math.min(newValue[0], minMaxValues[1] - props.minDistance), minMaxValues[1]]);
         } else {
-            props.setValue([props.value[0], Math.max(newValue[1], props.value[0] + props.minDistance)]);
+            setminMaxValues([minMaxValues[0], Math.max(newValue[1], minMaxValues[0] + props.minDistance)]);
         }
     };
 
@@ -19,7 +29,7 @@ const MinDistanceRangeSlider = (props) => {
         <Box sx={{ width: 300 }}>
             <Typography gutterBottom>{props.title}</Typography>
             <Slider
-                value={props.value}
+                value={minMaxValues}
                 onChange={handleChange}
                 valueLabelDisplay="auto"
                 disableSwap

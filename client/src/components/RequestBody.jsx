@@ -1,59 +1,51 @@
 import MinDistanceRangeSlider from './MinDistanceRangeSlider';
 import MultipleSelectChip from './MultiSelectChip';
+import NewMultipleSelectChip from './NewMultiSelectChip';
 import { languageLabels, genreLabels } from '../consts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function RequestBody() {
     const [popularityValues, setPopularityValues] = useState([0, 100]);
-    const [genreValues, setGenresValues] = useState([]);
-    const [languageValues, setLanguageValues] = useState([]);
-
-    const buildRequestBody = () => {
-        const body = [
+    const [body, setBody] = useState(
+        [
             {
-                'variable': 'popularity',
-                'operator': '>',
-                'value': popularityValues[0]
-            },
-            {
-                'variable': 'popularity',
-                'operator': '<',
-                'value': popularityValues[1]
-            },
-            {
-                'variable': 'genre',
-                'operator': 'in',
-                'value': genreValues
-            },
-            {
-                'variable': 'language',
-                'operator': 'in',
-                'value': languageValues
-            },
+                'genre': {
+                    'operator': 'in',
+                    'value': []
+                },
+                'language': {
+                    'operator': 'in',
+                    'value': []
+                },
+                'popularity': {
+                    'operator': 'range',
+                    'value': ''
+                }
+            }
         ]
-
-        return JSON.stringify(body)
-    }
+    )
 
     return <div>
         <MinDistanceRangeSlider
             minDistance={10}
             value={popularityValues}
             setValue={setPopularityValues}
-            title={'Popularity'}
+            title={'popularity'}
+            body={body}
+            setBody={setBody}
         ></MinDistanceRangeSlider>
-        <MultipleSelectChip
-            title={'Genre'}
+        <NewMultipleSelectChip
+            title={'genre'}
             options={genreLabels}
-            selectedOptions={genreValues}
-            setSelectedOptions={setGenresValues}
-        ></MultipleSelectChip>
-        <MultipleSelectChip
-            title={'Language'}
+            body={body}
+            setBody={setBody}
+        ></NewMultipleSelectChip>
+        <NewMultipleSelectChip
+            title={'language'}
             options={languageLabels}
-            selectedOptions={languageValues}
-            setSelectedOptions={setLanguageValues}
-        ></MultipleSelectChip>
-        {/* <p>{buildRequestBody()}</p> */}
+            body={body}
+            setBody={setBody}
+        ></NewMultipleSelectChip>
+        {/* <p>{JSON.stringify(body)}</p> */}
     </div>
 }
