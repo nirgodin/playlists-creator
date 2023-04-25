@@ -1,22 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import MinDistanceRangeSlider from './components/MinDistanceRangeSlider';
+import MultipleSelectChip from './components/MultiSelectDropdown';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+        <MinDistanceRangeSlider
+          minDistance={10}
+          value={[0, 100]}
+          label={'Popularity'}
         >
-          Learn React
-        </a>
+        </MinDistanceRangeSlider>
+        <MultipleSelectChip label={'Genre'}></MultipleSelectChip>
       </header>
     </div>
   );
