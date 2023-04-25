@@ -1,4 +1,5 @@
 import Multiselect from 'multiselect-react-dropdown';
+import './MultiSelectChip.css';
 
 const MultipleSelectChip = (props) => {
     function getOptions() {
@@ -18,12 +19,13 @@ const MultipleSelectChip = (props) => {
     }
 
     function onRemove(selectedList, removedItem) {
-        props.selectedOptions = selectedList;
+        const selectedItems = selectedList.map((item) => item['name']);
+        props.setSelectedOptions(selectedItems);
     }
 
-    return <div>
+    return <div className='multi-select-dropdown'>
         <p>{props.title}</p>
-        <Multiselect className='multi-select'
+        <Multiselect
             options={getOptions()} // Options to display in the dropdown
             onSelect={onSelect} // Function will trigger on select event
             onRemove={onRemove} // Function will trigger on remove event

@@ -1,20 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
 import React from 'react';
-import MinDistanceRangeSlider from './components/MinDistanceRangeSlider';
-import MultipleSelectChip from './components/MultiSelectDropdown';
+import RequestBody from './components/RequestBody';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <MinDistanceRangeSlider
-          minDistance={10}
-          value={[0, 100]}
-          label={'Popularity'}
-        >
-        </MinDistanceRangeSlider>
-        <MultipleSelectChip label={'Genre'}></MultipleSelectChip>
+      <RequestBody></RequestBody>
       </header>
     </div>
   );

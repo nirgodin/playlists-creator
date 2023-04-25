@@ -1,0 +1,8 @@
+.multi-select-dropdown .multiselectContainer{
+    width: fit-content;
+}
+
+.multi-select-dropdown .option {
+    background-color: #282c34;
+    align-items: center;
+}

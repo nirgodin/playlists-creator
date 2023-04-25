@@ -6,6 +6,7 @@ import { useState } from 'react';
 export default function RequestBody() {
     const [popularityValues, setPopularityValues] = useState([0, 100]);
     const [genreValues, setGenresValues] = useState([]);
+    const [languageValues, setLanguageValues] = useState([]);
 
     const buildRequestBody = () => {
         const body = [
@@ -21,14 +22,14 @@ export default function RequestBody() {
             },
             {
                 'variable': 'genre',
-                'operator': 'IN',
+                'operator': 'in',
                 'value': genreValues
             },
-            // {
-            //     'variable': 'popularity',
-            //     'operator': '<',
-            //     'value': popularityValues[1]
-            // },
+            {
+                'variable': 'language',
+                'operator': 'in',
+                'value': languageValues
+            },
         ]
 
         return JSON.stringify(body)
@@ -50,7 +51,9 @@ export default function RequestBody() {
         <MultipleSelectChip
             title={'Language'}
             options={languageLabels}
+            selectedOptions={languageValues}
+            setSelectedOptions={setLanguageValues}
         ></MultipleSelectChip>
-        <p>{buildRequestBody()}</p>
+        {/* <p>{buildRequestBody()}</p> */}
     </div>
 }
