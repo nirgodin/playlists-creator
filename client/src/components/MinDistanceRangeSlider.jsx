@@ -8,7 +8,8 @@ const MinDistanceRangeSlider = (props) => {
     React.useEffect(
         () => {
             let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
-            newBody[props.title]['value'] = `${minMaxValues[0]}-${minMaxValues[1]}`;
+            newBody[`min${props.title}`]['value'] = minMaxValues[0];
+            newBody[`max${props.title}`]['value'] = minMaxValues[1];
             props.setBody([newBody]);    
         }
     )

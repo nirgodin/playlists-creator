@@ -1,8 +1,8 @@
 import MinDistanceRangeSlider from './MinDistanceRangeSlider';
-import MultipleSelectChip from './MultiSelectChip';
 import NewMultipleSelectChip from './NewMultiSelectChip';
 import { languageLabels, genreLabels } from '../consts';
 import { useEffect, useState } from 'react';
+import SendButton from './SendButton';
 
 export default function RequestBody() {
     const [popularityValues, setPopularityValues] = useState([0, 100]);
@@ -17,9 +17,13 @@ export default function RequestBody() {
                     'operator': 'in',
                     'value': []
                 },
-                'popularity': {
+                'minPopularity': {
                     'operator': 'range',
-                    'value': ''
+                    'value': 0
+                },
+                'maxPopularity': {
+                    'operator': '<',
+                    'value': 100
                 }
             }
         ]
@@ -30,7 +34,7 @@ export default function RequestBody() {
             minDistance={10}
             value={popularityValues}
             setValue={setPopularityValues}
-            title={'popularity'}
+            title={'Popularity'}
             body={body}
             setBody={setBody}
         ></MinDistanceRangeSlider>
@@ -46,6 +50,7 @@ export default function RequestBody() {
             body={body}
             setBody={setBody}
         ></NewMultipleSelectChip>
+        <SendButton text={'Create Playlist'}></SendButton>
         {/* <p>{JSON.stringify(body)}</p> */}
     </div>
 }
