@@ -1,8 +1,11 @@
 import MinDistanceRangeSlider from './MinDistanceRangeSlider';
-import NewMultipleSelectChip from './NewMultiSelectChip';
+import MultipleSelectChip from './MultipleSelectChip';
 import { languageLabels, genreLabels } from '../consts';
 import { useEffect, useState } from 'react';
 import SendButton from './SendButton';
+import FilterCheckbox from './Checkbox';
+import './RequestBody.css'
+import MultipleSelectChipWrapper from './MultipleSelectChipWrapper';
 
 export default function RequestBody() {
     const [popularityValues, setPopularityValues] = useState([0, 100]);
@@ -38,18 +41,20 @@ export default function RequestBody() {
             body={body}
             setBody={setBody}
         ></MinDistanceRangeSlider>
-        <NewMultipleSelectChip
-            title={'genre'}
-            options={genreLabels}
-            body={body}
-            setBody={setBody}
-        ></NewMultipleSelectChip>
-        <NewMultipleSelectChip
+        <MultipleSelectChipWrapper
+                title={'genre'}
+                options={genreLabels}
+                body={body}
+                setBody={setBody}
+                includesCheckbox={true}
+                checkboxLabel={'Include unkowns'}
+        ></MultipleSelectChipWrapper>
+        <MultipleSelectChip
             title={'language'}
             options={languageLabels}
             body={body}
             setBody={setBody}
-        ></NewMultipleSelectChip>
+        ></MultipleSelectChip>
         <SendButton text={'Create Playlist'}></SendButton>
         {/* <p>{JSON.stringify(body)}</p> */}
     </div>
