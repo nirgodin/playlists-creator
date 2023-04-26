@@ -4,7 +4,7 @@ from typing import Dict, List
 import pandas as pd
 from pandas import DataFrame
 
-from data_creation.query_condition import QueryCondition
+from server.query_condition import QueryCondition
 
 
 class DataFilterer:

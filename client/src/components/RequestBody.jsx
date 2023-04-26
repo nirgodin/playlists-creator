@@ -55,7 +55,7 @@ export default function RequestBody() {
             body={body}
             setBody={setBody}
         ></MultipleSelectChip>
-        <SendButton text={'Create Playlist'}></SendButton>
+        <SendButton text={'Create Playlist'} body={body}></SendButton>
         {/* <p>{JSON.stringify(body)}</p> */}
     </div>
 }

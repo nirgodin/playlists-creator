@@ -1,8 +1,11 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+from server.playlists_generator import PlaylistsGenerator
+
 app = Flask(__name__)
 CORS(app)
+playlists_generator = PlaylistsGenerator()
 
 
 @app.route("/fromPrompt", methods=['POST'])
@@ -12,6 +15,7 @@ def from_prompt():
 
 @app.route("/fromParams", methods=['POST'])
 def from_params():
+    playlists_generator.generate([], '')
     res = {
         'isSuccess': True
     }
