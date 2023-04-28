@@ -11,18 +11,18 @@ class DataFilterer:
     def __init__(self, candidates_pool_size: int = 5000, max_playlist_size: int = 100):
         self._candidates_pool_size = candidates_pool_size
         self._max_playlist_size = max_playlist_size
+        self._data = pd.read_csv(r'groubyed_songs.csv')
 
     def filter(self, query_conditions: List[QueryCondition]) -> DataFrame:
         data = self._generate_candidates()
         query = self._build_query(query_conditions)
-        filtered_data = data.query(query)
+        filtered_data = data.query(query).reset_index(drop=True)
 
         return filtered_data.iloc[:self._max_playlist_size]
 
     def _generate_candidates(self) -> DataFrame:
-        data = pd.read_csv(r'data/groubyed_songs.csv')
-        candidates_indexes = [random.randint(0, len(data)) for i in range(self._candidates_pool_size)]
-        candidates = data.iloc[candidates_indexes]
+        candidates_indexes = [random.randint(0, len(self._data)) for i in range(self._candidates_pool_size)]
+        candidates = self._data.iloc[candidates_indexes]
         candidates.reset_index(drop=True, inplace=True)
 
         return candidates

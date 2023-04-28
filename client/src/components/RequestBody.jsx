@@ -6,28 +6,33 @@ import SendButton from './SendButton';
 import FilterCheckbox from './Checkbox';
 import './RequestBody.css'
 import MultipleSelectChipWrapper from './MultipleSelectChipWrapper';
+import LoginButton from './LoginButton';
 
 export default function RequestBody() {
     const [popularityValues, setPopularityValues] = useState([0, 100]);
+    const [accessCode, setAccessCode] = useState('')
     const [body, setBody] = useState(
         [
             {
-                'genre': {
-                    'operator': 'in',
-                    'value': []
+                'filterParams': {
+                    'genre': {
+                        'operator': 'in',
+                        'value': []
+                    },
+                    'language': {
+                        'operator': 'in',
+                        'value': []
+                    },
+                    'minPopularity': {
+                        'operator': 'range',
+                        'value': 0
+                    },
+                    'maxPopularity': {
+                        'operator': '<',
+                        'value': 100
+                    }
                 },
-                'language': {
-                    'operator': 'in',
-                    'value': []
-                },
-                'minPopularity': {
-                    'operator': 'range',
-                    'value': 0
-                },
-                'maxPopularity': {
-                    'operator': '<',
-                    'value': 100
-                }
+                'accessCode': ''
             }
         ]
     )
@@ -42,12 +47,12 @@ export default function RequestBody() {
             setBody={setBody}
         ></MinDistanceRangeSlider>
         <MultipleSelectChipWrapper
-                title={'genre'}
-                options={genreLabels}
-                body={body}
-                setBody={setBody}
-                includesCheckbox={true}
-                checkboxLabel={'Include unkowns'}
+            title={'genre'}
+            options={genreLabels}
+            body={body}
+            setBody={setBody}
+            includesCheckbox={true}
+            checkboxLabel={'Include unkowns'}
         ></MultipleSelectChipWrapper>
         <MultipleSelectChip
             title={'language'}
@@ -55,7 +60,18 @@ export default function RequestBody() {
             body={body}
             setBody={setBody}
         ></MultipleSelectChip>
-        <SendButton text={'Create Playlist'} body={body}></SendButton>
-        {/* <p>{JSON.stringify(body)}</p> */}
+        <LoginButton
+            text={'Login'}
+            body={body}
+            setBody={setBody}
+        ></LoginButton>
+        <SendButton
+            text={'Create Playlist'}
+            method='post'
+            url='http://127.0.0.1:5000/fromParams'
+            body={body[0]}
+            accessCode={accessCode}
+        ></SendButton>
+        {/* <p>{JSON.stringify(body[0])}</p> */}
     </div>
 }

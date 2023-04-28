@@ -1,5 +1,6 @@
 import asyncio
-from typing import List
+import re
+from typing import List, Any, Dict
 
 from server.data_filterer import DataFilterer
 from server.query_condition import QueryCondition
@@ -14,8 +15,26 @@ class PlaylistsGenerator:
         self._data_filterer = DataFilterer()
         self._playlists_creator = PlaylistsCreator()
 
-    def generate(self, query_conditions: List[QueryCondition], user_id: str, public: bool = True) -> None:
+    def generate(self, body: dict, public: bool = True) -> None:
+        query_conditions = self._pre_process_request_body(body)
         filtered_data = self._data_filterer.filter(query_conditions)
         uris = filtered_data[URI].tolist()
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self._playlists_creator.create(uris=uris, user_id=user_id, public=public))
+        access_code = body['accessCode']
+
+        self._playlists_creator.create(uris, public, access_code)
+
+    @staticmethod
+    def _pre_process_request_body(body: dict) -> List[QueryCondition]:
+        pre_processed_body = []
+        filter_params = body['filterParams']
+
+        for column_name, column_details in filter_params.items():
+            pre_processed_column_name = re.sub(r'min|max', '', column_name).lower()
+            pre_processed_details = {'column': pre_processed_column_name}
+            pre_processed_details.update(column_details)
+            query_condition = QueryCondition.from_dict(pre_processed_details)
+
+            if query_condition.condition is not None:
+                pre_processed_body.append(query_condition)
+
+        return pre_processed_body
