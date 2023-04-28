@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+import {toCamelCase} from '../utils/StringUtils';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -24,7 +25,8 @@ export default function MultipleSelectChip(props) {
     React.useEffect(
         () => {
             let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
-            newBody['filterParams'][props.title]['value'] = selectedOptions;
+            const camelCasedTitle = toCamelCase(props.title)
+            newBody['filterParams'][camelCasedTitle]['value'] = selectedOptions;
             props.setBody([newBody]);
         }
     )

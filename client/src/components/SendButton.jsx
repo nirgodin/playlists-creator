@@ -4,17 +4,18 @@ import axios from 'axios'
 
 export default function SendButton(props) {
     const [isClicked, setIsClicked] = React.useState(false)
-    const [data, setData] = React.useState([])
-    const fetchExpectedPoints = async () => {
+    const sendPlaylistCreationRequest = async () => {
         await axios.post(props.url, props.body)
             .then((resp) => JSON.stringify(resp.data))
             .then((data) => JSON.parse(data))
-            .then((jsonfiedData) => setData(jsonfiedData));
+            .then((jsonfiedData) => jsonfiedData['isSuccess'])
+            .then((isSuccess) => props.setIsSuccessfull(isSuccess))
         setIsClicked(false);
     };
     const handleClick = (e) => {
+        props.setWasRequestSent(true);
         setIsClicked(true);
-        fetchExpectedPoints();
+        sendPlaylistCreationRequest();
     }
 
     if (isClicked) {

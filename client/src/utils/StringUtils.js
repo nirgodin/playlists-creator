@@ -1,6 +1,10 @@
 
 
-export default function toCamelCase(str) {
+export function titlize(lowercasedToken) {
+    return lowercasedToken.charAt(0).toUpperCase() + lowercasedToken.slice(1);
+}
+
+export function toCamelCase(str) {
     let tokens = str.split(' ');
     let camelCasedTokens = [];
 
@@ -11,7 +15,7 @@ export default function toCamelCase(str) {
             camelCasedTokens.push(lowercasedToken)
         }
         else {
-            let camelCasedToken = lowercasedToken.charAt(0).toUpperCase() + lowercasedToken.slice(1);
+            let camelCasedToken = titlize(lowercasedToken);
             camelCasedTokens.push(camelCasedToken)
         }
     }

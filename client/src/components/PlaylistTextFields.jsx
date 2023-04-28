@@ -17,7 +17,6 @@ export default function PlaylistTextFields(props) {
                 <PlaylistSwitch
                     body={props.body}
                     setBody={props.setBody}
-                    label={'Public'}
                 ></PlaylistSwitch>
             </div>
             <div>

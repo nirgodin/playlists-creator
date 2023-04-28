@@ -1,7 +1,7 @@
 const languageLabels = [
-    'English',
-    'Hebrew',
-    'Frence'
+    'EN',
+    'HE',
+    'FR'
 ];
 
 const genreLabels = [

@@ -1,17 +1,11 @@
-import MinDistanceRangeSlider from './MinDistanceRangeSlider';
-import MultipleSelectChip from './MultipleSelectChip';
-import { languageLabels, genreLabels } from '../consts';
-import { useState } from 'react';
-import SendButton from './SendButton';
-import './RequestBody.css'
-import MultipleSelectChipWrapper from './MultipleSelectChipWrapper';
-import LoginButton from './LoginButton';
-import PlaylistTextFields from './PlaylistTextFields';
-import AudioFeaturesSliders from './AudioFeaturesSliders';
-import Section from './Section';
-import LoadingSpinner from './LoadingSpinner';
+import { useState } from "react";
+import RequestBody from "./RequestBody";
+import SendButton from "./SendButton";
+import LoadingSpinner from "./LoadingSpinner";
 
-export default function RequestBody(props) {
+export default function Navigator() {
+    const [wasRequestSent, setWasRequestSent] = useState(false)
+    const [isSuccessfull, setIsSuccessfull] = useState(false)
     const [body, setBody] = useState(
         [
             {
@@ -122,50 +116,27 @@ export default function RequestBody(props) {
             }
         ]
     )
-    return <div>
-        <div className='playlist-details'>
-            <PlaylistTextFields
-                body={props.body[0]}
-                setBody={props.setBody}
-            ></PlaylistTextFields>
-        </div>
-        <div className='playlist-configuration'>
-            <Section
-                header='Audio Features'
-                sectionDetails={
-                    <AudioFeaturesSliders
-                        body={props.body}
-                        setBody={props.setBody}
-                    ></AudioFeaturesSliders>
-                }
-            ></Section>
-            <MinDistanceRangeSlider
-                minDistance={10}
-                title={'Popularity'}
-                body={props.body}
-                setBody={props.setBody}
-            ></MinDistanceRangeSlider>
-            <MultipleSelectChipWrapper
-                title={'Main Genre'}
-                options={genreLabels}
-                body={props.body}
-                setBody={props.setBody}
-                includesCheckbox={true}
-                checkboxLabel={'Include unkowns'}
-            ></MultipleSelectChipWrapper>
-            <MultipleSelectChip
-                title={'Language'}
-                options={languageLabels}
-                body={props.body}
-                setBody={props.setBody}
-            ></MultipleSelectChip>
-        </div>
-        <div className='playlist-creation'>
-            <LoginButton
-                text={'Login'}
-                body={props.body}
-                setBody={props.setBody}
-            ></LoginButton>
-        </div>
-    </div>
+
+    if (!wasRequestSent) {
+        return (
+            <div>
+                <RequestBody body={body} setBody={setBody}></RequestBody>
+                <SendButton
+                    text={'Create Playlist'}
+                    url='http://127.0.0.1:5000/fromParams'
+                    body={body[0]}
+                    setWasRequestSent={setWasRequestSent}
+                    setIsSuccessfull={setIsSuccessfull}
+                ></SendButton>
+            </div>
+        )
+    } else {
+        if (!isSuccessfull) {
+            return <LoadingSpinner></LoadingSpinner>
+        }
+        else {
+            return <h1>Congratulations! Your playlist was created</h1>
+        }
+    }
+    // {<p>{JSON.stringify(props.body[0])}</p>}
 }

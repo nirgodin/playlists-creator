@@ -23,7 +23,7 @@ export default function LoginButton(props) {
                 newBody['accessCode'] = code;
                 props.setBody([newBody]);
             }
-        }, []
+        }, [props]
     )
     
     return <div>
