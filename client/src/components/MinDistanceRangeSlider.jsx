@@ -10,8 +10,8 @@ const MinDistanceRangeSlider = (props) => {
             let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
             newBody['filterParams'][`min${props.title}`]['value'] = minMaxValues[0];
             newBody['filterParams'][`max${props.title}`]['value'] = minMaxValues[1];
-            props.setBody([newBody]);    
-        }
+            props.setBody([newBody]);
+        }, []
     )
 
     const handleChange = (event, newValue, activeThumb) => {
