@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 import FormTextField from './FormTextField';
+import PlaylistSwitch from './PlaylistSwitch';
 
 export default function PlaylistTextFields(props) {
     return (
@@ -13,6 +13,13 @@ export default function PlaylistTextFields(props) {
             noValidate
             autoComplete="off"
         >
+            <div className='is-public-switch'>
+                <PlaylistSwitch
+                    body={props.body}
+                    setBody={props.setBody}
+                    label={'Public'}
+                ></PlaylistSwitch>
+            </div>
             <div>
                 <FormTextField
                     isRequired={true}
@@ -21,15 +28,15 @@ export default function PlaylistTextFields(props) {
                     defaultValue={''}
                     body={props.body}
                     setBody={props.setBody}
-                ></FormTextField>                
+                ></FormTextField>
                 <FormTextField
-                    isRequired={true}
+                    isRequired={false}
                     id={'playlist-description'}
                     label={"Playlist description"}
                     defaultValue={''}
                     body={props.body}
                     setBody={props.setBody}
-                ></FormTextField>                
+                ></FormTextField>
             </div>
         </Box>
     );

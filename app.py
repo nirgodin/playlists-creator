@@ -24,7 +24,6 @@ def from_params():
     res = {
         'isSuccess': True
     }
-    print('bla')
     response = jsonify(res)
     response.headers.add('Access-Control-Allow-Origin', '*')
 

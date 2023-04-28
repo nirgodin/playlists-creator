@@ -20,3 +20,9 @@
 .playlist-details {
     padding-bottom: 30px;
 }
+
+.is-public-switch {
+    position: fixed;
+    padding-top: 23px;
+    padding-left: 230px;
+}

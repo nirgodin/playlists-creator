@@ -35,7 +35,8 @@ export default function RequestBody() {
                 'accessCode': '',
                 'playlistDetails': {
                     'playlistName': '',
-                    'playlistDescription': ''
+                    'playlistDescription': '',
+                    'isPublic': false
                 }
             }
         ]
@@ -86,6 +87,6 @@ export default function RequestBody() {
                 accessCode={accessCode}
             ></SendButton>
         </div>
-    {/* <p>{JSON.stringify(body[0])}</p> */ }
+    {<p>{JSON.stringify(body[0])}</p> }
     </div>
 }

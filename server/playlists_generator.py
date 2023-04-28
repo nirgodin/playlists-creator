@@ -15,13 +15,13 @@ class PlaylistsGenerator:
         self._data_filterer = DataFilterer()
         self._playlists_creator = PlaylistsCreator()
 
-    def generate(self, body: dict, public: bool = True) -> None:
+    def generate(self, body: dict) -> None:
         query_conditions = self._pre_process_request_body(body)
         filtered_data = self._data_filterer.filter(query_conditions)
         uris = filtered_data[URI].tolist()
         access_code = body['accessCode']
-
-        self._playlists_creator.create(uris, public, access_code)
+        playlist_details = body['playlistDetails']
+        self._playlists_creator.create(uris, access_code, playlist_details)
 
     @staticmethod
     def _pre_process_request_body(body: dict) -> List[QueryCondition]:
