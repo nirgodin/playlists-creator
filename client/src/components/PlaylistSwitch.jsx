@@ -8,9 +8,9 @@ export default function PlaylistSwitch(props) {
 
     const handleChange = (event) => {
         setChecked(event.target.checked);
-        let newBody = props.body;
+        let newBody = props.body[0];
         newBody['playlistDetails']['isPublic'] = event.target.checked;
-        props.setBody(newBody);
+        props.setBody([newBody]);
 
         event.target.checked ? setLabel('Make playlist private') : setLabel('Make playlist public')
     };

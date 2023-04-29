@@ -3,134 +3,64 @@ import RequestBody from "./RequestBody";
 import SendButton from "./SendButton";
 import LoadingSpinner from "./LoadingSpinner";
 import Confetti from "./Confetti";
+import MethodToggleButton from "./MethodToggleButton";
+import FormTextField from "./FormTextField";
+import { Box } from "@mui/material";
 
-export default function Navigator() {
+export default function Navigator(props) {
     const [wasRequestSent, setWasRequestSent] = useState(false)
     const [isSuccessfull, setIsSuccessfull] = useState(false)
-    const [body, setBody] = useState(
-        [
-            {
-                'filterParams': {
-                    'mainGenre': {
-                        'operator': 'in',
-                        'value': []
-                    },
-                    'language': {
-                        'operator': 'in',
-                        'value': []
-                    },
-                    'minPopularity': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxPopularity': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minDanceability': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxDanceability': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minEnergy': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxEnergy': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minLoudness': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxLoudness': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minMode': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxMode': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minSpeechiness': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxSpeechiness': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minAcousticness': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxAcousticness': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minInstrumentalness': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxInstrumentalness': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minLiveness': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxLiveness': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minValence': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxValence': {
-                        'operator': '<',
-                        'value': 100
-                    },
-                    'minTempo': {
-                        'operator': '>',
-                        'value': 0
-                    },
-                    'maxTempo': {
-                        'operator': '<',
-                        'value': 100
-                    }
-                },
-                'accessCode': '',
-                'playlistDetails': {
-                    'playlistName': '',
-                    'playlistDescription': '',
-                    'isPublic': false
-                }
-            }
-        ]
-    )
+    const [alignment, setAlignment] = useState('prompt');
+    const endpoint = alignment === 'prompt' ? 'fromPrompt' : 'fromParams'
+    const sendButton = <Box>
+        <SendButton
+            text={'Create Playlist'}
+            endpoint={endpoint}
+            body={props.body[0]}
+            setWasRequestSent={setWasRequestSent}
+            setIsSuccessfull={setIsSuccessfull}
+        ></SendButton>
+    </Box>
 
     if (!wasRequestSent) {
-        return (
-            <div>
-                <RequestBody body={body} setBody={setBody}></RequestBody>
-                <SendButton
-                    text={'Create Playlist'}
-                    url='http://127.0.0.1:5000/fromParams'
-                    body={body[0]}
-                    setWasRequestSent={setWasRequestSent}
-                    setIsSuccessfull={setIsSuccessfull}
-                ></SendButton>
-            </div>
-        )
+        if (alignment === 'prompt') {
+            return (
+                <div>
+                    <Box>
+                        <div className="toggle-button">
+                            <MethodToggleButton
+                                alignment={alignment}
+                                setAlignment={setAlignment}
+                            ></MethodToggleButton>
+                        </div>
+                        <div className="text-field">
+                            <FormTextField
+                                isRequired={true}
+                                id={'prompt'}
+                                label={"Prompt"}
+                                defaultValue={''}
+                                body={props.body}
+                                setBody={props.setBody}
+                            ></FormTextField>
+                        </div>
+                        {sendButton}
+                    </Box>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <MethodToggleButton
+                        alignment={alignment}
+                        setAlignment={setAlignment}
+                    ></MethodToggleButton>
+                    <RequestBody body={props.body} setBody={props.setBody}></RequestBody>
+                    {sendButton}
+                </div>
+            )
+        }
+
     } else {
         if (!isSuccessfull) {
             return <LoadingSpinner></LoadingSpinner>
@@ -142,5 +72,5 @@ export default function Navigator() {
             </div>
         }
     }
-    // {<p>{JSON.stringify(props.body[0])}</p>}
+    // {<p>{JSON.stringify(body[0])}</p>}
 }

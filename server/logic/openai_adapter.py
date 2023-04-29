@@ -16,7 +16,10 @@ class OpenAIAdapter:
     def generate_query_conditions(self,
                                   user_text: str,
                                   chat_history: Optional[List[dict]] = None,
-                                  retries_left: int = 3) -> List[QueryCondition]:
+                                  retries_left: int = 3) -> Optional[List[QueryCondition]]:
+        if retries_left == 0:
+            return
+
         prompt = PROMPT_FORMAT.format(user_text=user_text)
         messages = self._build_request_messages(prompt, chat_history)
         response = self._openai_model.create(
