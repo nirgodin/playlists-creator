@@ -2,6 +2,7 @@ import { useState } from "react";
 import RequestBody from "./RequestBody";
 import SendButton from "./SendButton";
 import LoadingSpinner from "./LoadingSpinner";
+import Confetti from "./Confetti";
 
 export default function Navigator() {
     const [wasRequestSent, setWasRequestSent] = useState(false)
@@ -135,7 +136,10 @@ export default function Navigator() {
             return <LoadingSpinner></LoadingSpinner>
         }
         else {
-            return <h1>Congratulations! Your playlist was created</h1>
+            return <div>
+                <Confetti></Confetti>
+                <h1>Congratulations! Your playlist was created</h1>
+            </div>
         }
     }
     // {<p>{JSON.stringify(props.body[0])}</p>}

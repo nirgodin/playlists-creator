@@ -19,6 +19,7 @@ class QueryCondition:
             return
 
         if self.operator == 'in':
-            self.value = str(tuple(self.value))
+            lowercased_values = [value.lower() for value in self.value]
+            self.value = str(tuple(lowercased_values))
 
         return f'{self.column} {self.operator} {self.value}'
