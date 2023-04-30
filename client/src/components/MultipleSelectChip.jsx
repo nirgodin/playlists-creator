@@ -1,12 +1,14 @@
 import * as React from 'react';
-import {Box, Typography} from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import {toCamelCase} from '../utils/StringUtils';
+import { toCamelCase } from '../utils/StringUtils';
+import axios from 'axios'
+import _ from 'underscore'
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -20,10 +22,24 @@ const MenuProps = {
 };
 
 export default function MultipleSelectChip(props) {
+    const [possibleValues, setPossibleValues] = React.useState([])
+
+    const getPossibleValues = async () => {
+        const url = `${process.env.REACT_APP_BASE_URL}/getPossibleValues/${props.title}`;
+        await axios.get(url)
+            .then((resp) => JSON.stringify(resp.data))
+            .then((data) => JSON.parse(data))
+            .then((jsonfiedData) => jsonfiedData['possibleValues'])
+            .then((values) => setPossibleValues(values))
+    };
+
     const [selectedOptions, setSelectedOptions] = React.useState([]);
 
     React.useEffect(
         () => {
+            if (_.isEqual(possibleValues, [])) {
+                getPossibleValues()
+            }
             let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
             const camelCasedTitle = toCamelCase(props.title)
             newBody['filterParams'][camelCasedTitle]['value'] = selectedOptions;
@@ -62,7 +78,7 @@ export default function MultipleSelectChip(props) {
                         )}
                         MenuProps={MenuProps}
                     >
-                        {props.options.map((option) => (
+                        {possibleValues.map((option) => (
                             <MenuItem
                                 key={option}
                                 value={option}

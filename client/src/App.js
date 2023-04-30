@@ -1,8 +1,6 @@
 import './App.css';
 import React from 'react';
 import Navigator from './components/Navigator'
-import LoginButton from "./components/LoginButton";
-import PlaylistTextFields from './components/PlaylistTextFields';
 import { useState } from 'react';
 
 function App() {
@@ -121,23 +119,10 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div className='playlist-details'>
-          <PlaylistTextFields
-            body={body}
-            setBody={setBody}
-          ></PlaylistTextFields>
-        </div>
         <Navigator
           body={body}
           setBody={setBody}
         ></Navigator>
-        <div className='playlist-creation'>
-          <LoginButton
-            text={'Login'}
-            body={body}
-            setBody={setBody}
-          ></LoginButton>
-        </div>
       </header>
     </div>
   );

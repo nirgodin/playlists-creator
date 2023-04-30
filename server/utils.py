@@ -1,5 +1,7 @@
+from functools import lru_cache
 from typing import Dict, List
 
+import pandas as pd
 from flask import Response, jsonify
 
 from server.access_token_generator import AccessTokenGenerator
@@ -29,3 +31,12 @@ def generate_response(body: dict, query_conditions: List[QueryCondition]) -> Res
     response.headers.add('Access-Control-Allow-Origin', '*')
 
     return response
+
+
+@lru_cache
+def get_column_possible_values(column_name: str) -> list:
+    data = pd.read_csv(r'groubyed_songs.csv')
+    formatted_column_name = '_'.join([token.lower() for token in column_name.split(' ')])
+    unique_values = data[formatted_column_name].unique().tolist()
+
+    return sorted([value for value in unique_values if not pd.isna(value)])
