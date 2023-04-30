@@ -31,15 +31,17 @@ const MinDistanceRangeSlider = (props) => {
     };
 
     return (
-        <Box sx={{ width: 300 }}>
-            <Typography gutterBottom>{props.title}</Typography>
-            <Slider
-                value={minMaxValues}
-                onChange={handleChange}
-                valueLabelDisplay="auto"
-                disableSwap
-            />
-        </Box>
+        <div className='range-slider'>
+            <Box sx={{ width: 200 }}>
+                <Typography gutterBottom>{props.title}</Typography>
+                <Slider
+                    value={minMaxValues}
+                    onChange={handleChange}
+                    valueLabelDisplay="auto"
+                    disableSwap
+                />
+            </Box>
+        </div>
     );
 }
 

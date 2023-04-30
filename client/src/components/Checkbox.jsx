@@ -6,7 +6,7 @@ import Checkbox from '@mui/material/Checkbox';
 export default function FilterCheckbox(props) {
   return (
     <FormGroup>
-      <FormControlLabel control={<Checkbox defaultChecked />} label={props.label} />
+      <FormControlLabel sx={{ paddingLeft: 1 }} control={<Checkbox defaultChecked />} label={props.label} />
     </FormGroup>
   );
 }

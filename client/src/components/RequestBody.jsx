@@ -8,7 +8,11 @@ import Section from './Section';
 export default function RequestBody(props) {
     return <div>
         <div className='playlist-configuration'>
-            <Section
+            <AudioFeaturesSliders
+                body={props.body}
+                setBody={props.setBody}
+            ></AudioFeaturesSliders>
+            {/* <Section
                 header='Audio Features'
                 sectionDetails={
                     <AudioFeaturesSliders
@@ -16,7 +20,7 @@ export default function RequestBody(props) {
                         setBody={props.setBody}
                     ></AudioFeaturesSliders>
                 }
-            ></Section>
+            ></Section> */}
             <MinDistanceRangeSlider
                 minDistance={10}
                 title={'Popularity'}
@@ -25,18 +29,18 @@ export default function RequestBody(props) {
             ></MinDistanceRangeSlider>
             <MultipleSelectChipWrapper
                 title={'Main Genre'}
-                options={genreLabels}
                 body={props.body}
                 setBody={props.setBody}
                 includesCheckbox={true}
                 checkboxLabel={'Include unkowns'}
             ></MultipleSelectChipWrapper>
-            <MultipleSelectChip
+            <MultipleSelectChipWrapper
                 title={'Language'}
-                options={languageLabels}
                 body={props.body}
                 setBody={props.setBody}
-            ></MultipleSelectChip>
+                includesCheckbox={true}
+                checkboxLabel={'Include unkowns'}
+            ></MultipleSelectChipWrapper>
         </div>
     </div>
 }

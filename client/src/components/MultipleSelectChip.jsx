@@ -57,10 +57,10 @@ export default function MultipleSelectChip(props) {
     };
 
     return (
-        <div>
-            <Box sx={{ width: 300 }}>
+        <div className='multiple-select-chip'>
+            <Box sx={{ width: 200 }}>
                 <Typography gutterBottom>{props.title}</Typography>
-                <FormControl sx={{ m: 1, width: 300 }}>
+                <FormControl sx={{ width: 200 }}>
                     <InputLabel id="demo-multiple-chip-label">{props.title}</InputLabel>
                     <Select
                         labelId="demo-multiple-chip-label"
