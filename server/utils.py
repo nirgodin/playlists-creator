@@ -4,9 +4,9 @@ from typing import Dict, List
 import pandas as pd
 from flask import Response, jsonify
 
-from server.access_token_generator import AccessTokenGenerator
-from server.playlists_generator import PlaylistsGenerator
-from server.query_condition import QueryCondition
+from server.logic.access_token_generator import AccessTokenGenerator
+from server.logic.playlists_generator import PlaylistsGenerator
+from server.data.query_condition import QueryCondition
 
 playlists_generator = PlaylistsGenerator()
 

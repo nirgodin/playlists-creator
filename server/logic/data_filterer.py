@@ -1,10 +1,10 @@
 import random
-from typing import Dict, List
+from typing import List
 
 import pandas as pd
 from pandas import DataFrame
 
-from server.query_condition import QueryCondition
+from server.data.query_condition import QueryCondition
 
 
 class DataFilterer:

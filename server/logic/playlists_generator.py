@@ -1,11 +1,10 @@
 import re
 from typing import List
 
-from server.data_filterer import DataFilterer
-from server.playlists_creator import PlaylistsCreator
-from server.query_condition import QueryCondition
-
-URI = 'uri'
+from server.consts.api_consts import URI
+from server.logic.data_filterer import DataFilterer
+from server.logic.playlists_creator import PlaylistsCreator
+from server.data.query_condition import QueryCondition
 
 
 class PlaylistsGenerator:

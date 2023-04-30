@@ -2,12 +2,8 @@ from typing import List, Dict
 
 import requests
 
-from server.access_token_generator import AccessTokenGenerator
-
-CREATE_PLAYLIST_URL_FORMAT = 'https://api.spotify.com/v1/users/{}/playlists'
-ADD_PLAYLIST_ITEMS_URL_FORMAT = 'https://api.spotify.com/v1/playlists/{}/tracks'
-USER_PROFILE_URL = 'https://api.spotify.com/v1/me'
-ID = 'id'
+from server.consts.api_consts import CREATE_PLAYLIST_URL_FORMAT, ADD_PLAYLIST_ITEMS_URL_FORMAT, USER_PROFILE_URL, ID
+from server.logic.access_token_generator import AccessTokenGenerator
 
 
 class PlaylistsCreator:

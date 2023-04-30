@@ -1,7 +1,7 @@
 import re
 from typing import List
 
-from server.query_condition import QueryCondition
+from server.data.query_condition import QueryCondition
 
 
 class ParametersTransformer:

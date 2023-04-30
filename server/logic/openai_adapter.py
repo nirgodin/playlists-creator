@@ -4,8 +4,8 @@ from typing import List, Union, Optional
 
 import openai
 
-from server.logic.consts.openai_consts import PROMPT_FORMAT, SERIALIZATION_ERROR_PROMPT_FORMAT
-from server.query_condition import QueryCondition
+from server.consts.openai_consts import PROMPT_FORMAT, SERIALIZATION_ERROR_PROMPT_FORMAT
+from server.data.query_condition import QueryCondition
 
 
 class OpenAIAdapter:

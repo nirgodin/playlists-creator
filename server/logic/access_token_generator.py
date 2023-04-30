@@ -4,9 +4,9 @@ from typing import Dict
 
 import requests
 
-from server.logic.consts.api_consts import TOKEN_REQUEST_URL, REDIRECT_URI, CODE, GRANT_TYPE, JSON, ACCESS_TOKEN
-from server.logic.consts.env_consts import SPOTIPY_CLIENT_SECRET, SPOTIPY_CLIENT_ID, SPOTIPY_REDIRECT_URI
-from server.spotify_grant_type import SpotifyGrantType
+from server.consts.api_consts import TOKEN_REQUEST_URL, REDIRECT_URI, CODE, GRANT_TYPE, JSON, ACCESS_TOKEN
+from server.consts.env_consts import SPOTIPY_CLIENT_SECRET, SPOTIPY_CLIENT_ID, SPOTIPY_REDIRECT_URI
+from server.data.spotify_grant_type import SpotifyGrantType
 
 
 class AccessTokenGenerator:
