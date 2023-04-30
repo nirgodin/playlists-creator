@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -17,6 +17,8 @@ const MenuProps = {
         style: {
             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
             width: 250,
+            backgroundColor: 'rgb(0, 30, 60)',
+            color: 'white',
         },
     },
 };
@@ -51,7 +53,6 @@ export default function MultipleSelectChip(props) {
             target: { value },
         } = event;
         setSelectedOptions(
-            // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
     };
@@ -59,9 +60,8 @@ export default function MultipleSelectChip(props) {
     return (
         <div className='multiple-select-chip'>
             <Box sx={{ width: 200 }}>
-                <Typography gutterBottom>{props.title}</Typography>
                 <FormControl sx={{ width: 200 }}>
-                    <InputLabel id="demo-multiple-chip-label">{props.title}</InputLabel>
+                    <InputLabel className='input-label' id="demo-multiple-chip-label" style={{color: 'white'}}>{props.title}</InputLabel>
                     <Select
                         labelId="demo-multiple-chip-label"
                         id="demo-multiple-chip"
@@ -72,7 +72,7 @@ export default function MultipleSelectChip(props) {
                         renderValue={(selected) => (
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                 {selected.map((value) => (
-                                    <Chip key={value} label={value} />
+                                    <Chip key={value} label={value} sx={{ color: 'white' }} />
                                 ))}
                             </Box>
                         )}

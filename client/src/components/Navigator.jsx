@@ -3,10 +3,12 @@ import LandingPage from "./LandingPage";
 import PostSendPage from "./PostSendPage";
 import { isLoggedIn, extractCode } from "../utils/UrlUtils";
 import LoginPage from "./LoginPage";
+import ErrorPage from "./ErrorPage";
 
 export default function Navigator(props) {
     const [wasRequestSent, setWasRequestSent] = useState(false)
     const [isSuccessfull, setIsSuccessfull] = useState(false)
+    const [isError, setIsError] = useState(false)
 
     useEffect(
         () => {
@@ -31,11 +33,15 @@ export default function Navigator(props) {
                     setBody={props.setBody}
                     setWasRequestSent={setWasRequestSent}
                     setIsSuccessfull={setIsSuccessfull}
+                    setIsError={setIsError}
                 ></LandingPage>
                 {/* <p>{JSON.stringify(props.body[0])}</p> */}
             </div>
         )
-
+    } else if (isError) {
+        return (
+            <ErrorPage></ErrorPage>
+        )
     } else {
         return (
             <PostSendPage

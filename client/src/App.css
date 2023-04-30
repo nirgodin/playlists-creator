@@ -14,7 +14,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: rgb(0, 30, 60);;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -53,7 +53,7 @@
 .filter-checkbox {
   vertical-align: bottom;
   padding-right: 30px;
-  padding-top: 35px;
+  padding-top: 27px;
   text-align: justify;
 }
 
@@ -100,4 +100,17 @@
   justify-content: center;
   align-items: center;
   height: 350px;
+}
+
+.error-page {
+  background-color: #070713;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-width: 1px !important;
+  border-color: #1976d2 !important;
+}
+
+.multiple-select-chip {
+  padding-top: 20px;
 }

@@ -15,8 +15,8 @@ export default function MethodToggleButton(props) {
       onChange={handleChange}
       aria-label="Platform"
     >
-      <ToggleButton value="prompt">prompt</ToggleButton>
-      <ToggleButton value="configuration">configuration</ToggleButton>
+      <ToggleButton sx={{color: 'white'}} value="prompt">prompt</ToggleButton>
+      <ToggleButton sx={{color: 'white'}} value="configuration">configuration</ToggleButton>
     </ToggleButtonGroup>
   );
 }

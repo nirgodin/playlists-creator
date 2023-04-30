@@ -15,6 +15,7 @@ export default function FormTextField(props) {
     const isError = (props.isRequired && value === '') ? true : false
     const helperText = (isError) ? 'This field is required' : ''
     return <TextField
+        inputProps={{ style: { color: "white" } }}
         multiline={true}
         error={isError}
         required={props.isRequired}

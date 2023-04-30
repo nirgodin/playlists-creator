@@ -32,6 +32,7 @@ export default function LandingPage(props) {
                 body={props.body[0]}
                 setWasRequestSent={props.setWasRequestSent}
                 setIsSuccessfull={props.setIsSuccessfull}
+                setIsError={props.setIsError}
             ></SendButton>
         </Box>
     </div>
