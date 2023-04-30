@@ -3,7 +3,7 @@ import os
 from flask import Flask, request, Response, jsonify
 from flask_cors import CORS
 
-from server.env_consts import SPOTIPY_CLIENT_SECRET
+from server.logic.consts.env_consts import SPOTIPY_CLIENT_SECRET
 from server.logic.openai_adapter import OpenAIAdapter
 from server.parameters_transformer import ParametersTransformer
 from server.utils import generate_response, get_column_possible_values
