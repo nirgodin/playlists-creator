@@ -1,4 +1,4 @@
-import LoginButton from "./LoginButton";
+import LoginButton from ".././components/LoginButton";
 import React from 'react';
 
 export default function LoginPage(props) {

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import LandingPage from "./LandingPage";
-import PostSendPage from "./PostSendPage";
-import { isLoggedIn, extractCode } from "../utils/UrlUtils";
-import LoginPage from "./LoginPage";
-import ErrorPage from "./ErrorPage";
+import LandingPage from "./pages/LandingPage";
+import PostSendPage from "./pages/PostSendPage";
+import { isLoggedIn, extractCode } from "./utils/UrlUtils";
+import LoginPage from "./pages/LoginPage";
+import ErrorPage from "./pages/ErrorPage";
 
 export default function Navigator(props) {
     const [wasRequestSent, setWasRequestSent] = useState(false)

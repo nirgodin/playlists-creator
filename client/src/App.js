@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import Navigator from './components/Navigator'
+import Navigator from './Navigator'
 import { useState } from 'react';
 
 function App() {

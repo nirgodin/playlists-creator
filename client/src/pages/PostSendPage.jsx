@@ -1,5 +1,5 @@
-import LoadingSpinner from "./LoadingSpinner";
-import Confetti from "./Confetti";
+import LoadingSpinner from "../components/LoadingSpinner";
+import Confetti from "../components/Confetti";
 
 
 export default function PostSendPage(props) {

@@ -1,10 +1,10 @@
-import MethodToggleButton from "./MethodToggleButton"
+import MethodToggleButton from ".././components/MethodToggleButton"
 import { Box } from "@mui/material"
-import FormTextField from "./FormTextField"
-import SendButton from "./SendButton"
+import FormTextField from ".././components/FormTextField"
+import SendButton from ".././components/SendButton"
 import { useState } from "react"
-import RequestBody from "./RequestBody"
-import PlaylistTextFields from "./PlaylistTextFields"
+import RequestBody from ".././components/RequestBody"
+import PlaylistTextFields from ".././components/PlaylistTextFields"
 
 export default function LandingPage(props) {
     const [alignment, setAlignment] = useState('prompt');
