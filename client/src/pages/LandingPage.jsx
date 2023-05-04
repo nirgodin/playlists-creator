@@ -8,7 +8,7 @@ import PlaylistTextFields from ".././components/PlaylistTextFields"
 
 export default function LandingPage(props) {
     const [alignment, setAlignment] = useState('prompt');
-    const endpoint = alignment === 'prompt' ? 'fromPrompt' : 'fromParams'
+    const endpoint = alignment === 'prompt' ? 'prompt' : 'configuration'
 
     const playlistDetails = <div className='playlist-details'>
         <PlaylistTextFields

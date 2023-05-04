@@ -12,9 +12,14 @@ export default function SendButton(props) {
             .then((data) => JSON.parse(data))
             .then((jsonfiedData) => jsonfiedData['isSuccess'])
             .then((isSuccess) => props.setIsSuccessfull(isSuccess))
-            .catch(props.setIsError(true))
+            .catch((error) => handleError(error))
         setIsClicked(false);
     };
+
+    const handleError = (error) => {
+        console.log(error);
+        props.setIsError(true)
+    }
 
     const handleClick = (e) => {
         props.setWasRequestSent(true);

@@ -3,6 +3,7 @@ from typing import Dict, List
 
 import pandas as pd
 from flask import Response, jsonify
+from pandas import DataFrame
 
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.playlists_generator import PlaylistsGenerator
@@ -33,10 +34,10 @@ def generate_response(body: dict, query_conditions: List[QueryCondition]) -> Res
     return response
 
 
-@lru_cache
-def get_column_possible_values(column_name: str) -> list:
-    data = pd.read_csv(r'groubyed_songs.csv')
-    formatted_column_name = '_'.join([token.lower() for token in column_name.split(' ')])
-    unique_values = data[formatted_column_name].unique().tolist()
+def format_column_name(raw_column_name: str) -> str:
+    return '_'.join([token.lower() for token in raw_column_name.split(' ')])
 
-    return sorted([value for value in unique_values if not pd.isna(value)])
+
+@lru_cache(maxsize=1)
+def load_data() -> DataFrame:
+    return pd.read_csv(r'groubyed_songs.csv')

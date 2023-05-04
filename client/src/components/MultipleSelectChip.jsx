@@ -27,7 +27,7 @@ export default function MultipleSelectChip(props) {
     const [possibleValues, setPossibleValues] = React.useState([])
 
     const getPossibleValues = async () => {
-        const url = `${process.env.REACT_APP_BASE_URL}/getPossibleValues/${props.title}`;
+        const url = `${process.env.REACT_APP_BASE_URL}/possibleValues/${props.title}`;
         await axios.get(url)
             .then((resp) => JSON.stringify(resp.data))
             .then((data) => JSON.parse(data))

@@ -1,45 +1,27 @@
 import os
 
-from flask import Flask, request, Response, jsonify
+from flask import Flask
 from flask_cors import CORS
+from flask_restful import Api
 
+from server.app_resources.configuration_resource import Configuration
+from server.app_resources.min_max_values_resource import MinMaxValues
+from server.app_resources.possible_values_resource import PossibleValues
+from server.app_resources.prompt_resource import Prompt
 from server.consts.env_consts import SPOTIPY_CLIENT_SECRET
 from server.logic.openai_adapter import OpenAIAdapter
-from server.logic.parameters_transformer import ParametersTransformer
-from server.utils import generate_response, get_column_possible_values
 
 app = Flask(__name__)
 app.secret_key = os.environ[SPOTIPY_CLIENT_SECRET]
 CORS(app)
+api = Api(app)
 openai_adapter = OpenAIAdapter()
 
 
-@app.route("/getPossibleValues/<column_name>", methods=['GET'])
-def get_possible_values(column_name: str) -> Response:
-    res = {
-        'possibleValues': get_column_possible_values(column_name)
-    }
-    response = jsonify(res)
-    response.headers.add('Access-Control-Allow-Origin', '*')
-
-    return response
-
-
-@app.route("/fromPrompt", methods=['POST'])
-def from_prompt() -> Response:
-    body = request.get_json()
-    user_text = body['playlistDetails']['prompt']
-    query_conditions = openai_adapter.generate_query_conditions(user_text)
-
-    return generate_response(body, query_conditions)
-
-
-@app.route("/fromParams", methods=['POST'])
-def from_params() -> Response:
-    body = request.get_json()
-    query_conditions = ParametersTransformer().transform(body)
-
-    return generate_response(body, query_conditions)
+api.add_resource(Configuration, '/api/configuration')
+api.add_resource(Prompt, '/api/prompt')
+api.add_resource(MinMaxValues, '/api/minMaxValues/<string:column_name>')
+api.add_resource(PossibleValues, '/api/possibleValues/<string:column_name>')
 
 
 if __name__ == '__main__':

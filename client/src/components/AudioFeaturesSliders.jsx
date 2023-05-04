@@ -17,7 +17,7 @@ export default function AudioFeaturesSliders(props) {
     const toRangeSliders = () => {
         return audioFeatures.map(
             featureName => <MinDistanceRangeSlider
-                minDistance={10}
+                minDistance={0.1}
                 title={featureName}
                 body={props.body}
                 setBody={props.setBody}

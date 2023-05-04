@@ -46,6 +46,7 @@ export default function Navigator(props) {
         return (
             <PostSendPage
                 isSuccessfull={isSuccessfull}
+                setWasRequestSent={setWasRequestSent}
             ></PostSendPage>
         )
     }
