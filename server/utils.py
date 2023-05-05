@@ -35,6 +35,25 @@ def generate_response(body: dict, query_conditions: List[QueryCondition]) -> Res
     return response
 
 
+@lru_cache
+def get_column_min_max_values(column_name: str) -> List[float]:
+    data = load_data()
+    formatted_column_name = format_column_name(column_name)
+    min_value = float(data[formatted_column_name].min())
+    max_value = float(data[formatted_column_name].max())
+
+    return [min_value, max_value]
+
+
+@lru_cache
+def get_column_possible_values(column_name: str) -> List[float]:
+    data = load_data()
+    formatted_column_name = format_column_name(column_name)
+    unique_values = data[formatted_column_name].unique().tolist()
+
+    return sorted([value for value in unique_values if not pd.isna(value)])
+
+
 def format_column_name(raw_column_name: str) -> str:
     return '_'.join([token.lower() for token in raw_column_name.split(' ')])
 

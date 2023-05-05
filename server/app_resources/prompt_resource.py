@@ -2,7 +2,7 @@ from flask import Response, request
 from flask_restful import Resource
 
 from server.consts.app_consts import PLAYLIST_DETAILS, PROMPT
-from server.logic.openai_adapter import OpenAIAdapter
+from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.utils import generate_response
 
 
