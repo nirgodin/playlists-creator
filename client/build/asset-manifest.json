@@ -1,16 +1,13 @@
 {
   "files": {
-    "main.css": "/static/css/main.626aa2be.css",
-    "main.js": "/static/js/main.dbc017de.js",
-    "static/js/787.5546a035.chunk.js": "/static/js/787.5546a035.chunk.js",
+    "main.css": "/static/css/main.e4f6361b.css",
+    "main.js": "/static/js/main.db673fdd.js",
+    "static/js/27.3317ff13.chunk.js": "/static/js/27.3317ff13.chunk.js",
     "static/media/david_bowie_failure_picture.jpeg": "/static/media/david_bowie_failure_picture.dc93eda9eeb0c98e7a2f.jpeg",
-    "index.html": "/index.html",
-    "main.626aa2be.css.map": "/static/css/main.626aa2be.css.map",
-    "main.dbc017de.js.map": "/static/js/main.dbc017de.js.map",
-    "787.5546a035.chunk.js.map": "/static/js/787.5546a035.chunk.js.map"
+    "index.html": "/index.html"
   },
   "entrypoints": [
-    "static/css/main.626aa2be.css",
-    "static/js/main.dbc017de.js"
+    "static/css/main.e4f6361b.css",
+    "static/js/main.db673fdd.js"
   ]
 }
