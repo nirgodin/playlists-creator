@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import List, Generator
 
 from numpy import dtype
@@ -11,6 +12,7 @@ from server.utils import load_data, get_column_possible_values, get_column_min_m
 
 
 class ColumnsDetailsCreator:
+    @lru_cache
     def create(self) -> str:
         data = load_data()
         columns_descriptions = []

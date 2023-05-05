@@ -4,14 +4,16 @@ from typing import List, Union, Optional
 
 import openai
 
-from server.consts.openai_consts import PROMPT_FORMAT, SERIALIZATION_ERROR_PROMPT_FORMAT
+from server.consts.openai_consts import SERIALIZATION_ERROR_PROMPT_FORMAT
 from server.data.query_condition import QueryCondition
+from server.logic.openai.prompt_builder import PromptBuilder
 
 
 class OpenAIAdapter:
     def __init__(self):
         openai.api_key = os.environ['OPENAI_API_KEY']
         self._openai_model = openai.ChatCompletion()
+        self._prompt_build = PromptBuilder()
 
     def generate_query_conditions(self,
                                   user_text: str,
@@ -20,7 +22,7 @@ class OpenAIAdapter:
         if retries_left == 0:
             return
 
-        prompt = PROMPT_FORMAT.format(user_text=user_text)
+        prompt = self._prompt_build.build(user_text)
         messages = self._build_request_messages(prompt, chat_history)
         response = self._openai_model.create(
             model="gpt-3.5-turbo",
