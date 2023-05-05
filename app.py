@@ -38,4 +38,3 @@ api.add_resource(PossibleValues, '/api/possibleValues/<string:column_name>')
 
 if __name__ == '__main__':
     app.run(debug=False)
-
