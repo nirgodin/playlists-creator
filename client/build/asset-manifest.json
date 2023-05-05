@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/static/css/main.b83104dc.css",
-    "main.js": "/static/js/main.1f512dbb.js",
+    "main.css": "/static/css/main.47cc938a.css",
+    "main.js": "/static/js/main.cd58bf25.js",
     "static/js/27.3317ff13.chunk.js": "/static/js/27.3317ff13.chunk.js",
     "static/media/david_bowie_failure_picture.jpeg": "/static/media/david_bowie_failure_picture.dc93eda9eeb0c98e7a2f.jpeg",
     "index.html": "/index.html"
   },
   "entrypoints": [
-    "static/css/main.b83104dc.css",
-    "static/js/main.1f512dbb.js"
+    "static/css/main.47cc938a.css",
+    "static/js/main.cd58bf25.js"
   ]
 }
