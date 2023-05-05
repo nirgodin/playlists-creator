@@ -9,13 +9,19 @@ from server.app_resources.min_max_values_resource import MinMaxValues
 from server.app_resources.possible_values_resource import PossibleValues
 from server.app_resources.prompt_resource import Prompt
 from server.consts.env_consts import SPOTIPY_CLIENT_SECRET
-from server.logic.openai_adapter import OpenAIAdapter
 
 app = Flask(__name__, static_folder='client/build', static_url_path='')
 app.secret_key = os.environ[SPOTIPY_CLIENT_SECRET]
 CORS(app)
-api = Api(app)
-openai_adapter = OpenAIAdapter()
+api = Api(app, decorators=[cross_origin()])
+
+
+@app.route('/api', methods=['GET'])
+@cross_origin()
+def index():
+    return {
+        'Hey': 'It\'s working!'
+    }
 
 
 @app.route('/')
