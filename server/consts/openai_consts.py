@@ -1,3 +1,5 @@
+from server.consts.data_consts import SONG, URI, STATION
+
 PROMPT_FORMAT = """
 In this task you should help serialize free texts inputs that describes the characteristics of a Spotify playlist, to a 
 JSON serializable string that configures the parameters that will generate this playlist.\n
@@ -32,3 +34,11 @@ Please generate me a JSON configuration based on the following text: {user_text}
 
 SERIALIZATION_ERROR_PROMPT_FORMAT = "While serializing your response the following error occurred '{error_message}'. " \
                                     "Please regenerate a response that will avoid this exception"
+EXCLUDED_COLUMNS = [
+    SONG,
+    URI,
+    STATION
+]
+IN_OPERATOR = 'in'
+NUMERIC_OPERATORS = '< or >'
+SINGLE_COLUMN_DESCRIPTION_FORMAT = """``` {column_index}. {column_name}\n operator: {column_operator}\n values: {column_values}\n ``` """

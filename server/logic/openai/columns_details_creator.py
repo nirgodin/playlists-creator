@@ -4,17 +4,10 @@ from numpy import dtype
 from pandas import DataFrame
 from pandas.core.dtypes.common import is_string_dtype, is_bool_dtype
 
+from server.consts.openai_consts import EXCLUDED_COLUMNS, IN_OPERATOR, NUMERIC_OPERATORS, \
+    SINGLE_COLUMN_DESCRIPTION_FORMAT
 from server.logic.openai.column_details import ColumnDetails
 from server.utils import load_data, get_column_possible_values, get_column_min_max_values
-
-EXCLUDED_COLUMNS = [
-    'song',
-    'uri',
-    'station'
-]
-IN_OPERATOR = 'in'
-NUMERIC_OPERATORS = '< or >'
-SINGLE_COLUMN_DESCRIPTION_FORMAT = """``` {column_index}. {column_name}\n operator: {column_operator}\n values: {column_values}\n ``` """
 
 
 class ColumnsDetailsCreator:
