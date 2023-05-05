@@ -14,7 +14,6 @@ class PossibleValues(Resource):
             'possibleValues': self._get_column_possible_values(column_name)
         }
         response = jsonify(res)
-        response.headers.add('Access-Control-Allow-Origin', '*')
 
         return response
 

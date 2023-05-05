@@ -13,7 +13,6 @@ class MinMaxValues(Resource):
             'minMaxValues': self._get_column_min_max_values(column_name)
         }
         response = jsonify(res)
-        response.headers.add('Access-Control-Allow-Origin', '*')
 
         return response
 
