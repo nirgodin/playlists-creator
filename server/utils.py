@@ -5,6 +5,7 @@ import pandas as pd
 from flask import Response, jsonify
 from pandas import DataFrame
 
+from server.consts.app_consts import PLAYLIST_DETAILS, ACCESS_CODE, IS_SUCCESS, PLAYLIST_LINK
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.playlists_generator import PlaylistsGenerator
 from server.data.query_condition import QueryCondition
@@ -22,12 +23,12 @@ def build_spotify_headers(access_code: str) -> Dict[str, str]:
 
 
 def generate_response(body: dict, query_conditions: List[QueryCondition]) -> Response:
-    access_code = body['accessCode']
-    playlist_details = body['playlistDetails']
+    access_code = body[ACCESS_CODE]
+    playlist_details = body[PLAYLIST_DETAILS]
     playlist_link = playlists_generator.generate(query_conditions, access_code, playlist_details)
     res = {
-        'isSuccess': True,
-        'playlistLink': playlist_link
+        IS_SUCCESS: True,
+        PLAYLIST_LINK: playlist_link
     }
     response = jsonify(res)
 

@@ -1,0 +1,5 @@
+PLAYLIST_DETAILS = 'playlistDetails'
+ACCESS_CODE = 'accessCode'
+IS_SUCCESS = 'isSuccess'
+PLAYLIST_LINK = 'playlistLink'
+PROMPT = 'prompt'
