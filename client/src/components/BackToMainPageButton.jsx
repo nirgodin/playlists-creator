@@ -4,7 +4,7 @@ export default function BackToMainPageButton(props) {
     return (
         <Button
             variant="outlined"
-            onClick={props.setWasRequestSent(false)}
+            onClick={() => props.setWasRequestSent(false)}
         > {'Create another playlist'}
         </Button >
     )

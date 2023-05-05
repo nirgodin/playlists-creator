@@ -29,7 +29,6 @@ def generate_response(body: dict, query_conditions: List[QueryCondition]) -> Res
         'isSuccess': True
     }
     response = jsonify(res)
-    response.headers.add('Access-Control-Allow-Origin', '*')
 
     return response
 
