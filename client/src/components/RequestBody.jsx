@@ -1,26 +1,14 @@
 import MinDistanceRangeSlider from './MinDistanceRangeSlider';
-import MultipleSelectChip from './MultipleSelectChip';
-import { languageLabels, genreLabels } from '../consts';
 import MultipleSelectChipWrapper from './MultipleSelectChipWrapper';
-import AudioFeaturesSliders from './AudioFeaturesSliders';
-import Section from './Section';
+import RangeSliders from './RangeSliders';
 
 export default function RequestBody(props) {
     return <div>
         <div className='playlist-configuration'>
-            <AudioFeaturesSliders
+            <RangeSliders
                 body={props.body}
                 setBody={props.setBody}
-            ></AudioFeaturesSliders>
-            {/* <Section
-                header='Audio Features'
-                sectionDetails={
-                    <AudioFeaturesSliders
-                        body={props.body}
-                        setBody={props.setBody}
-                    ></AudioFeaturesSliders>
-                }
-            ></Section> */}
+            ></RangeSliders>
             <MinDistanceRangeSlider
                 minDistance={10}
                 title={'Popularity'}

@@ -24,6 +24,14 @@ function App() {
             'operator': '<',
             'value': 100
           },
+          'minArtistPopularity': {
+            'operator': '>',
+            'value': 0
+          },
+          'maxArtistPopularity': {
+            'operator': '<',
+            'value': 100
+          },
           'minDanceability': {
             'operator': '>',
             'value': 0

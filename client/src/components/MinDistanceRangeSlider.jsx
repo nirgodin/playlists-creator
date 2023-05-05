@@ -4,10 +4,13 @@ import { Box, Typography } from "@mui/material";
 import { Slider } from "@mui/material";
 import axios from 'axios'
 import _ from 'underscore'
+import { toCamelCase } from '../utils/StringUtils';
 
 const MinDistanceRangeSlider = (props) => {
     const [minMaxValues, setminMaxValues] = useState([]);
     const [actualValues, setActualValues] = useState([]);
+    const minTitleValue = toCamelCase(`min ${props.title}`);
+    const maxTitleValue = toCamelCase(`max ${props.title}`);
 
     const getMinMaxValues = async () => {
         const url = `${process.env.REACT_APP_BASE_URL}/minMaxValues/${props.title}`;
@@ -49,8 +52,8 @@ const MinDistanceRangeSlider = (props) => {
 
     const updateRequestBody = () => {
         let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
-        newBody['filterParams'][`min${props.title}`]['value'] = actualValues[0];
-        newBody['filterParams'][`max${props.title}`]['value'] = actualValues[1];
+        newBody['filterParams'][minTitleValue]['value'] = actualValues[0];
+        newBody['filterParams'][maxTitleValue]['value'] = actualValues[1];
         props.setBody([newBody]);
     }
 
