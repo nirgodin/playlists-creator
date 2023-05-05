@@ -12,10 +12,12 @@ class PlaylistsGenerator:
         self._data_filterer = DataFilterer()
         self._playlists_creator = PlaylistsCreator()
 
-    def generate(self, query_conditions: List[QueryCondition], access_code: str, playlist_details: dict) -> None:
+    def generate(self, query_conditions: List[QueryCondition], access_code: str, playlist_details: dict) -> str:
         filtered_data = self._data_filterer.filter(query_conditions)
         uris = filtered_data[URI].tolist()
-        self._playlists_creator.create(uris, access_code, playlist_details)
+        playlist_link = self._playlists_creator.create(uris, access_code, playlist_details)
+
+        return playlist_link
 
     def _pre_process_request_body(self, body: dict) -> List[QueryCondition]:
         pre_processed_body = []

@@ -24,9 +24,10 @@ def build_spotify_headers(access_code: str) -> Dict[str, str]:
 def generate_response(body: dict, query_conditions: List[QueryCondition]) -> Response:
     access_code = body['accessCode']
     playlist_details = body['playlistDetails']
-    playlists_generator.generate(query_conditions, access_code, playlist_details)
+    playlist_link = playlists_generator.generate(query_conditions, access_code, playlist_details)
     res = {
-        'isSuccess': True
+        'isSuccess': True,
+        'playlistLink': playlist_link
     }
     response = jsonify(res)
 

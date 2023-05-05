@@ -10,11 +10,17 @@ export default function SendButton(props) {
         await axios.post(url, props.body)
             .then((resp) => JSON.stringify(resp.data))
             .then((data) => JSON.parse(data))
-            .then((jsonfiedData) => jsonfiedData['isSuccess'])
-            .then((isSuccess) => props.setIsSuccessfull(isSuccess))
+            .then((jsonfiedData) => handleResponse(jsonfiedData))
             .catch((error) => handleError(error))
         setIsClicked(false);
     };
+
+    const handleResponse = (jsonfiedData) => {
+        const isSuccess = jsonfiedData['isSuccess'];
+        const playlistLink = jsonfiedData['playlistLink'];
+        props.setIsSuccessfull(isSuccess);
+        props.setPlaylistLink(playlistLink);
+    }
 
     const handleError = (error) => {
         console.log(error);

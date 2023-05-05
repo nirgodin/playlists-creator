@@ -9,6 +9,7 @@ export default function Navigator(props) {
     const [wasRequestSent, setWasRequestSent] = useState(false)
     const [isSuccessfull, setIsSuccessfull] = useState(false)
     const [isError, setIsError] = useState(false)
+    const [playlistLink, setPlaylistLink] = useState('')
 
     useEffect(
         () => {
@@ -34,6 +35,7 @@ export default function Navigator(props) {
                     setWasRequestSent={setWasRequestSent}
                     setIsSuccessfull={setIsSuccessfull}
                     setIsError={setIsError}
+                    setPlaylistLink={setPlaylistLink}
                 ></LandingPage>
                 {/* <p>{JSON.stringify(props.body[0])}</p> */}
             </div>
@@ -47,6 +49,7 @@ export default function Navigator(props) {
             <PostSendPage
                 isSuccessfull={isSuccessfull}
                 setWasRequestSent={setWasRequestSent}
+                playlistLink={playlistLink}
             ></PostSendPage>
         )
     }

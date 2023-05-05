@@ -33,6 +33,7 @@ export default function LandingPage(props) {
                 setWasRequestSent={props.setWasRequestSent}
                 setIsSuccessfull={props.setIsSuccessfull}
                 setIsError={props.setIsError}
+                setPlaylistLink={props.setPlaylistLink}
             ></SendButton>
         </Box>
     </div>
