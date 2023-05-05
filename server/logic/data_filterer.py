@@ -14,14 +14,18 @@ class DataFilterer:
         self._data = pd.read_csv(r'groubyed_songs.csv')
 
     def filter(self, query_conditions: List[QueryCondition]) -> DataFrame:
-        data = self._generate_candidates()
         query = self._build_query(query_conditions)
-        filtered_data = data.query(query).reset_index(drop=True)
+        filtered_data = self._data.query(query).reset_index(drop=True)
+        candidates_data = self._generate_candidates(filtered_data)
 
-        return filtered_data.iloc[:self._max_playlist_size]
+        return candidates_data.iloc[:self._max_playlist_size]
 
-    def _generate_candidates(self) -> DataFrame:
-        candidates_indexes = [random.randint(0, len(self._data)) for i in range(self._candidates_pool_size)]
+    def _generate_candidates(self, filtered_data: DataFrame) -> DataFrame:
+        if filtered_data.empty:
+            return filtered_data
+
+        max_candidates = len(filtered_data)
+        candidates_indexes = [random.randint(0, max_candidates) for i in range(max_candidates)]
         candidates = self._data.iloc[candidates_indexes]
         candidates.reset_index(drop=True, inplace=True)
 
