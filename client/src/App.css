@@ -62,16 +62,18 @@
   width: 50%;
   padding: 10px;
   padding-bottom: 30px;
-  padding-left: 320px;
+  padding-left: 265px;
 }
 
 .playlist-details {
+  padding-top: 30px;
   padding-bottom: 30px;
+  padding-left: 210px;
 }
 
 .is-public-switch {
-  padding-top: 24px;
-  padding-left: 820px;
+  margin-top: 25px;
+  padding-left: 15px;
 }
 
 .data-section {

@@ -17,6 +17,8 @@
 /client/.env.development.local
 /client/.env.test.local
 /client/.env.production.local
+/client/.env.development
+/client/.env.production
 
 /client/npm-debug.log*
 /client/yarn-debug.log*

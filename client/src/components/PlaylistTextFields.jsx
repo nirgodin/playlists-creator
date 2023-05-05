@@ -13,29 +13,31 @@ export default function PlaylistTextFields(props) {
             noValidate
             autoComplete="off"
         >
-            <div className='is-public-switch'>
-                <PlaylistSwitch
-                    body={props.body}
-                    setBody={props.setBody}
-                ></PlaylistSwitch>
-            </div>
-            <div>
-                <FormTextField
-                    isRequired={true}
-                    id={'playlist-name'}
-                    label={"Playlist name"}
-                    defaultValue={''}
-                    body={props.body}
-                    setBody={props.setBody}
-                ></FormTextField>
-                <FormTextField
-                    isRequired={false}
-                    id={'playlist-description'}
-                    label={"Playlist description"}
-                    defaultValue={''}
-                    body={props.body}
-                    setBody={props.setBody}
-                ></FormTextField>
+            <div className='row-items'>
+                <div>
+                    <FormTextField
+                        isRequired={true}
+                        id={'playlist-name'}
+                        label={"Playlist name"}
+                        defaultValue={''}
+                        body={props.body}
+                        setBody={props.setBody}
+                    ></FormTextField>
+                    <FormTextField
+                        isRequired={false}
+                        id={'playlist-description'}
+                        label={"Playlist description"}
+                        defaultValue={''}
+                        body={props.body}
+                        setBody={props.setBody}
+                    ></FormTextField>
+                </div>
+                <div className='is-public-switch'>
+                    <PlaylistSwitch
+                        body={props.body}
+                        setBody={props.setBody}
+                    ></PlaylistSwitch>
+                </div>
             </div>
         </Box>
     );
