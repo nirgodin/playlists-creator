@@ -1,6 +1,7 @@
 import re
 from typing import List
 
+from server.consts.app_consts import FILTER_PARAMS
 from server.consts.data_consts import URI
 from server.logic.data_filterer import DataFilterer
 from server.logic.playlists_creator import PlaylistsCreator
@@ -21,7 +22,7 @@ class PlaylistsGenerator:
 
     def _pre_process_request_body(self, body: dict) -> List[QueryCondition]:
         pre_processed_body = []
-        filter_params = body['filterParams']
+        filter_params = body[FILTER_PARAMS]
 
         for column_name, column_details in filter_params.items():
             pre_processed_column_name = self._pre_process_column_name(column_name)

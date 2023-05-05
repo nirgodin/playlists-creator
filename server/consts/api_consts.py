@@ -10,3 +10,6 @@ JSON = 'json'
 ACCESS_TOKEN = 'access_token'
 USER_PROFILE_URL = 'https://api.spotify.com/v1/me'
 ID = 'id'
+NAME = "name"
+DESCRIPTION = "description"
+PUBLIC = "public"

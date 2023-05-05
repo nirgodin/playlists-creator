@@ -1,12 +1,13 @@
 import re
 from typing import List
 
+from server.consts.app_consts import FILTER_PARAMS
 from server.data.query_condition import QueryCondition
 
 
 class ParametersTransformer:
     def transform(self, body: dict) -> List[QueryCondition]:
-        filter_params = body['filterParams']
+        filter_params = body[FILTER_PARAMS]
         return self._pre_process_request_body(filter_params)
 
     def _pre_process_request_body(self, filter_params: dict) -> List[QueryCondition]:

@@ -3,7 +3,8 @@ from typing import List, Dict
 import requests
 
 from server.consts.api_consts import CREATE_PLAYLIST_URL_FORMAT, ADD_PLAYLIST_ITEMS_URL_FORMAT, USER_PROFILE_URL, ID, \
-    PLAYLIST_LINK_FORMAT
+    PLAYLIST_LINK_FORMAT, NAME, DESCRIPTION, PUBLIC
+from server.consts.app_consts import PLAYLIST_NAME, PLAYLIST_DESCRIPTION, IS_PUBLIC
 from server.logic.access_token_generator import AccessTokenGenerator
 
 
@@ -21,9 +22,9 @@ class PlaylistsCreator:
         user_id = self._fetch_user_id(headers)
         url = CREATE_PLAYLIST_URL_FORMAT.format(user_id)
         body = {
-            "name": playlist_details['playlistName'],
-            "description": playlist_details['playlistDescription'],
-            "public": playlist_details['isPublic']
+            NAME: playlist_details[PLAYLIST_NAME],
+            DESCRIPTION: playlist_details[PLAYLIST_DESCRIPTION],
+            PUBLIC: playlist_details[IS_PUBLIC]
         }
         raw_response = requests.post(url=url, json=body, headers=headers)
         response = raw_response.json()

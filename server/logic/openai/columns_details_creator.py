@@ -17,11 +17,20 @@ class ColumnsDetailsCreator:
         data = load_data()
         columns_descriptions = []
 
-        for column_details in self._get_relevant_columns_details(data):
+        for column_details in self.get_relevant_columns_details(data):
             column_description = self._build_single_column_description(column_details)
             columns_descriptions.append(column_description)
 
         return '/n'.join(columns_descriptions)
+
+    def get_relevant_columns_details(self, data: DataFrame) -> Generator[ColumnDetails, None, None]:
+        relevant_columns = []
+
+        for column_name in data.columns.tolist():
+            if column_name not in EXCLUDED_COLUMNS:
+                relevant_columns.append(column_name)
+
+        yield from self._generate_columns_details(data, relevant_columns)
 
     @staticmethod
     def _build_single_column_description(column_details: ColumnDetails) -> str:
@@ -32,14 +41,6 @@ class ColumnsDetailsCreator:
             column_values=column_details.values
         )
 
-    def _get_relevant_columns_details(self, data: DataFrame) -> Generator[ColumnDetails, None, None]:
-        relevant_columns = []
-
-        for column_name in data.columns.tolist():
-            if column_name not in EXCLUDED_COLUMNS:
-                relevant_columns.append(column_name)
-
-        yield from self._generate_columns_details(data, relevant_columns)
 
     def _generate_columns_details(self, data: DataFrame, relevant_columns: List[str]) -> Generator[ColumnDetails,
                                                                                                    None,

@@ -1,139 +1,51 @@
 import './App.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navigator from './Navigator'
 import { useState } from 'react';
+import axios from 'axios'
+import _ from 'underscore'
+import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
-  const [body, setBody] = useState(
-    [
-      {
-        'filterParams': {
-          'mainGenre': {
-            'operator': 'in',
-            'value': []
-          },
-          'language': {
-            'operator': 'in',
-            'value': []
-          },
-          'minPopularity': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxPopularity': {
-            'operator': '<',
-            'value': 100
-          },
-          'minArtistPopularity': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxArtistPopularity': {
-            'operator': '<',
-            'value': 100
-          },
-          'minDanceability': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxDanceability': {
-            'operator': '<',
-            'value': 100
-          },
-          'minEnergy': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxEnergy': {
-            'operator': '<',
-            'value': 100
-          },
-          'minLoudness': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxLoudness': {
-            'operator': '<',
-            'value': 100
-          },
-          'minMode': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxMode': {
-            'operator': '<',
-            'value': 100
-          },
-          'minSpeechiness': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxSpeechiness': {
-            'operator': '<',
-            'value': 100
-          },
-          'minAcousticness': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxAcousticness': {
-            'operator': '<',
-            'value': 100
-          },
-          'minInstrumentalness': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxInstrumentalness': {
-            'operator': '<',
-            'value': 100
-          },
-          'minLiveness': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxLiveness': {
-            'operator': '<',
-            'value': 100
-          },
-          'minValence': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxValence': {
-            'operator': '<',
-            'value': 100
-          },
-          'minTempo': {
-            'operator': '>',
-            'value': 0
-          },
-          'maxTempo': {
-            'operator': '<',
-            'value': 100
-          }
-        },
-        'accessCode': '',
-        'playlistDetails': {
-          'playlistName': '',
-          'playlistDescription': '',
-          'isPublic': false,
-          'prompt': ''
-        }
+  const [body, setBody] = useState([])
+
+  const getDefaultRequestBody = async () => {
+    const url = `${process.env.REACT_APP_BASE_URL}/requestBody`;
+    await axios.get(url)
+      .then((resp) => JSON.stringify(resp.data))
+      .then((data) => JSON.parse(data))
+      .then((jsonfiedData) => jsonfiedData['requestBody'])
+      .then((requestBody) => setBody(requestBody))
+  };
+
+  useEffect(
+    () => {
+      if (_.isEqual(body, [])) {
+        getDefaultRequestBody()
       }
-    ]
+    }
   )
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <Navigator
-          body={body}
-          setBody={setBody}
-        ></Navigator>
-      </header>
-    </div>
-  );
+  if (_.isEqual(body, [])) {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <LoadingSpinner></LoadingSpinner>
+        </header>
+      </div>
+    );
+  } else {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <Navigator
+            body={body}
+            setBody={setBody}
+          ></Navigator>
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;

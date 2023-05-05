@@ -8,6 +8,7 @@ from server.app_resources.configuration_resource import Configuration
 from server.app_resources.min_max_values_resource import MinMaxValues
 from server.app_resources.possible_values_resource import PossibleValues
 from server.app_resources.prompt_resource import Prompt
+from server.app_resources.request_body_resource import RequestBody
 from server.consts.env_consts import SPOTIPY_CLIENT_SECRET
 
 app = Flask(__name__, static_folder='client/build', static_url_path='')
@@ -34,6 +35,7 @@ api.add_resource(Configuration, '/api/configuration')
 api.add_resource(Prompt, '/api/prompt')
 api.add_resource(MinMaxValues, '/api/minMaxValues/<string:column_name>')
 api.add_resource(PossibleValues, '/api/possibleValues/<string:column_name>')
+api.add_resource(RequestBody, '/api/requestBody')
 
 
 if __name__ == '__main__':
