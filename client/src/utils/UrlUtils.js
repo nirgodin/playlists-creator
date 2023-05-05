@@ -2,6 +2,7 @@
 const SPOTIFY_BASE_AUTHORIZATION_URL = 'https://accounts.spotify.com/authorize?'
 
 function generateAccessCodeURL(clientID, redirectURI) {
+    console.log(`Redirect URI ${redirectURI}`);
     const params = {
         client_id: clientID,
         response_type: 'code',
