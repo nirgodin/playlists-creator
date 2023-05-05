@@ -9,12 +9,6 @@ export default function RequestBody(props) {
                 body={props.body}
                 setBody={props.setBody}
             ></RangeSliders>
-            <MinDistanceRangeSlider
-                minDistance={10}
-                title={'Popularity'}
-                body={props.body}
-                setBody={props.setBody}
-            ></MinDistanceRangeSlider>
             <MultipleSelectChipWrapper
                 title={'Main Genre'}
                 body={props.body}
