@@ -1,4 +1,4 @@
-from server.consts.data_consts import SONG, URI, STATION
+from server.consts.data_consts import SONG, URI, STATION, NAME, ARTIST_NAME
 
 PROMPT_PREFIX_FORMAT = """
 In this task you should help serialize free texts inputs that describes the characteristics of a Spotify playlist, to a 
@@ -31,8 +31,9 @@ SERIALIZATION_ERROR_PROMPT_FORMAT = "While serializing your response the followi
                                     "Please regenerate a response that will avoid this exception"
 EXCLUDED_COLUMNS = [
     SONG,
+    NAME,
+    ARTIST_NAME,
     URI,
-    STATION
 ]
 IN_OPERATOR = 'in'
 NUMERIC_OPERATORS = '< or >'

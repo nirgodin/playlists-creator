@@ -6,6 +6,7 @@ from flask import Response, jsonify
 from pandas import DataFrame
 
 from server.consts.app_consts import PLAYLIST_DETAILS, ACCESS_CODE, IS_SUCCESS, PLAYLIST_LINK
+from server.consts.data_consts import DATA_PATH
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.playlists_generator import PlaylistsGenerator
 from server.data.query_condition import QueryCondition
@@ -60,4 +61,4 @@ def format_column_name(raw_column_name: str) -> str:
 
 @lru_cache(maxsize=1)
 def load_data() -> DataFrame:
-    return pd.read_csv(r'groubyed_songs.csv')
+    return pd.read_csv(DATA_PATH)

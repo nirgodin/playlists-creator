@@ -1,3 +1,6 @@
 SONG = 'song'
 URI = 'uri'
 STATION = 'station'
+NAME = 'name'
+ARTIST_NAME = 'artist_name'
+DATA_PATH = 'server/resources/playlists_creator_database.csv'

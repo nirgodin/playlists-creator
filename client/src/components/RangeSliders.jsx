@@ -26,7 +26,6 @@ export default function RangeSliders(props) {
     const toRangeSliders = () => {
         return featuresNames.map(
             featureName => <MinDistanceRangeSlider
-                minDistance={0.1}
                 title={featureName}
                 body={props.body}
                 setBody={props.setBody}

@@ -9,6 +9,7 @@ import { toCamelCase } from '../utils/StringUtils';
 const MinDistanceRangeSlider = (props) => {
     const [minMaxValues, setminMaxValues] = useState([]);
     const [actualValues, setActualValues] = useState([]);
+    const [minDistance, setMinDistance] = useState(0);
     const minTitleValue = toCamelCase(`min ${props.title}`);
     const maxTitleValue = toCamelCase(`max ${props.title}`);
 
@@ -26,11 +27,13 @@ const MinDistanceRangeSlider = (props) => {
     React.useEffect(
         () => {
             if (_.isEqual(minMaxValues, [])) {
-                getMinMaxValues()
+                getMinMaxValues();
             }
 
             if (_.isEqual(actualValues, []) && !_.isEqual(minMaxValues, [])) {
-                setActualValues(minMaxValues)
+                const updatedMinDistance = (minMaxValues[1] - minMaxValues[0]) / 10;
+                setMinDistance(updatedMinDistance);
+                setActualValues(minMaxValues);
             }
         }, [minMaxValues, actualValues, getMinMaxValues]
     )
@@ -41,10 +44,10 @@ const MinDistanceRangeSlider = (props) => {
         }
 
         if (activeThumb === 0) {
-            const minActualValue = Math.min(newValue[0], actualValues[1] - props.minDistance);
+            const minActualValue = Math.min(newValue[0], actualValues[1] - minDistance);
             setActualValues([minActualValue, actualValues[1]]);
         } else {
-            const maxActualValue = Math.max(newValue[1], actualValues[0] + props.minDistance);
+            const maxActualValue = Math.max(newValue[1], actualValues[0] + minDistance);
             setActualValues([actualValues[0], maxActualValue]);
         }
     }
