@@ -3,7 +3,7 @@ from flask import Response, jsonify
 from flask_restful import Resource
 
 from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
-    IS_PUBLIC, PROMPT, OPERATOR, VALUE, LESS_THAN_OPERATOR, GREATER_THAN_OPERATOR, REQUEST_BODY
+    IS_PUBLIC, PROMPT, OPERATOR, VALUE, LESS_THAN_OPERATOR, GREATER_THAN_OPERATOR, REQUEST_BODY, INCLUDE_NAN
 from server.consts.openai_consts import IN_OPERATOR
 from server.logic.openai.column_details import ColumnDetails
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
@@ -53,7 +53,8 @@ class RequestBody(Resource):
         return {
             camelcase(column_name): {
                 OPERATOR: IN_OPERATOR,
-                VALUE: []
+                VALUE: [],
+                INCLUDE_NAN: True
             }
         }
 

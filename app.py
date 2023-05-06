@@ -17,14 +17,6 @@ CORS(app)
 api = Api(app, decorators=[cross_origin()])
 
 
-@app.route('/api', methods=['GET'])
-@cross_origin()
-def index():
-    return {
-        'Hey': 'It\'s working!'
-    }
-
-
 @app.route('/')
 @cross_origin()
 def serve():

@@ -13,12 +13,14 @@ const MinDistanceRangeSlider = (props) => {
     const maxTitleValue = toCamelCase(`max ${props.title}`);
 
     const getMinMaxValues = async () => {
-        const url = `${process.env.REACT_APP_BASE_URL}/minMaxValues/${props.title}`;
-        await axios.get(url)
-            .then((resp) => JSON.stringify(resp.data))
-            .then((data) => JSON.parse(data))
-            .then((jsonfiedData) => jsonfiedData['minMaxValues'])
-            .then((values) => setminMaxValues(values))
+        if (_.isEqual(minMaxValues, [])) {
+            const url = `${process.env.REACT_APP_BASE_URL}/minMaxValues/${props.title}`;
+            await axios.get(url)
+                .then((resp) => JSON.stringify(resp.data))
+                .then((data) => JSON.parse(data))
+                .then((jsonfiedData) => jsonfiedData['minMaxValues'])
+                .then((values) => setminMaxValues(values))    
+        }        
     };
 
     React.useEffect(
@@ -30,10 +32,7 @@ const MinDistanceRangeSlider = (props) => {
             if (_.isEqual(actualValues, []) && !_.isEqual(minMaxValues, [])) {
                 setActualValues(minMaxValues)
             }
-            // updateRequestBody()
-            // updateRangeValues(minMaxValues, 0)
-            // updateRangeValues(minMaxValues, 1)
-        }
+        }, [minMaxValues, actualValues, getMinMaxValues]
     )
 
     const updateRangeValues = (newValue, activeThumb) => {

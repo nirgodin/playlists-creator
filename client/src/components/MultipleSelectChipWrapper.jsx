@@ -11,7 +11,12 @@ export default function MultipleSelectChipWrapper(props) {
                     setBody={props.setBody}
                 ></MultipleSelectChip>
                 <div className="filter-checkbox">
-                    <FilterCheckbox label={props.checkboxLabel}></FilterCheckbox>
+                    <FilterCheckbox
+                        title={props.title}
+                        body={props.body}
+                        setBody={props.setBody}
+                        label={props.checkboxLabel}
+                    ></FilterCheckbox>
                 </div>
             </div>
         )

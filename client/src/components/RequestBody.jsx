@@ -1,6 +1,6 @@
-import MinDistanceRangeSlider from './MinDistanceRangeSlider';
 import MultipleSelectChipWrapper from './MultipleSelectChipWrapper';
 import RangeSliders from './RangeSliders';
+import SelectChips from './SelectChips';
 
 export default function RequestBody(props) {
     return <div>
@@ -9,20 +9,11 @@ export default function RequestBody(props) {
                 body={props.body}
                 setBody={props.setBody}
             ></RangeSliders>
-            <MultipleSelectChipWrapper
-                title={'Main Genre'}
+            <SelectChips
                 body={props.body}
                 setBody={props.setBody}
-                includesCheckbox={true}
-                checkboxLabel={'Include unkowns'}
-            ></MultipleSelectChipWrapper>
-            <MultipleSelectChipWrapper
-                title={'Language'}
-                body={props.body}
-                setBody={props.setBody}
-                includesCheckbox={true}
-                checkboxLabel={'Include unkowns'}
-            ></MultipleSelectChipWrapper>
+            ></SelectChips>
+            {/* <p>{JSON.stringify(props.body[0])}</p> */}
         </div>
     </div>
 }
