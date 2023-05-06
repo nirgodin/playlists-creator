@@ -41,7 +41,6 @@ class ColumnsDetailsCreator:
             column_values=column_details.values
         )
 
-
     def _generate_columns_details(self, data: DataFrame, relevant_columns: List[str]) -> Generator[ColumnDetails,
                                                                                                    None,
                                                                                                    None]:

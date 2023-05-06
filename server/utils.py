@@ -46,12 +46,12 @@ def get_column_min_max_values(column_name: str) -> List[float]:
 
 
 @lru_cache
-def get_column_possible_values(column_name: str) -> List[float]:
+def get_column_possible_values(column_name: str) -> List[str]:
     data = load_data()
     formatted_column_name = format_column_name(column_name)
     unique_values = data[formatted_column_name].unique().tolist()
 
-    return sorted([value for value in unique_values if not pd.isna(value)])
+    return sorted([str(value) for value in unique_values if not pd.isna(value)])
 
 
 def format_column_name(raw_column_name: str) -> str:

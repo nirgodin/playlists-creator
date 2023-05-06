@@ -53,7 +53,7 @@
 .filter-checkbox {
   vertical-align: bottom;
   padding-right: 30px;
-  padding-top: 27px;
+  padding-top: 8px;
   text-align: justify;
 }
 
@@ -114,9 +114,13 @@
 }
 
 .multiple-select-chip {
-  padding-top: 20px;
+  padding-bottom: 10px;
 }
 
 .back-to-main-page-button {
   padding-top: 30px;
+}
+
+.select-chips {
+  padding-bottom: 25px;
 }

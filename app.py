@@ -5,6 +5,7 @@ from flask_cors import CORS, cross_origin
 from flask_restful import Api
 
 from server.app_resources.configuration_resource import Configuration
+from server.app_resources.features_names_resource import FeaturesNames
 from server.app_resources.min_max_values_resource import MinMaxValues
 from server.app_resources.possible_values_resource import PossibleValues
 from server.app_resources.prompt_resource import Prompt
@@ -28,6 +29,7 @@ api.add_resource(Prompt, '/api/prompt')
 api.add_resource(MinMaxValues, '/api/minMaxValues/<string:column_name>')
 api.add_resource(PossibleValues, '/api/possibleValues/<string:column_name>')
 api.add_resource(RequestBody, '/api/requestBody')
+api.add_resource(FeaturesNames, '/api/featuresNames/<string:feature_type>')
 
 
 if __name__ == '__main__':
