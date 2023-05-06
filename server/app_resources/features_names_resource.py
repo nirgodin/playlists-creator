@@ -40,7 +40,7 @@ class FeaturesNames(Resource):
                 formatted_feature_name = self._format_feature_name(column.name)
                 features_names.append(formatted_feature_name)
 
-        return features_names
+        return sorted(features_names)
 
     @staticmethod
     def _format_feature_name(column_name: str) -> str:
