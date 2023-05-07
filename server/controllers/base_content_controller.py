@@ -1,5 +1,7 @@
+import json
 from abc import ABC
-from typing import Dict, List
+from http import HTTPStatus
+from typing import Dict, List, Optional
 
 from flask import jsonify, Response
 from flask_restful import Resource
@@ -19,30 +21,56 @@ class BaseContentController(Resource, ABC):
 
     def _generate_response(self, body: dict, query_conditions: List[QueryCondition]) -> Response:
         headers = self._build_spotify_headers(body)
+        if headers is None:
+            return self._build_authentication_failure_response()
+
+        uris = self._data_filterer.filter(query_conditions)
+        if not uris:
+            return self._build_no_content_response()
+
         playlist_details = body[PLAYLIST_DETAILS]
-        playlist_link = self._generate(query_conditions, headers, playlist_details)
-        res = {
+        playlist_link = self._playlists_creator.create(uris, headers, playlist_details)
+        response = {
             IS_SUCCESS: True,
             PLAYLIST_LINK: playlist_link
         }
-        response = jsonify(res)
 
-        return response
-
-    def _generate(self, query_conditions: List[QueryCondition], headers: Dict[str, str], playlist_details: dict) -> str:
-        filtered_data = self._data_filterer.filter(query_conditions)
-        uris = filtered_data[URI].tolist()
-        playlist_link = self._playlists_creator.create(uris, headers, playlist_details)
-
-        return playlist_link
+        return jsonify(response)
 
     @staticmethod
-    def _build_spotify_headers(body: dict) -> Dict[str, str]:
-        access_code = body[ACCESS_CODE]  # TODO: use .get instead
+    def _build_spotify_headers(body: dict) -> Optional[Dict[str, str]]:
+        access_code = body[ACCESS_CODE]
         bearer_token = AccessTokenGenerator.generate(access_code)
 
-        return {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {bearer_token}"
+        if bearer_token is not None:
+            return {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {bearer_token}"
+            }
+
+    @staticmethod
+    def _build_authentication_failure_response() -> Response:
+        response = {
+            IS_SUCCESS: False,
+            PLAYLIST_LINK: ''
         }
+
+        return Response(
+            response=json.dumps(response),
+            status=HTTPStatus.BAD_REQUEST,
+            mimetype='application/json'
+        )
+
+    @staticmethod
+    def _build_no_content_response() -> Response:
+        response = {
+            IS_SUCCESS: False,
+            PLAYLIST_LINK: ''
+        }
+
+        return Response(
+            response=json.dumps(response),
+            status=HTTPStatus.NO_CONTENT,
+            mimetype='application/json'
+        )

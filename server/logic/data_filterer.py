@@ -4,7 +4,7 @@ from typing import List
 import pandas as pd
 from pandas import DataFrame
 
-from server.consts.data_consts import DATA_PATH
+from server.consts.data_consts import DATA_PATH, URI
 from server.data.query_condition import QueryCondition
 
 
@@ -14,12 +14,13 @@ class DataFilterer:
         self._max_playlist_size = max_playlist_size
         self._data = pd.read_csv(DATA_PATH)
 
-    def filter(self, query_conditions: List[QueryCondition]) -> DataFrame:
+    def filter(self, query_conditions: List[QueryCondition]) -> List[str]:
         query = self._build_query(query_conditions)
         filtered_data = self._data.query(query).reset_index(drop=True)
         candidates_data = self._generate_candidates(filtered_data)
+        truncated_candidates_data = candidates_data.iloc[:self._max_playlist_size]
 
-        return candidates_data.iloc[:self._max_playlist_size]
+        return truncated_candidates_data[URI].tolist()
 
     def _generate_candidates(self, filtered_data: DataFrame) -> DataFrame:
         if filtered_data.empty:

@@ -1,6 +1,6 @@
 import base64
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 import requests
 
@@ -11,7 +11,7 @@ from server.data.spotify_grant_type import SpotifyGrantType
 
 class AccessTokenGenerator:
     @staticmethod
-    def generate(access_code: str) -> str:
+    def generate(access_code: str) -> Optional[str]:
         encoded_header = AccessTokenGenerator._get_encoded_header()
         headers = {'Authorization': f"Basic {encoded_header}"}
         data = AccessTokenGenerator._build_request_payload(access_code)
@@ -19,9 +19,11 @@ class AccessTokenGenerator:
             url=TOKEN_REQUEST_URL,
             headers=headers,
             data=data
-        ).json()
+        )
 
-        return response[ACCESS_TOKEN]
+        if response.status_code == 200:
+            jsonified_response = response.json()
+            return jsonified_response[ACCESS_TOKEN]
 
     @staticmethod
     def _get_encoded_header() -> str:
