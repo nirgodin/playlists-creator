@@ -4,12 +4,12 @@ from flask import Flask, send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_restful import Api
 
-from server.app_resources.configuration_resource import Configuration
-from server.app_resources.features_names_resource import FeaturesNames
-from server.app_resources.min_max_values_resource import MinMaxValues
-from server.app_resources.possible_values_resource import PossibleValues
-from server.app_resources.prompt_resource import Prompt
-from server.app_resources.request_body_resource import RequestBody
+from server.controllers.configuration_controller import ConfigurationController
+from server.controllers.features_names_controller import FeaturesNamesController
+from server.controllers.min_max_values_controller import MinMaxValuesController
+from server.controllers.possible_values_controller import PossibleValuesController
+from server.controllers.prompt_controller import PromptController
+from server.controllers.request_body_controller import RequestBodyController
 from server.consts.env_consts import SPOTIPY_CLIENT_SECRET
 
 app = Flask(__name__, static_folder='client/build', static_url_path='')
@@ -24,12 +24,12 @@ def serve():
     return send_from_directory(app.static_folder, 'index.html')
 
 
-api.add_resource(Configuration, '/api/configuration')
-api.add_resource(Prompt, '/api/prompt')
-api.add_resource(MinMaxValues, '/api/minMaxValues/<string:column_name>')
-api.add_resource(PossibleValues, '/api/possibleValues/<string:column_name>')
-api.add_resource(RequestBody, '/api/requestBody')
-api.add_resource(FeaturesNames, '/api/featuresNames/<string:feature_type>')
+api.add_resource(ConfigurationController, '/api/configuration')
+api.add_resource(PromptController, '/api/prompt')
+api.add_resource(MinMaxValuesController, '/api/minMaxValues/<string:column_name>')
+api.add_resource(PossibleValuesController, '/api/possibleValues/<string:column_name>')
+api.add_resource(RequestBodyController, '/api/requestBody')
+api.add_resource(FeaturesNamesController, '/api/featuresNames/<string:feature_type>')
 
 
 if __name__ == '__main__':

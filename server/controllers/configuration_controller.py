@@ -5,7 +5,7 @@ from server.logic.parameters_transformer import ParametersTransformer
 from server.utils import generate_response
 
 
-class Configuration(Resource):
+class ConfigurationController(Resource):
     def post(self) -> Response:
         body = request.get_json()
         query_conditions = ParametersTransformer().transform(body)

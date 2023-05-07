@@ -6,7 +6,7 @@ from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.utils import generate_response
 
 
-class Prompt(Resource):
+class PromptController(Resource):
     def __init__(self):
         self._openai_adapter = OpenAIAdapter()
 

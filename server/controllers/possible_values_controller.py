@@ -1,13 +1,13 @@
 from flask import Response, jsonify
 from flask_restful import Resource
 
-from server.utils import get_column_min_max_values
+from server.utils import get_column_possible_values
 
 
-class MinMaxValues(Resource):
+class PossibleValuesController(Resource):
     def get(self, column_name: str) -> Response:
         res = {
-            'minMaxValues': get_column_min_max_values(column_name)
+            'possibleValues': get_column_possible_values(column_name)
         }
         response = jsonify(res)
 

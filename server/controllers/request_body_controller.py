@@ -10,7 +10,7 @@ from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
 from server.utils import load_data
 
 
-class RequestBody(Resource):
+class RequestBodyController(Resource):
     def __init__(self):
         self._columns_details_creator = ColumnsDetailsCreator()
 
