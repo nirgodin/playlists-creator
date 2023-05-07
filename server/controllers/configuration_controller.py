@@ -1,13 +1,15 @@
 from flask import Response, request
-from flask_restful import Resource
 
+from server.controllers.base_content_controller import BaseContentController
 from server.logic.parameters_transformer import ParametersTransformer
-from server.utils import generate_response
 
 
-class ConfigurationController(Resource):
+class ConfigurationController(BaseContentController):
+    def __init__(self):
+        super().__init__()
+
     def post(self) -> Response:
         body = request.get_json()
         query_conditions = ParametersTransformer().transform(body)
 
-        return generate_response(body, query_conditions)
+        return self._generate_response(body, query_conditions)

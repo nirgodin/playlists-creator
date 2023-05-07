@@ -5,12 +5,10 @@ import requests
 from server.consts.api_consts import CREATE_PLAYLIST_URL_FORMAT, ADD_PLAYLIST_ITEMS_URL_FORMAT, USER_PROFILE_URL, ID, \
     PLAYLIST_LINK_FORMAT, NAME, DESCRIPTION, PUBLIC
 from server.consts.app_consts import PLAYLIST_NAME, PLAYLIST_DESCRIPTION, IS_PUBLIC
-from server.logic.access_token_generator import AccessTokenGenerator
 
 
 class PlaylistsCreator:
-    def create(self, uris: List[str], access_code: str, playlist_details: dict) -> str:
-        headers = self._build_spotify_headers(access_code)
+    def create(self, uris: List[str], headers: Dict[str, str], playlist_details: dict) -> str:
         playlist_id = self._create_playlist(playlist_details, headers)
         valid_uris = [uri for uri in uris if isinstance(uri, str)]
         self._add_playlist_items(playlist_id, valid_uris, headers)
@@ -44,12 +42,3 @@ class PlaylistsCreator:
         }
         raw_response = requests.post(url=url, json=body, headers=headers)
         response = raw_response.json()
-
-    @staticmethod
-    def _build_spotify_headers(access_code: str) -> Dict[str, str]:
-        bearer_token = AccessTokenGenerator.generate(access_code)
-        return {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {bearer_token}"
-        }
