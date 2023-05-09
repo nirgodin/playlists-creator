@@ -1,10 +1,16 @@
-import * as React from 'react';
+import { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 import axios from 'axios'
 
 export default function SendButton(props) {
-    const [isClicked, setIsClicked] = React.useState(false)
-    const url = `${process.env.REACT_APP_BASE_URL}/${props.endpoint}`
+    const [isClicked, setIsClicked] = useState(true);
+    const url = `${process.env.REACT_APP_BASE_URL}/${props.endpoint}`;
+
+    useEffect(
+        () => {
+            setIsClicked(!props.isValidInput)
+        }, [props.isValidInput]
+    )
 
     const sendPlaylistCreationRequest = async () => {
         await axios.post(url, props.body)

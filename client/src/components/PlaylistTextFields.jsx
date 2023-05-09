@@ -22,6 +22,8 @@ export default function PlaylistTextFields(props) {
                         defaultValue={''}
                         body={props.body}
                         setBody={props.setBody}
+                        isValidInput={props.isValidPlaylistName}
+                        setIsValidInput={props.setIsValidPlaylistName}
                     ></FormTextField>
                     <FormTextField
                         isRequired={false}

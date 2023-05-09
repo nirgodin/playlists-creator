@@ -1,9 +1,24 @@
 import TextField from '@mui/material/TextField';
 import { toCamelCase } from '../utils/StringUtils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function FormTextField(props) {
     const [value, setValue] = useState(props.defaultValue)
+    const [isError, setIsError] = useState(false)
+    const [helperText, setHelperText] = useState('')
+
+    useEffect(
+        () => {
+            if (props.isRequired) {
+                const validInput = (value === '') ? false : true;
+                props.setIsValidInput(validInput);
+                setIsError(!validInput); 
+                const text = (isError) ? 'This field is required' : '';
+                setHelperText(text);
+            }
+        }, [props, value, isError]
+    )
+
     const handleChange = (event) => {
         setValue(event.target.value);
         const newBody = props.body[0];
@@ -12,8 +27,6 @@ export default function FormTextField(props) {
         props.setBody([newBody]);
     }
 
-    const isError = (props.isRequired && value === '') ? true : false
-    const helperText = (isError) ? 'This field is required' : ''
     return <TextField
         inputProps={{ style: { color: "white" } }}
         multiline={true}

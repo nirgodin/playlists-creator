@@ -2,18 +2,34 @@ import MethodToggleButton from ".././components/MethodToggleButton"
 import { Box } from "@mui/material"
 import FormTextField from ".././components/FormTextField"
 import SendButton from ".././components/SendButton"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import RequestBody from ".././components/RequestBody"
 import PlaylistTextFields from ".././components/PlaylistTextFields"
 
 export default function LandingPage(props) {
     const [alignment, setAlignment] = useState('prompt');
     const endpoint = alignment === 'prompt' ? 'prompt' : 'configuration'
+    const [isValidInput, setIsValidInput] = useState(false)
+    const [isValidPrompt, setIsValidPrompt] = useState(false)
+    const [isValidPlaylistName, setIsValidPlaylistName] = useState(false)
+
+    useEffect(
+        () => {
+            if (endpoint === 'prompt') {
+                const isValid = (isValidPrompt && isValidPlaylistName);
+                setIsValidInput(isValid);
+            } else {
+                setIsValidInput(isValidPlaylistName);
+            }
+        }, [endpoint, isValidPrompt, isValidPlaylistName]
+    )
 
     const playlistDetails = <div className='playlist-details'>
         <PlaylistTextFields
             body={props.body}
             setBody={props.setBody}
+            isValidPlaylistName={isValidPlaylistName}
+            setIsValidPlaylistName={setIsValidPlaylistName}
         ></PlaylistTextFields>
     </div>
 
@@ -34,6 +50,7 @@ export default function LandingPage(props) {
                 setIsSuccessfull={props.setIsSuccessfull}
                 setIsError={props.setIsError}
                 setPlaylistLink={props.setPlaylistLink}
+                isValidInput={isValidInput}
             ></SendButton>
         </Box>
     </div>
@@ -52,6 +69,8 @@ export default function LandingPage(props) {
                             defaultValue={''}
                             body={props.body}
                             setBody={props.setBody}
+                            isValidInput={isValidPrompt}
+                            setIsValidInput={setIsValidPrompt}
                         ></FormTextField>
                     </div>
                     {buttons}
