@@ -45,14 +45,18 @@ export default function LandingPage(props) {
             <SendButton
                 text={'Create Playlist'}
                 endpoint={endpoint}
-                body={props.body[0]}
+                body={props.body}
+                setBody={props.setBody}
+                accessCode={props.accessCode}
+                defaultRequestBody={props.defaultRequestBody}
                 setWasRequestSent={props.setWasRequestSent}
                 setIsSuccessfull={props.setIsSuccessfull}
-                setIsError={props.setIsError}
+                setErrorMessage={props.setErrorMessage}
                 setPlaylistLink={props.setPlaylistLink}
                 isValidInput={isValidInput}
             ></SendButton>
         </Box>
+        <p className="skew-y-shaking" key={props.errorMessage}>{props.errorMessage}</p>
     </div>
 
     if (alignment === 'prompt') {

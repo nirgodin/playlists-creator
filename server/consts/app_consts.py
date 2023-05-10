@@ -1,6 +1,7 @@
 PLAYLIST_DETAILS = 'playlistDetails'
 ACCESS_CODE = 'accessCode'
 IS_SUCCESS = 'isSuccess'
+MESSAGE = 'message'
 PLAYLIST_LINK = 'playlistLink'
 PROMPT = 'prompt'
 FILTER_PARAMS = 'filterParams'

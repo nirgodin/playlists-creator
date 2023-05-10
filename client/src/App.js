@@ -2,26 +2,26 @@ import './App.css';
 import React, { useEffect } from 'react';
 import Navigator from './Navigator'
 import { useState } from 'react';
-import axios from 'axios'
-import _ from 'underscore'
+import _ from 'underscore';
 import LoadingSpinner from './components/LoadingSpinner';
+import { getDefaultRequestBody } from './utils/RequestsUtils'
 
 function App() {
-  const [body, setBody] = useState([])
+  const [body, setBody] = useState([]);
+  const [defaultRequestBody, setDefaultRequestBody] = useState([]);
 
-  const getDefaultRequestBody = async () => {
-    const url = `${process.env.REACT_APP_BASE_URL}/requestBody`;
-    await axios.get(url)
-      .then((resp) => JSON.stringify(resp.data))
-      .then((data) => JSON.parse(data))
-      .then((jsonfiedData) => jsonfiedData['requestBody'])
-      .then((requestBody) => setBody(requestBody))
+  async function setRequestBody() {
+    const requestBody = await getDefaultRequestBody();
+    const clonedRequestBody = JSON.parse(JSON.stringify(requestBody));
+    setDefaultRequestBody(clonedRequestBody);
+    const secondClonedRequestBody = JSON.parse(JSON.stringify(requestBody));
+    setBody(Array.from(secondClonedRequestBody));
   };
 
   useEffect(
     () => {
-      if (_.isEqual(body, [])) {
-        getDefaultRequestBody()
+      if (_.isEqual(body, []) || _.isEqual(defaultRequestBody, [])) {
+        setRequestBody()
       }
     }
   )
@@ -41,6 +41,7 @@ function App() {
           <Navigator
             body={body}
             setBody={setBody}
+            defaultRequestBody={defaultRequestBody}
           ></Navigator>
         </header>
       </div>

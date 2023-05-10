@@ -6,7 +6,7 @@ from typing import Dict, List, Optional
 from flask import jsonify, Response
 from flask_restful import Resource
 
-from server.consts.app_consts import ACCESS_CODE, IS_SUCCESS, PLAYLIST_LINK, PLAYLIST_DETAILS
+from server.consts.app_consts import ACCESS_CODE, IS_SUCCESS, PLAYLIST_LINK, PLAYLIST_DETAILS, MESSAGE
 from server.consts.data_consts import URI
 from server.data.query_condition import QueryCondition
 from server.logic.access_token_generator import AccessTokenGenerator
@@ -53,24 +53,16 @@ class BaseContentController(Resource, ABC):
     def _build_authentication_failure_response() -> Response:
         response = {
             IS_SUCCESS: False,
-            PLAYLIST_LINK: ''
+            MESSAGE: 'Could no authenticate your login details. Please re-enter and try again'
         }
 
-        return Response(
-            response=json.dumps(response),
-            status=HTTPStatus.BAD_REQUEST,
-            mimetype='application/json'
-        )
+        return jsonify(response)
 
     @staticmethod
     def _build_no_content_response() -> Response:
         response = {
             IS_SUCCESS: False,
-            PLAYLIST_LINK: ''
+            MESSAGE: 'Could not find any tracks that satisfy your request. Please retry another query'
         }
 
-        return Response(
-            response=json.dumps(response),
-            status=HTTPStatus.NO_CONTENT,
-            mimetype='application/json'
-        )
+        return jsonify(response)

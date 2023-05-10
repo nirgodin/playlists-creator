@@ -3,48 +3,55 @@ import LandingPage from "./pages/LandingPage";
 import PostSendPage from "./pages/PostSendPage";
 import { isLoggedIn, extractCode } from "./utils/UrlUtils";
 import LoginPage from "./pages/LoginPage";
-import ErrorPage from "./pages/ErrorPage";
+import LoadingSpinner from './components/LoadingSpinner';
+
 
 export default function Navigator(props) {
-    const [wasRequestSent, setWasRequestSent] = useState(false)
-    const [isSuccessfull, setIsSuccessfull] = useState(false)
-    const [isError, setIsError] = useState(false)
-    const [playlistLink, setPlaylistLink] = useState('')
+    const [wasRequestSent, setWasRequestSent] = useState(false);
+    const [isSuccessfull, setIsSuccessfull] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [playlistLink, setPlaylistLink] = useState('');
+    const [accessCode, setAccessCode] = useState('')
 
     useEffect(
         () => {
-            if (isLoggedIn()) {
-                let newBody = props.body[0]
-                newBody['accessCode'] = extractCode(window.location.href);
+            if (isLoggedIn() && accessCode === '') {
+                let newBody = props.body[0];
+                const extractedAccessCode = extractCode(window.location.href);
+                newBody['accessCode'] = extractedAccessCode;
                 props.setBody([newBody]);
+                setAccessCode(extractedAccessCode);
             }
-        }, [props]
+        }, [props, accessCode]
     )
 
     if (!isLoggedIn()) {
-        return <LoginPage
-            body={props.body}
-            setBody={props.setBody}
-        ></LoginPage>
-    } else if (!wasRequestSent) {
+        return (
+            <div>
+                <LoginPage
+                    body={props.body}
+                    setBody={props.setBody}
+                    errorMessage={errorMessage}
+                ></LoginPage>
+            </div>
+        )
+    } else if (!wasRequestSent || errorMessage !== '') {
         return (
             <div>
                 <LandingPage
                     body={props.body}
                     setBody={props.setBody}
+                    defaultRequestBody={props.defaultRequestBody}
+                    accessCode={accessCode}
                     setWasRequestSent={setWasRequestSent}
                     setIsSuccessfull={setIsSuccessfull}
-                    setIsError={setIsError}
+                    errorMessage={errorMessage}
+                    setErrorMessage={setErrorMessage}
                     setPlaylistLink={setPlaylistLink}
                 ></LandingPage>
-                {/* <p>{JSON.stringify(props.body[0])}</p> */}
             </div>
         )
-    } else if (isError) {
-        return (
-            <ErrorPage></ErrorPage>
-        )
-    } else {
+    } else if (isSuccessfull) {
         return (
             <PostSendPage
                 isSuccessfull={isSuccessfull}
@@ -52,5 +59,7 @@ export default function Navigator(props) {
                 playlistLink={playlistLink}
             ></PostSendPage>
         )
+    } else {
+        return <LoadingSpinner></LoadingSpinner>
     }
 }

@@ -1,5 +1,6 @@
 import base64
 import os
+from functools import lru_cache
 from typing import Dict, Optional
 
 import requests
@@ -11,6 +12,7 @@ from server.data.spotify_grant_type import SpotifyGrantType
 
 class AccessTokenGenerator:
     @staticmethod
+    @lru_cache
     def generate(access_code: str) -> Optional[str]:
         encoded_header = AccessTokenGenerator._get_encoded_header()
         headers = {'Authorization': f"Basic {encoded_header}"}
