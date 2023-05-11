@@ -21,7 +21,7 @@ class ColumnsDetailsCreator:
             column_description = self._build_single_column_description(column_details)
             columns_descriptions.append(column_description)
 
-        return '/n'.join(columns_descriptions)
+        return ''.join(columns_descriptions)
 
     def get_relevant_columns_details(self, data: DataFrame) -> Generator[ColumnDetails, None, None]:
         relevant_columns = []
