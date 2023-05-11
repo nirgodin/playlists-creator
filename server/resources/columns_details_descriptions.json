@@ -15,7 +15,7 @@
     "explicit": "Whether or not the track has explicit lyrics ( true = yes it does; false = no it does not OR unknown).",
     "album_tracks_number": "The number of tracks in the album.",
     "is_israeli": "A boolean value indicating whether the track is performed by an Israeli artist.",
-    "mode": "mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived. Major is represented by 1 and minor is 0.",
+    "mode": "mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived.",
     "tempo": "The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.",
     "time_signature": "An estimated time signature. The time signature (meter) is a notational convention to specify how many beats are in each bar (or measure). The time signature ranges from 3 to 7 indicating time signatures of \"3/4\", to \"7/4\".",
     "popularity": "The popularity of a track is a value between 0 and 100, with 100 being the most popular. The popularity is calculated by algorithm and is based, in the most part, on the total number of plays the track has had and how recent those plays are.\nGenerally speaking, songs that are being played a lot now will have a higher popularity than songs that were played a lot in the past. Duplicate tracks (e.g. the same track from a single and an album) are rated independently. Artist and album popularity is derived mathematically from track popularity.",
