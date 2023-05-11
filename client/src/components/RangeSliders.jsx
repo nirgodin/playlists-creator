@@ -1,4 +1,4 @@
-import MinDistanceRangeSlider from "./MinDistanceRangeSlider"
+import MinDistanceRangeSliderWrapper from "./MinDistanceRangeSliderWrapper";
 import _ from "underscore";
 import axios from "axios";
 import { useState, useEffect } from "react"
@@ -24,13 +24,16 @@ export default function RangeSliders(props) {
     )
 
     const toRangeSliders = () => {
-        return featuresNames.map(
-            featureName => <MinDistanceRangeSlider
-                title={featureName}
-                body={props.body}
-                setBody={props.setBody}
-            ></MinDistanceRangeSlider>
-        )
+        if (!_.isEqual(featuresNames, [])) {
+            return featuresNames.map(
+                featureName => <MinDistanceRangeSliderWrapper
+                    title={featureName}
+                    body={props.body}
+                    setBody={props.setBody}
+                    featuresDescriptions={props.featuresDescriptions}
+                ></MinDistanceRangeSliderWrapper>
+            )
+        }
     }
 
     return <div className="range-sliders">

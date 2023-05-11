@@ -123,7 +123,6 @@
 
 .select-chips {
   padding-bottom: 25px;
-  float:left;
 }
 
 @keyframes skew-y-shakeing{
@@ -144,4 +143,12 @@
 .info-tooltip {
   padding-top: 10px;
   padding-right: 3px;
+}
+
+.range-slider {
+  padding-left: 10px;
+}
+
+.range-slider-tooltip {
+  padding-top: 16px;
 }

@@ -20,8 +20,8 @@ const MinDistanceRangeSlider = (props) => {
                 .then((resp) => JSON.stringify(resp.data))
                 .then((data) => JSON.parse(data))
                 .then((jsonfiedData) => jsonfiedData['minMaxValues'])
-                .then((values) => setminMaxValues(values))    
-        }        
+                .then((values) => setminMaxValues(values))
+        }
     };
 
     React.useEffect(
@@ -66,7 +66,7 @@ const MinDistanceRangeSlider = (props) => {
 
     return (
         <div className='range-slider'>
-            <Box sx={{ width: 200 }}>
+            <Box sx={{ width: 180 }}>
                 <Typography gutterBottom>{props.title}</Typography>
                 <Slider
                     min={minMaxValues[0]}
