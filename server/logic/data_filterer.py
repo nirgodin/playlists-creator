@@ -18,20 +18,18 @@ class DataFilterer:
         query = self._build_query(query_conditions)
         filtered_data = self._data.query(query).reset_index(drop=True)
         candidates_data = self._generate_candidates(filtered_data)
-        truncated_candidates_data = candidates_data.iloc[:self._max_playlist_size]
 
-        return truncated_candidates_data[URI].tolist()
+        return candidates_data[URI].tolist()
 
     def _generate_candidates(self, filtered_data: DataFrame) -> DataFrame:
         if filtered_data.empty:
             return filtered_data
 
-        max_candidates = len(filtered_data)
-        candidates_indexes = [random.randint(0, max_candidates) for i in range(max_candidates)]
-        candidates = self._data.iloc[candidates_indexes]
-        candidates.reset_index(drop=True, inplace=True)
+        n_candidates = len(filtered_data)
+        n_selected_candidates = min(self._max_playlist_size, n_candidates)
+        candidates_indexes = random.sample(range(0, n_candidates), n_selected_candidates)
 
-        return candidates
+        return self._data.iloc[candidates_indexes]
 
     @staticmethod
     def _build_query(query_conditions: List[QueryCondition]) -> str:
