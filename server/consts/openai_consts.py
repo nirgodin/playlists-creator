@@ -1,4 +1,5 @@
-from server.consts.data_consts import SONG, URI, NAME, ARTIST_NAME, GENRES, MAIN_ALBUM
+from server.consts.data_consts import SONG, URI, NAME, ARTIST_NAME, GENRES, MAIN_ALBUM, ALBUM_TRACKS_NUMBER, \
+    TRACK_NUMBER
 
 PROMPT_PREFIX_FORMAT = """\
 In this task you should help serialize free texts inputs that describes the characteristics of a Spotify playlist, to \
@@ -83,7 +84,9 @@ EXCLUDED_COLUMNS = [
     ARTIST_NAME,
     URI,
     GENRES,
-    MAIN_ALBUM
+    MAIN_ALBUM,
+    ALBUM_TRACKS_NUMBER,
+    TRACK_NUMBER
 ]
 IN_OPERATOR = 'in'
 NUMERIC_OPERATORS = '< or >'
