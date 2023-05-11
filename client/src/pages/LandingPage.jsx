@@ -5,17 +5,18 @@ import SendButton from ".././components/SendButton"
 import { useState, useEffect } from "react"
 import RequestBody from ".././components/RequestBody"
 import PlaylistTextFields from ".././components/PlaylistTextFields"
+import { PROMPT, CONFIGURATION } from "../consts"
 
 export default function LandingPage(props) {
-    const [alignment, setAlignment] = useState('prompt');
-    const endpoint = alignment === 'prompt' ? 'prompt' : 'configuration'
+    const [alignment, setAlignment] = useState(PROMPT);
+    const endpoint = alignment === PROMPT ? PROMPT : CONFIGURATION
     const [isValidInput, setIsValidInput] = useState(false)
     const [isValidPrompt, setIsValidPrompt] = useState(false)
     const [isValidPlaylistName, setIsValidPlaylistName] = useState(false)
 
     useEffect(
         () => {
-            if (endpoint === 'prompt') {
+            if (endpoint === PROMPT) {
                 const isValid = (isValidPrompt && isValidPlaylistName);
                 setIsValidInput(isValid);
             } else {
@@ -59,7 +60,7 @@ export default function LandingPage(props) {
         <p className="skew-y-shaking" key={props.errorMessage}>{props.errorMessage}</p>
     </div>
 
-    if (alignment === 'prompt') {
+    if (alignment === PROMPT) {
         return (
             <div>
                 {playlistDetails}
@@ -68,7 +69,7 @@ export default function LandingPage(props) {
                     <div className="text-field">
                         <FormTextField
                             isRequired={true}
-                            id={'prompt'}
+                            id={PROMPT}
                             label={"Prompt"}
                             defaultValue={''}
                             body={props.body}

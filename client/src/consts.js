@@ -1,13 +1,39 @@
-const languageLabels = [
-    'EN',
-    'HE',
-    'FR'
-];
+const PROMPT = 'prompt';
+const CONFIGURATION = 'configuration';
+const FILTER_PARAMS = 'filterParams';
+const INCLUDE_NAN = 'includeNan';
+const PLAYLIST_DETAILS = 'playlistDetails';
+const MIN = 'min';
+const MAX = 'max';
+const VALUE = 'value';
+const IS_PUBLIC = 'isPublic';
+const IS_SUCCESS = 'isSuccess';
+const PLAYLIST_LINK = 'playlistLink';
+const MESSAGE = 'message';
+const ACCESS_CODE = 'accessCode';
 
-const genreLabels = [
-    'Hip Hop',
-    'Rock',
-    'Pop'
-];
+// Endpoints
+const MIN_MAX_VALUES = 'minMaxValues';
+const POSSIBLE_VALUES = 'possibleValues';
+const FEATURES_NAMES = 'featuresNames';
+const FEATURES_DESCRIPTIONS = 'featuresDescriptions';
 
-export {languageLabels, genreLabels};
+export {
+    PROMPT,
+    CONFIGURATION,
+    FILTER_PARAMS,
+    INCLUDE_NAN,
+    PLAYLIST_DETAILS,
+    MIN,
+    MAX,
+    MIN_MAX_VALUES,
+    POSSIBLE_VALUES,
+    VALUE,
+    IS_PUBLIC,
+    FEATURES_NAMES,
+    FEATURES_DESCRIPTIONS,
+    IS_SUCCESS,
+    PLAYLIST_LINK,
+    MESSAGE,
+    ACCESS_CODE
+};

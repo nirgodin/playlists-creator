@@ -9,6 +9,7 @@ import Chip from '@mui/material/Chip';
 import { toCamelCase } from '../utils/StringUtils';
 import axios from 'axios'
 import _ from 'underscore'
+import { FILTER_PARAMS, POSSIBLE_VALUES, VALUE } from '../consts';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -27,11 +28,11 @@ export default function MultipleSelectChip(props) {
     const [possibleValues, setPossibleValues] = React.useState([])
 
     const getPossibleValues = async () => {
-        const url = `${process.env.REACT_APP_BASE_URL}/possibleValues/${props.title}`;
+        const url = `${process.env.REACT_APP_BASE_URL}/${POSSIBLE_VALUES}/${props.title}`;
         await axios.get(url)
             .then((resp) => JSON.stringify(resp.data))
             .then((data) => JSON.parse(data))
-            .then((jsonfiedData) => jsonfiedData['possibleValues'])
+            .then((jsonfiedData) => jsonfiedData[POSSIBLE_VALUES])
             .then((values) => setPossibleValues(values))
     };
 
@@ -44,7 +45,7 @@ export default function MultipleSelectChip(props) {
             }
             let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
             const camelCasedTitle = toCamelCase(props.title)
-            newBody['filterParams'][camelCasedTitle]['value'] = selectedOptions;
+            newBody[FILTER_PARAMS][camelCasedTitle][VALUE] = selectedOptions;
             props.setBody([newBody]);
         }
     )

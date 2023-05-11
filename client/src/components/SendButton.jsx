@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 import axios from 'axios'
+import { ACCESS_CODE, IS_SUCCESS, MESSAGE, PLAYLIST_LINK } from "../consts";
 
 export default function SendButton(props) {
     const [isClicked, setIsClicked] = useState(true);
@@ -22,18 +23,18 @@ export default function SendButton(props) {
     };
 
     const handleResponse = (jsonfiedData) => {
-        const isSuccess = jsonfiedData['isSuccess'];
+        const isSuccess = jsonfiedData[IS_SUCCESS];
 
         if (isSuccess) {
-            const playlistLink = jsonfiedData['playlistLink'];
+            const playlistLink = jsonfiedData[PLAYLIST_LINK];
             props.setPlaylistLink(playlistLink);
         } else {
-            const errorMessage = jsonfiedData['message'];
+            const errorMessage = jsonfiedData[MESSAGE];
             props.setErrorMessage(errorMessage);
         }
 
         const newRequestBody = JSON.parse(JSON.stringify(props.defaultRequestBody));
-        newRequestBody[0]['accessCode'] = props.accessCode;
+        newRequestBody[0][ACCESS_CODE] = props.accessCode;
         props.setBody(newRequestBody);
         props.setIsSuccessfull(isSuccess);
         setIsClicked(false);

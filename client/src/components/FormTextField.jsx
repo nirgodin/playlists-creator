@@ -1,6 +1,7 @@
 import TextField from '@mui/material/TextField';
 import { toCamelCase } from '../utils/StringUtils';
 import { useState, useEffect } from 'react';
+import { PLAYLIST_DETAILS } from '../consts';
 
 export default function FormTextField(props) {
     const [value, setValue] = useState(props.defaultValue)
@@ -23,7 +24,7 @@ export default function FormTextField(props) {
         setValue(event.target.value);
         const newBody = props.body[0];
         const bodyKey = toCamelCase(props.label);
-        newBody['playlistDetails'][bodyKey] = event.target.value;
+        newBody[PLAYLIST_DETAILS][bodyKey] = event.target.value;
         props.setBody([newBody]);
     }
 

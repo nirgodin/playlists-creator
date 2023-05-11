@@ -76,10 +76,6 @@
   padding-left: 15px;
 }
 
-.data-section {
-  padding-right: 220px;
-}
-
 @keyframes spinner {
   0% {
     transform: rotate(0deg);

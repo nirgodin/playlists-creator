@@ -5,21 +5,22 @@ import { Slider } from "@mui/material";
 import axios from 'axios'
 import _ from 'underscore'
 import { toCamelCase } from '../utils/StringUtils';
+import {MIN, MAX, MIN_MAX_VALUES, FILTER_PARAMS, VALUE} from '../consts'
 
 const MinDistanceRangeSlider = (props) => {
     const [minMaxValues, setminMaxValues] = useState([]);
     const [actualValues, setActualValues] = useState([]);
     const [minDistance, setMinDistance] = useState(0);
-    const minTitleValue = toCamelCase(`min ${props.title}`);
-    const maxTitleValue = toCamelCase(`max ${props.title}`);
+    const minTitleValue = toCamelCase(`${MIN} ${props.title}`);
+    const maxTitleValue = toCamelCase(`${MAX} ${props.title}`);
 
     const getMinMaxValues = async () => {
         if (_.isEqual(minMaxValues, [])) {
-            const url = `${process.env.REACT_APP_BASE_URL}/minMaxValues/${props.title}`;
+            const url = `${process.env.REACT_APP_BASE_URL}/${MIN_MAX_VALUES}/${props.title}`;
             await axios.get(url)
                 .then((resp) => JSON.stringify(resp.data))
                 .then((data) => JSON.parse(data))
-                .then((jsonfiedData) => jsonfiedData['minMaxValues'])
+                .then((jsonfiedData) => jsonfiedData[MIN_MAX_VALUES])
                 .then((values) => setminMaxValues(values))
         }
     };
@@ -54,8 +55,8 @@ const MinDistanceRangeSlider = (props) => {
 
     const updateRequestBody = () => {
         let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
-        newBody['filterParams'][minTitleValue]['value'] = actualValues[0];
-        newBody['filterParams'][maxTitleValue]['value'] = actualValues[1];
+        newBody[FILTER_PARAMS][minTitleValue][VALUE] = actualValues[0];
+        newBody[FILTER_PARAMS][maxTitleValue][VALUE] = actualValues[1];
         props.setBody([newBody]);
     }
 

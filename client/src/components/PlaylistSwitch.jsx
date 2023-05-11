@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Switch from '@mui/material/Switch';
 import { FormGroup, FormControlLabel } from '@mui/material';
+import { PLAYLIST_DETAILS } from '../consts';
 
 export default function PlaylistSwitch(props) {
     const [label, setLabel] = React.useState('Make playlist public');
@@ -9,7 +10,7 @@ export default function PlaylistSwitch(props) {
     const handleChange = (event) => {
         setChecked(event.target.checked);
         let newBody = props.body[0];
-        newBody['playlistDetails']['isPublic'] = event.target.checked;
+        newBody[PLAYLIST_DETAILS]['isPublic'] = event.target.checked;
         props.setBody([newBody]);
 
         event.target.checked ? setLabel('Make playlist private') : setLabel('Make playlist public')

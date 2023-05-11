@@ -2,16 +2,17 @@ import MinDistanceRangeSliderWrapper from "./MinDistanceRangeSliderWrapper";
 import _ from "underscore";
 import axios from "axios";
 import { useState, useEffect } from "react"
+import { FEATURES_NAMES, MIN_MAX_VALUES } from "../consts";
 
 export default function RangeSliders(props) {
     const [featuresNames, setFeaturesNames] = useState([])
 
     async function getFeaturesNames() {
-        const url = `${process.env.REACT_APP_BASE_URL}/featuresNames/minMaxValues`;
+        const url = `${process.env.REACT_APP_BASE_URL}/${FEATURES_NAMES}/${MIN_MAX_VALUES}`;
         await axios.get(url)
             .then((resp) => JSON.stringify(resp.data))
             .then((data) => JSON.parse(data))
-            .then((jsonfiedData) => jsonfiedData['featuresNames'])
+            .then((jsonfiedData) => jsonfiedData[FEATURES_NAMES])
             .then((featuresNames) => setFeaturesNames(featuresNames))
     }
 
