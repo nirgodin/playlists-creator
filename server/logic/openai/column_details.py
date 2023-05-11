@@ -8,3 +8,4 @@ class ColumnDetails:
     name: str
     operator: str
     values: List[str]
+    description: str

@@ -1,10 +1,12 @@
+import json
 from functools import lru_cache
-from typing import List, Generator
+from typing import List, Generator, Dict
 
 from numpy import dtype
 from pandas import DataFrame
 from pandas.core.dtypes.common import is_string_dtype, is_bool_dtype
 
+from server.consts.data_consts import COLUMNS_DESCRIPTIONS_PATH
 from server.consts.openai_consts import EXCLUDED_COLUMNS, IN_OPERATOR, NUMERIC_OPERATORS, \
     SINGLE_COLUMN_DESCRIPTION_FORMAT
 from server.logic.openai.column_details import ColumnDetails
@@ -38,7 +40,8 @@ class ColumnsDetailsCreator:
             column_index=column_details.index + 1,
             column_name=column_details.name,
             column_operator=column_details.operator,
-            column_values=column_details.values
+            column_values=column_details.values,
+            column_description=column_details.description
         )
 
     def _generate_columns_details(self, data: DataFrame, relevant_columns: List[str]) -> Generator[ColumnDetails,
@@ -53,7 +56,8 @@ class ColumnsDetailsCreator:
                 index=column_index,
                 name=column_name,
                 operator=column_operator,
-                values=column_values
+                values=column_values,
+                description=self._columns_descriptions[column_name]
             )
 
     @staticmethod
@@ -71,3 +75,8 @@ class ColumnsDetailsCreator:
 
         else:
             return get_column_min_max_values(column_name)
+
+    @property
+    def _columns_descriptions(self) -> Dict[str, str]:
+        with open(COLUMNS_DESCRIPTIONS_PATH, 'r') as f:
+            return json.load(f)

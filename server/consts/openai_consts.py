@@ -92,5 +92,6 @@ SINGLE_COLUMN_DESCRIPTION_FORMAT = """\
 ---
 operator: {column_operator}
 values: {column_values}
+description: {column_description}
 ---
 """
