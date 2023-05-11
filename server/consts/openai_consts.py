@@ -5,8 +5,8 @@ PROMPT_PREFIX_FORMAT = """\
 In this task you should help serialize free texts inputs that describes the characteristics of a Spotify playlist, to \
 a JSON serializable string that configures the parameters that will generate this playlist. \
 The JSON string should have the following format: An array of dictionaries, each comprised by the following fields: \
-`column`, `opearator`, `value`. There are three operators that can be used: `<` (less than), `>` (greater than) and \
-`in` (included). You should not use any other operator!
+`column`, `opearator`, `value`. There are three operators that can be used: `<=` (less than or equal to), `>=` \
+(greater than or equal to) and `in` (included). You should not use any other operator!
 For example:
 the following text "I want a playlist of songs that are not very popular" should result in the following JSON string, \
 denoted in triple brackets:
@@ -14,7 +14,7 @@ denoted in triple brackets:
 [
     {{
         "column": "popularity",
-        "operator": "<",
+        "operator": "<=",
         "value": 70
     }}
 ]
@@ -24,7 +24,7 @@ dictionary to the mentioned array:
 ```
 {{
     "column": "popularity",
-    "operator": ">",
+    "operator": ">=",
     "value": 30
 }} 
 ```
@@ -45,7 +45,7 @@ operator: in
 values: ['band', 'female', 'male']
 description: The possible gender of the artists included in the playlist
 ---
-In case of an "in" operator, all possible values included in the string are supported. In case of "< or >" operator, \
+In case of an "in" operator, all possible values included in the string are supported. In case of "<= or >=" operator, \
 the list parentheses represents a close range, where the first value denotes the column minimum possible value, and \
 the second value denotes the column max value. You may return any number inside this range, depend on the user input. \
 The possible column names for the JSON array are:
@@ -59,7 +59,7 @@ songs", your response should include an array with only one dictionary:
 [
     {{
         "column": "instrumentalness",
-        "operator": ">",
+        "operator": ">=",
         "value": 80
     }}
 ]
@@ -89,7 +89,7 @@ EXCLUDED_COLUMNS = [
     TRACK_NUMBER
 ]
 IN_OPERATOR = 'in'
-NUMERIC_OPERATORS = '< or >'
+NUMERIC_OPERATORS = '<= or >='
 SINGLE_COLUMN_DESCRIPTION_FORMAT = """\
 {column_index}. {column_name}
 ---
