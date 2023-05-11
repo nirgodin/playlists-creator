@@ -1,22 +1,29 @@
 import MultipleSelectChip from "./MultipleSelectChip";
 import FilterCheckbox from "./Checkbox";
+import InfoToolTip from "./InfoToolTip";
 
 export default function MultipleSelectChipWrapper(props) {
     if (props.includesCheckbox) {
         return (
-            <div className='row-items'>
-                <MultipleSelectChip
-                    title={props.title}
-                    body={props.body}
-                    setBody={props.setBody}
-                ></MultipleSelectChip>
-                <div className="filter-checkbox">
-                    <FilterCheckbox
+            <div className="select-chip-wrapper">
+                <div className='row-items'>
+                    <InfoToolTip
+                        featuresDescriptions={props.featuresDescriptions}
+                        title={props.title}
+                    ></InfoToolTip>
+                    <MultipleSelectChip
                         title={props.title}
                         body={props.body}
                         setBody={props.setBody}
-                        label={props.checkboxLabel}
-                    ></FilterCheckbox>
+                    ></MultipleSelectChip>
+                    <div className="filter-checkbox">
+                        <FilterCheckbox
+                            title={props.title}
+                            body={props.body}
+                            setBody={props.setBody}
+                            label={props.checkboxLabel}
+                        ></FilterCheckbox>
+                    </div>
                 </div>
             </div>
         )

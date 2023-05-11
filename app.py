@@ -5,6 +5,7 @@ from flask_cors import CORS, cross_origin
 from flask_restful import Api
 
 from server.controllers.configuration_controller import ConfigurationController
+from server.controllers.features_descriptions_controller import FeaturesDescriptionsController
 from server.controllers.features_names_controller import FeaturesNamesController
 from server.controllers.min_max_values_controller import MinMaxValuesController
 from server.controllers.possible_values_controller import PossibleValuesController
@@ -30,6 +31,7 @@ api.add_resource(MinMaxValuesController, '/api/minMaxValues/<string:column_name>
 api.add_resource(PossibleValuesController, '/api/possibleValues/<string:column_name>')
 api.add_resource(RequestBodyController, '/api/requestBody')
 api.add_resource(FeaturesNamesController, '/api/featuresNames/<string:feature_type>')
+api.add_resource(FeaturesDescriptionsController, '/api/featuresDescriptions')
 
 
 if __name__ == '__main__':

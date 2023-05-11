@@ -59,7 +59,7 @@
 
 .playlist-configuration {
   margin: auto;
-  width: 50%;
+  width: 58%;
   padding: 10px;
   padding-bottom: 30px;
   padding-left: 265px;
@@ -123,6 +123,7 @@
 
 .select-chips {
   padding-bottom: 25px;
+  float:left;
 }
 
 @keyframes skew-y-shakeing{
@@ -138,4 +139,9 @@
   animation: skew-y-shakeing 1.5s;
   color: red;
   font-size: large;
+}
+
+.info-tooltip {
+  padding-top: 10px;
+  padding-right: 3px;
 }

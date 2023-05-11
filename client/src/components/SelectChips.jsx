@@ -31,6 +31,7 @@ export default function SelectChips(props) {
                 setBody={props.setBody}
                 includesCheckbox={true}
                 checkboxLabel={'Include unkowns'}
+                featuresDescriptions={props.featuresDescriptions}
             ></MultipleSelectChipWrapper>
         )
     }

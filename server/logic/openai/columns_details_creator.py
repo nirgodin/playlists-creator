@@ -9,11 +9,15 @@ from pandas.core.dtypes.common import is_string_dtype, is_bool_dtype
 from server.consts.data_consts import COLUMNS_DESCRIPTIONS_PATH
 from server.consts.openai_consts import EXCLUDED_COLUMNS, IN_OPERATOR, NUMERIC_OPERATORS, \
     SINGLE_COLUMN_DESCRIPTION_FORMAT
+from server.logic.features_descriptions_manager import FeaturesDescriptionsManager
 from server.logic.openai.column_details import ColumnDetails
 from server.utils import load_data, get_column_possible_values, get_column_min_max_values
 
 
 class ColumnsDetailsCreator:
+    def __init__(self):
+        self._features_descriptions_manager = FeaturesDescriptionsManager()
+
     @lru_cache
     def create(self) -> str:
         data = load_data()
@@ -51,13 +55,14 @@ class ColumnsDetailsCreator:
             column_dtype = data[column_name].dtype
             column_operator = self._get_column_operator(column_dtype)
             column_values = self._get_column_values(column_name, column_operator)
+            column_description = self._features_descriptions_manager.get_single_feature_description(column_name)
 
             yield ColumnDetails(
                 index=column_index,
                 name=column_name,
                 operator=column_operator,
                 values=column_values,
-                description=self._columns_descriptions[column_name]
+                description=column_description
             )
 
     @staticmethod
@@ -75,8 +80,3 @@ class ColumnsDetailsCreator:
 
         else:
             return get_column_min_max_values(column_name)
-
-    @property
-    def _columns_descriptions(self) -> Dict[str, str]:
-        with open(COLUMNS_DESCRIPTIONS_PATH, 'r') as f:
-            return json.load(f)

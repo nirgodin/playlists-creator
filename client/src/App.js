@@ -21,7 +21,7 @@ function App() {
   useEffect(
     () => {
       if (_.isEqual(body, []) || _.isEqual(defaultRequestBody, [])) {
-        setRequestBody()
+        setRequestBody();
       }
     }
   )

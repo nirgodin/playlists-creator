@@ -7,7 +7,7 @@ from server.consts.app_consts import REQUEST_BODY, MIN_MAX_VALUES, FEATURES_NAME
 from server.consts.openai_consts import NUMERIC_OPERATORS, IN_OPERATOR
 from server.logic.openai.column_details import ColumnDetails
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
-from server.utils import load_data
+from server.utils import load_data, titleize_feature_name
 
 
 class FeaturesNamesController(Resource):
@@ -32,19 +32,13 @@ class FeaturesNamesController(Resource):
         else:
             return self._get_relevant_features_names(columns_details, IN_OPERATOR)
 
-    def _get_relevant_features_names(self, columns_details: List[ColumnDetails], operator: str) -> List[str]:
+    @staticmethod
+    def _get_relevant_features_names(columns_details: List[ColumnDetails], operator: str) -> List[str]:
         features_names = []
 
         for column in columns_details:
             if column.operator == operator:
-                formatted_feature_name = self._format_feature_name(column.name)
+                formatted_feature_name = titleize_feature_name(column.name)
                 features_names.append(formatted_feature_name)
 
         return sorted(features_names)
-
-    @staticmethod
-    def _format_feature_name(column_name: str) -> str:
-        column_tokens = column_name.split('_')
-        formatted_tokens = [column_token.capitalize() for column_token in column_tokens]
-
-        return ' '.join(formatted_tokens)
