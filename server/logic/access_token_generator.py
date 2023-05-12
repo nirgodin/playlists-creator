@@ -13,7 +13,7 @@ from server.data.spotify_grant_type import SpotifyGrantType
 class AccessTokenGenerator:
     @staticmethod
     @lru_cache
-    def generate(access_code: str) -> Optional[str]:
+    def generate(access_code: str) -> Optional[Dict[str, str]]:
         encoded_header = AccessTokenGenerator._get_encoded_header()
         headers = {'Authorization': f"Basic {encoded_header}"}
         data = AccessTokenGenerator._build_request_payload(access_code)
@@ -24,8 +24,7 @@ class AccessTokenGenerator:
         )
 
         if response.status_code == 200:
-            jsonified_response = response.json()
-            return jsonified_response[ACCESS_TOKEN]
+            return response.json()
 
     @staticmethod
     def _get_encoded_header() -> str:
