@@ -1,9 +1,9 @@
 import RangeSliders from './RangeSliders';
 import SelectChips from './SelectChips';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import _ from 'underscore';
 import { FEATURES_DESCRIPTIONS } from '../consts';
+import { sendGetRequest } from '../utils/RequestsUtils';
 
 export default function RequestBody(props) {
     const [featuresDescriptions, setFeaturesDescriptions] = useState([]);
@@ -17,12 +17,8 @@ export default function RequestBody(props) {
       )
     
     async function setDescriptions() {
-        const url = `${process.env.REACT_APP_BASE_URL}/${FEATURES_DESCRIPTIONS}`;
-        await axios.get(url)
-            .then((resp) => JSON.stringify(resp.data))
-            .then((data) => JSON.parse(data))
-            .then((jsonfiedData) => jsonfiedData[FEATURES_DESCRIPTIONS])
-            .then((descriptions) => setFeaturesDescriptions(descriptions))
+        const descriptions = await sendGetRequest(FEATURES_DESCRIPTIONS, FEATURES_DESCRIPTIONS);
+        setFeaturesDescriptions(descriptions);
     }
 
     return <div>

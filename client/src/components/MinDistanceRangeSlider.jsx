@@ -1,32 +1,27 @@
-import * as React from 'react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { Slider } from "@mui/material";
-import axios from 'axios'
 import _ from 'underscore'
 import { toCamelCase } from '../utils/StringUtils';
 import {MIN, MAX, MIN_MAX_VALUES, FILTER_PARAMS, VALUE} from '../consts'
+import { sendGetRequest } from "../utils/RequestsUtils";
 
-const MinDistanceRangeSlider = (props) => {
+export default function MinDistanceRangeSlider(props) {
     const [minMaxValues, setminMaxValues] = useState([]);
     const [actualValues, setActualValues] = useState([]);
     const [minDistance, setMinDistance] = useState(0);
     const minTitleValue = toCamelCase(`${MIN} ${props.title}`);
     const maxTitleValue = toCamelCase(`${MAX} ${props.title}`);
 
-    const getMinMaxValues = async () => {
+    async function getMinMaxValues() {
         if (_.isEqual(minMaxValues, [])) {
-            const url = `${process.env.REACT_APP_BASE_URL}/${MIN_MAX_VALUES}/${props.title}`;
-            await axios.get(url)
-                .then((resp) => JSON.stringify(resp.data))
-                .then((data) => JSON.parse(data))
-                .then((jsonfiedData) => jsonfiedData[MIN_MAX_VALUES])
-                .then((values) => setminMaxValues(values))
+            const values = await sendGetRequest(`${MIN_MAX_VALUES}/${props.title}`, MIN_MAX_VALUES);
+            setminMaxValues(values);
         }
     };
 
-    React.useEffect(
-        () => {
+    useEffect(
+        () => {        
             if (_.isEqual(minMaxValues, [])) {
                 getMinMaxValues();
             }
@@ -39,7 +34,7 @@ const MinDistanceRangeSlider = (props) => {
         }, [minMaxValues, actualValues, getMinMaxValues]
     )
 
-    const updateRangeValues = (newValue, activeThumb) => {
+    function updateRangeValues(newValue, activeThumb) {
         if (!Array.isArray(newValue)) {
             return;
         }
@@ -53,14 +48,14 @@ const MinDistanceRangeSlider = (props) => {
         }
     }
 
-    const updateRequestBody = () => {
+    function updateRequestBody() {
         let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
         newBody[FILTER_PARAMS][minTitleValue][VALUE] = actualValues[0];
         newBody[FILTER_PARAMS][maxTitleValue][VALUE] = actualValues[1];
         props.setBody([newBody]);
     }
 
-    const handleChange = (event, newValue, activeThumb) => {
+    function handleChange(event, newValue, activeThumb) {
         updateRangeValues(newValue, activeThumb)
         updateRequestBody()
     };
@@ -81,5 +76,3 @@ const MinDistanceRangeSlider = (props) => {
         </div>
     );
 }
-
-export default MinDistanceRangeSlider

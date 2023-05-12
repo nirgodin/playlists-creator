@@ -19,6 +19,20 @@ const POSSIBLE_VALUES = 'possibleValues';
 const FEATURES_NAMES = 'featuresNames';
 const FEATURES_DESCRIPTIONS = 'featuresDescriptions';
 
+// Style
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+            backgroundColor: 'rgb(0, 30, 60)',
+            color: 'white',
+        },
+    },
+};
+
 export {
     PROMPT,
     CONFIGURATION,
@@ -37,5 +51,6 @@ export {
     PLAYLIST_LINK,
     MESSAGE,
     ACCESS_CODE,
-    REQUEST_BODY
+    REQUEST_BODY,
+    MenuProps
 };

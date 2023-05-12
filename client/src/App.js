@@ -4,15 +4,16 @@ import Navigator from './Navigator'
 import { useState } from 'react';
 import _ from 'underscore';
 import LoadingSpinner from './components/LoadingSpinner';
-import { getDefaultRequestBody } from './utils/RequestsUtils'
+import { sendGetRequest } from './utils/RequestsUtils'
 import cloneJSON from './utils/JsonUtils';
+import { REQUEST_BODY } from './consts';
 
 function App() {
   const [body, setBody] = useState([]);
   const [defaultRequestBody, setDefaultRequestBody] = useState([]);
 
   async function setRequestBody() {
-    const requestBody = await getDefaultRequestBody();
+    const requestBody = await sendGetRequest(REQUEST_BODY, REQUEST_BODY);
     setDefaultRequestBody(cloneJSON(requestBody));
     setBody(requestBody);
   };

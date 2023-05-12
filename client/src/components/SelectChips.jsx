@@ -1,19 +1,15 @@
 import { useState, useEffect } from "react"
 import MultipleSelectChipWrapper from "./MultipleSelectChipWrapper"
 import _ from "underscore";
-import axios from "axios";
 import { FEATURES_NAMES, POSSIBLE_VALUES } from "../consts";
+import { sendGetRequest } from "../utils/RequestsUtils";
 
 export default function SelectChips(props) {
     const [featuresNames, setFeaturesNames] = useState([])
 
     async function getFeaturesNames() {
-        const url = `${process.env.REACT_APP_BASE_URL}/${FEATURES_NAMES}/${POSSIBLE_VALUES}`;
-        await axios.get(url)
-            .then((resp) => JSON.stringify(resp.data))
-            .then((data) => JSON.parse(data))
-            .then((jsonfiedData) => jsonfiedData[FEATURES_NAMES])
-            .then((featuresNames) => setFeaturesNames(featuresNames))
+        const featuresNames = await sendGetRequest(`${FEATURES_NAMES}/${POSSIBLE_VALUES}`, FEATURES_NAMES);
+        setFeaturesNames(featuresNames);
     }
 
     useEffect(

@@ -7,33 +7,16 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { toCamelCase } from '../utils/StringUtils';
-import axios from 'axios'
 import _ from 'underscore'
-import { FILTER_PARAMS, POSSIBLE_VALUES, VALUE } from '../consts';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-            backgroundColor: 'rgb(0, 30, 60)',
-            color: 'white',
-        },
-    },
-};
+import { FILTER_PARAMS, MenuProps, POSSIBLE_VALUES, VALUE } from '../consts';
+import { sendGetRequest } from '../utils/RequestsUtils';
 
 export default function MultipleSelectChip(props) {
     const [possibleValues, setPossibleValues] = React.useState([])
 
     const getPossibleValues = async () => {
-        const url = `${process.env.REACT_APP_BASE_URL}/${POSSIBLE_VALUES}/${props.title}`;
-        await axios.get(url)
-            .then((resp) => JSON.stringify(resp.data))
-            .then((data) => JSON.parse(data))
-            .then((jsonfiedData) => jsonfiedData[POSSIBLE_VALUES])
-            .then((values) => setPossibleValues(values))
+        const values = await sendGetRequest(`${POSSIBLE_VALUES}/${props.title}`, POSSIBLE_VALUES);
+        setPossibleValues(values);
     };
 
     const [selectedOptions, setSelectedOptions] = React.useState([]);
