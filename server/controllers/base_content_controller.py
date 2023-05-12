@@ -9,7 +9,9 @@ from flask_restful import Resource
 from server.consts.api_consts import ACCESS_TOKEN, REFRESH_TOKEN
 from server.consts.app_consts import ACCESS_CODE, IS_SUCCESS, PLAYLIST_LINK, PLAYLIST_DETAILS, MESSAGE
 from server.consts.data_consts import URI
+from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.data.query_condition import QueryCondition
+from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.data_filterer import DataFilterer
 from server.logic.playlists_creator import PlaylistsCreator
@@ -25,36 +27,50 @@ class BaseContentController(Resource, ABC):
         if not uris:
             return self._build_no_content_response()
 
-        access_code = body[ACCESS_CODE]
-        playlist_details = body[PLAYLIST_DETAILS]
-        playlist_link = self._create_playlist(access_code, playlist_details, uris)
+        config = PlaylistCreationConfig(
+            access_code=body[ACCESS_CODE],
+            playlist_details=body[PLAYLIST_DETAILS],
+            grant_type=SpotifyGrantType.AUTHORIZATION_CODE,
+            uris=uris
+        )
+
+        playlist_link = self._create_playlist(config, retries_left=2)
         if playlist_link is None:
             return self._build_authentication_failure_response()
 
-        response = {
-            IS_SUCCESS: True,
-            PLAYLIST_LINK: playlist_link
-        }
+        return jsonify(
+            {
+                IS_SUCCESS: True,
+                PLAYLIST_LINK: playlist_link
+            }
+        )
 
-        return jsonify(response)
+    def _create_playlist(self, config: PlaylistCreationConfig, retries_left: int) -> Optional[str]:
+        if retries_left == 0:
+            return
 
-    def _create_playlist(self, access_code: str, playlist_details: dict, uris: List[str]) -> Optional[str]:  # TODO: Add retries
-        response = AccessTokenGenerator.generate(access_code)
+        response = AccessTokenGenerator.generate(config.access_code, config.grant_type)
+
+        try:
+            headers = self._build_request_headers(response)
+            return self._playlists_creator.create(config.uris, headers, config.playlist_details)
+
+        except:
+            config.access_code = response[REFRESH_TOKEN]
+            return self._create_playlist(config, retries_left=retries_left-1)
+
+    @staticmethod
+    def _build_request_headers(response: dict) -> Optional[Dict[str, str]]:
         bearer_token = response[ACCESS_TOKEN]
 
         if bearer_token is None:
             return
 
-        headers = {
+        return {
             "Accept": "application/json",
             "Content-Type": "application/json",
             "Authorization": f"Bearer {bearer_token}"
         }
-
-        try:
-            return self._playlists_creator.create(uris, headers, playlist_details)
-        except:
-            return self._create_playlist(response[REFRESH_TOKEN], playlist_details, uris)
 
     @staticmethod
     def _build_authentication_failure_response() -> Response:

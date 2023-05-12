@@ -5,7 +5,8 @@ from typing import Dict, Optional
 
 import requests
 
-from server.consts.api_consts import TOKEN_REQUEST_URL, REDIRECT_URI, CODE, GRANT_TYPE, JSON, ACCESS_TOKEN
+from server.consts.api_consts import TOKEN_REQUEST_URL, REDIRECT_URI, CODE, GRANT_TYPE, JSON, ACCESS_TOKEN, \
+    REFRESH_TOKEN, CLIENT_ID
 from server.consts.env_consts import SPOTIPY_CLIENT_SECRET, SPOTIPY_CLIENT_ID, SPOTIPY_REDIRECT_URI
 from server.data.spotify_grant_type import SpotifyGrantType
 
@@ -13,10 +14,10 @@ from server.data.spotify_grant_type import SpotifyGrantType
 class AccessTokenGenerator:
     @staticmethod
     @lru_cache
-    def generate(access_code: str) -> Optional[Dict[str, str]]:
+    def generate(access_code: str, grant_type: SpotifyGrantType) -> Optional[Dict[str, str]]:
         encoded_header = AccessTokenGenerator._get_encoded_header()
         headers = {'Authorization': f"Basic {encoded_header}"}
-        data = AccessTokenGenerator._build_request_payload(access_code)
+        data = AccessTokenGenerator._build_request_payload(access_code, grant_type)
         response = requests.post(
             url=TOKEN_REQUEST_URL,
             headers=headers,
@@ -36,10 +37,21 @@ class AccessTokenGenerator:
         return b64_auth.decode('ascii')
 
     @staticmethod
-    def _build_request_payload(access_code: str) -> Dict[str, str]:
-        return {
-            GRANT_TYPE: SpotifyGrantType.AUTHORIZATION_CODE.value,
-            CODE: access_code,
-            REDIRECT_URI: os.environ[SPOTIPY_REDIRECT_URI],
-            JSON: True
-        }
+    def _build_request_payload(access_code: str, grant_type: SpotifyGrantType) -> Dict[str, str]:
+        if grant_type == SpotifyGrantType.AUTHORIZATION_CODE:
+            return {
+                GRANT_TYPE: grant_type.value,
+                CODE: access_code,
+                REDIRECT_URI: os.environ[SPOTIPY_REDIRECT_URI],
+                JSON: True
+            }
+
+        elif grant_type == SpotifyGrantType.REFRESH_TOKEN:
+            return {
+                GRANT_TYPE: grant_type.value,
+                REFRESH_TOKEN: access_code,
+                CLIENT_ID: os.environ[SPOTIPY_CLIENT_ID]
+            }
+
+        else:
+            raise ValueError('Did not recognize grant type')
