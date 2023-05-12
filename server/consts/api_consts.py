@@ -8,6 +8,7 @@ CODE = 'code'
 GRANT_TYPE = 'grant_type'
 JSON = 'json'
 ACCESS_TOKEN = 'access_token'
+REFRESH_TOKEN = 'refresh_token'
 USER_PROFILE_URL = 'https://api.spotify.com/v1/me'
 ID = 'id'
 NAME = "name"
