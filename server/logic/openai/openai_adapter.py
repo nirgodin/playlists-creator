@@ -23,10 +23,10 @@ class OpenAIAdapter:
             return
 
         prompt = self._prompt_build.build(user_text)
-        messages = self._build_request_messages(prompt, chat_history)
+        chat_history = self._build_request_messages(prompt, chat_history)
         response = self._openai_model.create(
             model="gpt-3.5-turbo",
-            messages=messages
+            messages=chat_history
         )
         response_content = response.choices[0].message.content
         serialized_response = self._wrap_serialize_response(response_content)
