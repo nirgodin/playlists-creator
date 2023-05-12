@@ -28,6 +28,7 @@ export default function SendButton(props) {
         if (isSuccess) {
             const playlistLink = jsonfiedData[PLAYLIST_LINK];
             props.setPlaylistLink(playlistLink);
+            props.setErrorMessage('');
         } else {
             const errorMessage = jsonfiedData[MESSAGE];
             props.setErrorMessage(errorMessage);

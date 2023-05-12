@@ -11,6 +11,7 @@ const IS_SUCCESS = 'isSuccess';
 const PLAYLIST_LINK = 'playlistLink';
 const MESSAGE = 'message';
 const ACCESS_CODE = 'accessCode';
+const REQUEST_BODY = 'requestBody';
 
 // Endpoints
 const MIN_MAX_VALUES = 'minMaxValues';
@@ -35,5 +36,6 @@ export {
     IS_SUCCESS,
     PLAYLIST_LINK,
     MESSAGE,
-    ACCESS_CODE
+    ACCESS_CODE,
+    REQUEST_BODY
 };

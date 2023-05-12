@@ -14,7 +14,7 @@ function App() {
   async function setRequestBody() {
     const requestBody = await getDefaultRequestBody();
     setDefaultRequestBody(cloneJSON(requestBody));
-    setBody(cloneJSON(requestBody));
+    setBody(requestBody);
   };
 
   useEffect(
