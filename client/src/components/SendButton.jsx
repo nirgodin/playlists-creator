@@ -46,7 +46,7 @@ export default function SendButton(props) {
     }
 
     function handleError(error) {
-        props.setErrorMessage('An unexpected error has occured. Please reolad the page and try again');
+        props.setErrorMessage('An unexpected error has occured. Please reload the page and try again');
         props.setBody(props.defaultRequestBody);
     }
 
