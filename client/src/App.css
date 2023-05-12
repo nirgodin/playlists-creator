@@ -137,7 +137,6 @@
 }
 
 .info-tooltip {
-  padding-top: 10px;
   padding-right: 3px;
 }
 
@@ -146,5 +145,5 @@
 }
 
 .range-slider-tooltip {
-  padding-top: 16px;
+  padding-top: 13.5px;
 }
