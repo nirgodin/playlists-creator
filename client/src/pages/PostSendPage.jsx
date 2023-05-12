@@ -18,6 +18,7 @@ export default function PostSendPage(props) {
             <div className="back-to-main-page-button">
                 <BackToMainPageButton
                     setWasRequestSent={props.setWasRequestSent}
+                    setIsSuccessfull={props.setIsSuccessfull}
                 ></BackToMainPageButton>
             </div>
         </div>

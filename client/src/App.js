@@ -5,6 +5,7 @@ import { useState } from 'react';
 import _ from 'underscore';
 import LoadingSpinner from './components/LoadingSpinner';
 import { getDefaultRequestBody } from './utils/RequestsUtils'
+import cloneJSON from './utils/JsonUtils';
 
 function App() {
   const [body, setBody] = useState([]);
@@ -12,10 +13,8 @@ function App() {
 
   async function setRequestBody() {
     const requestBody = await getDefaultRequestBody();
-    const clonedRequestBody = JSON.parse(JSON.stringify(requestBody));
-    setDefaultRequestBody(clonedRequestBody);
-    const secondClonedRequestBody = JSON.parse(JSON.stringify(requestBody));
-    setBody(Array.from(secondClonedRequestBody));
+    setDefaultRequestBody(cloneJSON(requestBody));
+    setBody(cloneJSON(requestBody));
   };
 
   useEffect(

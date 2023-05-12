@@ -48,7 +48,6 @@ export default function LandingPage(props) {
                 endpoint={endpoint}
                 body={props.body}
                 setBody={props.setBody}
-                accessCode={props.accessCode}
                 defaultRequestBody={props.defaultRequestBody}
                 setWasRequestSent={props.setWasRequestSent}
                 setIsSuccessfull={props.setIsSuccessfull}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 import axios from 'axios'
-import { ACCESS_CODE, IS_SUCCESS, MESSAGE, PLAYLIST_LINK } from "../consts";
+import { FILTER_PARAMS, IS_SUCCESS, MESSAGE, PLAYLIST_LINK } from "../consts";
 
 export default function SendButton(props) {
     const [isClicked, setIsClicked] = useState(true);
@@ -13,7 +13,7 @@ export default function SendButton(props) {
         }, [props.isValidInput]
     )
 
-    const sendPlaylistCreationRequest = async () => {
+    async function sendPlaylistCreationRequest() {
         await axios.post(url, props.body[0])
             .then((resp) => JSON.stringify(resp.data))
             .then((data) => JSON.parse(data))
@@ -22,7 +22,7 @@ export default function SendButton(props) {
         setIsClicked(false);
     };
 
-    const handleResponse = (jsonfiedData) => {
+    function handleResponse(jsonfiedData) {
         const isSuccess = jsonfiedData[IS_SUCCESS];
 
         if (isSuccess) {
@@ -33,19 +33,23 @@ export default function SendButton(props) {
             props.setErrorMessage(errorMessage);
         }
 
-        const newRequestBody = JSON.parse(JSON.stringify(props.defaultRequestBody));
-        newRequestBody[0][ACCESS_CODE] = props.accessCode;
-        props.setBody(newRequestBody);
+        resetState(isSuccess);
+    }
+
+    function resetState(isSuccess) {
+        const newRequestBody = props.body[0];
+        newRequestBody[FILTER_PARAMS] = props.defaultRequestBody[0][FILTER_PARAMS]
+        props.setBody([newRequestBody]);
         props.setIsSuccessfull(isSuccess);
         setIsClicked(false);
     }
 
-    const handleError = (error) => {
+    function handleError(error) {
         props.setErrorMessage('An unexpected error has occured. Please reolad the page and try again');
         props.setBody(props.defaultRequestBody);
     }
 
-    const handleClick = (e) => {
+    function handleClick(e) {
         props.setWasRequestSent(true);
         setIsClicked(true);
         sendPlaylistCreationRequest();

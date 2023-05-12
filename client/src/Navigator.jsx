@@ -4,6 +4,7 @@ import PostSendPage from "./pages/PostSendPage";
 import { isLoggedIn, extractCode } from "./utils/UrlUtils";
 import LoginPage from "./pages/LoginPage";
 import LoadingSpinner from './components/LoadingSpinner';
+import { ACCESS_CODE } from "./consts";
 
 
 export default function Navigator(props) {
@@ -11,18 +12,16 @@ export default function Navigator(props) {
     const [isSuccessfull, setIsSuccessfull] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [playlistLink, setPlaylistLink] = useState('');
-    const [accessCode, setAccessCode] = useState('')
 
     useEffect(
         () => {
-            if (isLoggedIn() && accessCode === '') {
+            if (isLoggedIn() && props.body[0][ACCESS_CODE] === '') {
                 let newBody = props.body[0];
                 const extractedAccessCode = extractCode(window.location.href);
-                newBody['accessCode'] = extractedAccessCode;
+                newBody[ACCESS_CODE] = extractedAccessCode;
                 props.setBody([newBody]);
-                setAccessCode(extractedAccessCode);
             }
-        }, [props, accessCode]
+        }, [props]
     )
 
     if (!isLoggedIn()) {
@@ -42,7 +41,6 @@ export default function Navigator(props) {
                     body={props.body}
                     setBody={props.setBody}
                     defaultRequestBody={props.defaultRequestBody}
-                    accessCode={accessCode}
                     setWasRequestSent={setWasRequestSent}
                     setIsSuccessfull={setIsSuccessfull}
                     errorMessage={errorMessage}
@@ -56,6 +54,7 @@ export default function Navigator(props) {
             <PostSendPage
                 isSuccessfull={isSuccessfull}
                 setWasRequestSent={setWasRequestSent}
+                setIsSuccessfull={setIsSuccessfull}
                 playlistLink={playlistLink}
             ></PostSendPage>
         )
