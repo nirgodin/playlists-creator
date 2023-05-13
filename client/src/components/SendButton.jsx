@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 import axios from 'axios'
-import { FILTER_PARAMS, IS_SUCCESS, MESSAGE, PHOTO, PLAYLIST_LINK } from "../consts";
+import { FILTER_PARAMS, IS_SUCCESS, MESSAGE, PHOTO, PLAYLIST_LINK, REQUEST_BODY } from "../consts";
 
 export default function SendButton(props) {
     const [isClicked, setIsClicked] = useState(true);
@@ -23,10 +23,10 @@ export default function SendButton(props) {
 
     async function sendPhotoRequest() {
         let bodyFormData = new FormData();
-        bodyFormData.append('image', props.files[0]);
+        bodyFormData.append(PHOTO, props.files[0]);
         const json = JSON.stringify(props.body[0]);
         const blob = new Blob([json], {type: 'application/json'});
-        bodyFormData.append('data', blob);
+        bodyFormData.append(REQUEST_BODY, blob);
 
         await axios({
             method: "post",

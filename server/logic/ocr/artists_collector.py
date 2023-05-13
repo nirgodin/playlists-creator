@@ -5,9 +5,9 @@ from aiohttp import ClientSession
 from asyncio_pool import AioPool
 from tqdm import tqdm
 
+from server.consts.api_consts import SEARCH_URL
+from server.consts.data_consts import ARTIST, TYPE, QUERY, ARTISTS, ITEMS, ORIGINAL_INPUT
 from server.utils import build_spotify_client_credentials_headers
-
-SEARCH_URL = 'https://api.spotify.com/v1/search'
 
 
 class ArtistsCollector:
@@ -29,8 +29,8 @@ class ArtistsCollector:
                                  artist: str) -> Dict[str, str]:
         progress_bar.update(1)
         params = {
-            'q': artist,
-            'type': ['artist']
+            QUERY: artist,
+            TYPE: [ARTIST]
         }
 
         async with session.get(url=SEARCH_URL, params=params) as raw_response:
@@ -43,11 +43,11 @@ class ArtistsCollector:
         if not isinstance(response, dict):
             return
 
-        items = response.get('artists', {}).get('items', [])
+        items = response.get(ARTISTS, {}).get(ITEMS, [])
         if not items:
             return
 
         first_item = items[0]
-        first_item['original_input'] = original_input
+        first_item[ORIGINAL_INPUT] = original_input
 
         return first_item

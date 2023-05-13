@@ -1,13 +1,13 @@
 from functools import partial
-from typing import List, Dict, Optional
+from typing import List, Optional
 
 from aiohttp import ClientSession
 from asyncio_pool import AioPool
 from tqdm import tqdm
 
+from server.consts.api_consts import ARTIST_TOP_TRACKS_URL, MARKET
+from server.consts.data_consts import TRACKS
 from server.utils import build_spotify_client_credentials_headers
-
-ARTIST_TOP_TRACKS_URL = 'https://api.spotify.com/v1/artists/{artist_id}/top-tracks'
 
 
 class ArtistsTopTracksCollector:
@@ -31,7 +31,7 @@ class ArtistsTopTracksCollector:
         progress_bar.update(1)
         url = ARTIST_TOP_TRACKS_URL.format(artist_id=artist_id)
         params = {
-            'market': country
+            MARKET: country
         }
 
         async with session.get(url=url, params=params) as raw_response:
@@ -44,4 +44,4 @@ class ArtistsTopTracksCollector:
         if not isinstance(response, dict):
             return
 
-        return response.get('tracks', None)
+        return response.get(TRACKS, None)

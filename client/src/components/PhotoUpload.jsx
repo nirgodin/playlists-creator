@@ -11,25 +11,3 @@ export default function PhotoUpload(props) {
         />
     )
 }
-
-// class PhotoUpload extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             files: []
-//         };
-//     }
-//     handleChange(files) {
-//         this.setState({
-//             files: files
-//         });
-//     }
-//     render() {
-//         return (
-//             <DropzoneArea
-//                 onChange={this.handleChange.bind(this)}
-//             />
-//         )
-//     }
-// }
-
