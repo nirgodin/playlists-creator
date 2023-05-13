@@ -2,8 +2,10 @@ import asyncio
 import json
 from typing import Optional, List
 
+from server.consts.api_consts import ID
 from server.logic.ocr.artists_collector import ArtistsCollector
 from server.logic.ocr.artists_filterer import ArtistsFilterer
+from server.logic.ocr.artists_top_tracks_collector import ArtistsTopTracksCollector
 from server.logic.ocr.image_text_extractor import ImageTextExtractor
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.utils import build_prompt
@@ -36,25 +38,42 @@ class ImagePlaylistCreator:
         self._openai_adapter = OpenAIAdapter()
         self._artists_collector = ArtistsCollector()
         self._artists_filterer = ArtistsFilterer()
+        self._top_tracks_collector = ArtistsTopTracksCollector()
 
-    async def create_playlist(self, image_path: str, language: str = 'eng') -> Optional[str]:
-        # artists_names = self._get_artists_names(image_path, language)
+    async def create_playlist(self, image_path: str, language: str = 'eng', country: str = 'US') -> Optional[str]:
+        # artists_names = self._extract_artists_names(image_path, language)
         # if not artists_names:
         #     return
         #
         # artists_details = await self._artists_collector.collect(artists_names)
-        with open('/Users/nirgodin/Downloads/artists.json', 'r') as f:
-            artists_details = json.load(f)
+        # with open('/Users/nirgodin/Downloads/artists.json', 'r') as f:
+        #     artists_details = json.load(f)
+        #
+        # relevant_artists = self._artists_filterer.filter_relevant_artists(artists_details)
+        # artists_ids = [artist[ID] for artist in relevant_artists]
+        # top_tracks = await self._top_tracks_collector.collect(artists_ids, country)
 
-        relevant_artists = self._artists_filterer.filter_relevant_artists(artists_details)
-        print('b')
+        with open('/Users/nirgodin/Downloads/tracks.json', 'r') as f:
+            top_tracks = json.load(f)
 
-    def _get_artists_names(self, image_path: str, language: str = 'eng') -> Optional[List[str]]:
+        tracks_uris = self._extract_tracks_uris(top_tracks)
+
+    def _extract_artists_names(self, image_path: str, language: str = 'eng') -> Optional[List[str]]:
         image_text = self._image_text_extractor.extract_text(image_path, language)
         prompt_suffix = f'```\n{image_text}```'
         prompt = build_prompt(PROMPT_PREFIX, prompt_suffix)
 
         return self._openai_adapter.fetch_openai(prompt)
+
+    @staticmethod
+    def _extract_tracks_uris(tracks: List[List[dict]]) -> List[str]:
+        uris = []
+
+        for artist_tracks in tracks:
+            for track in artist_tracks:
+                uris.append(track['uri'])
+
+        return uris
 
 
 if __name__ == '__main__':

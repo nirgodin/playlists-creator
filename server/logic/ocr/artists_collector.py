@@ -39,7 +39,7 @@ class ArtistsCollector:
         return self._extract_artist_details(original_input=artist, response=response)
 
     @staticmethod
-    def _extract_artist_details(original_input: str, response: list) -> Optional[dict]:
+    def _extract_artist_details(original_input: str, response: dict) -> Optional[dict]:
         if not isinstance(response, dict):
             return
 
