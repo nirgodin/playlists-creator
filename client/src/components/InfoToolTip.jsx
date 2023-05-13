@@ -17,7 +17,7 @@ export default function InfoToolTip(props) {
     )
 
     return (
-        <div className="info-tooltip">
+        <div>
             <Tooltip title={featureDescription}>
                 <IconButton color={'inherit'}>
                     <HelpRoundedIcon fontSize={'small'} />

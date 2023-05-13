@@ -136,14 +136,20 @@
   font-size: large;
 }
 
-.info-tooltip {
-  padding-right: 3px;
-}
-
 .range-slider {
   padding-left: 10px;
 }
 
 .range-slider-tooltip {
-  padding-top: 13.5px;
+  padding-right: 3px;
+  padding-top: 25px;
+}
+
+.select-chip-tooltip {
+  padding-right: 3px;
+  padding-top: 7px;
+}
+
+.toggle-button-icon {
+  padding-right: 10px;
 }

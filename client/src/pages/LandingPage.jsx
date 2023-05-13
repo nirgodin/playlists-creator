@@ -1,4 +1,4 @@
-import MethodToggleButton from ".././components/MethodToggleButton"
+import MethodToggleButtonGroup from ".././components/MethodToggleButtonGroup"
 import { Box } from "@mui/material"
 import FormTextField from ".././components/FormTextField"
 import SendButton from ".././components/SendButton"
@@ -35,10 +35,10 @@ export default function LandingPage(props) {
     </div>
 
     const toggleButton = <div className="toggle-button">
-        <MethodToggleButton
+        <MethodToggleButtonGroup
             alignment={alignment}
             setAlignment={setAlignment}
-        ></MethodToggleButton>
+        ></MethodToggleButtonGroup>
     </div>
 
     const buttons = <div>

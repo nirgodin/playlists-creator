@@ -7,10 +7,12 @@ export default function MultipleSelectChipWrapper(props) {
         return (
             <div className="select-chip-wrapper">
                 <div className='row-items'>
-                    <InfoToolTip
-                        featuresDescriptions={props.featuresDescriptions}
-                        title={props.title}
-                    ></InfoToolTip>
+                    <div className='select-chip-tooltip'>
+                        <InfoToolTip
+                            featuresDescriptions={props.featuresDescriptions}
+                            title={props.title}
+                        ></InfoToolTip>
+                    </div>
                     <MultipleSelectChip
                         title={props.title}
                         body={props.body}
