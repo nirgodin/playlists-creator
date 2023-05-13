@@ -1,10 +1,13 @@
 from functools import lru_cache
-from typing import List
+from typing import List, Dict
 
 import pandas as pd
 from pandas import DataFrame
 
+from server.consts.api_consts import ACCESS_TOKEN
 from server.consts.data_consts import DATA_PATH
+from server.data.spotify_grant_type import SpotifyGrantType
+from server.logic.access_token_generator import AccessTokenGenerator
 
 
 @lru_cache
@@ -40,3 +43,21 @@ def titleize_feature_name(column_name: str) -> str:
 @lru_cache(maxsize=1)
 def load_data() -> DataFrame:
     return pd.read_csv(DATA_PATH)
+
+
+def build_prompt(prompt_prefix: str, prompt_suffix: str) -> str:
+    return f'{prompt_prefix}\n{prompt_suffix}'
+
+
+def build_spotify_client_credentials_headers() -> Dict[str, str]:
+    response = AccessTokenGenerator.generate(
+        access_code='',  # TODO: Make access code optional
+        grant_type=SpotifyGrantType.CLIENT_CREDENTIALS
+    )
+    access_token = response[ACCESS_TOKEN]
+
+    return {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {access_token}"
+    }

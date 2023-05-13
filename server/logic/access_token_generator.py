@@ -53,5 +53,11 @@ class AccessTokenGenerator:
                 CLIENT_ID: os.environ[SPOTIPY_CLIENT_ID]
             }
 
+        elif grant_type == SpotifyGrantType.CLIENT_CREDENTIALS:
+            return {
+                GRANT_TYPE: grant_type.value,
+                JSON: True
+            }
+
         else:
             raise ValueError('Did not recognize grant type')
