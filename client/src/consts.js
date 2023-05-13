@@ -1,5 +1,6 @@
 const PROMPT = 'prompt';
 const CONFIGURATION = 'configuration';
+const PHOTO = 'photo';
 const FILTER_PARAMS = 'filterParams';
 const INCLUDE_NAN = 'includeNan';
 const PLAYLIST_DETAILS = 'playlistDetails';
@@ -36,6 +37,7 @@ const MenuProps = {
 export {
     PROMPT,
     CONFIGURATION,
+    PHOTO,
     FILTER_PARAMS,
     INCLUDE_NAN,
     PLAYLIST_DETAILS,

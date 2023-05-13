@@ -22,8 +22,10 @@ class BaseContentController(Resource, ABC):
         self._data_filterer = DataFilterer()
         self._playlists_creator = PlaylistsCreator()
 
-    def _generate_response(self, body: dict, query_conditions: List[QueryCondition]) -> Response:
-        uris = self._data_filterer.filter(query_conditions)
+    def _generate_response(self, body: dict, query_conditions: List[QueryCondition], uris: Optional[List[str]] = None) -> Response:
+        if uris is None:
+            uris = self._data_filterer.filter(query_conditions)
+
         if not uris:
             return self._build_no_content_response()
 

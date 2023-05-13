@@ -1,13 +1,15 @@
 import * as React from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { CONFIGURATION, PROMPT } from '../consts';
+import { CONFIGURATION, PROMPT, PHOTO } from '../consts';
 import TuneIcon from '@mui/icons-material/Tune';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import InsertPhotoRoundedIcon from '@mui/icons-material/InsertPhotoRounded';
 
 export default function MethodToggleButtonGroup(props) {
   function handleChange(event, newAlignment) {
     props.setAlignment(newAlignment);
+    props.setEndpoint(newAlignment);
   };
 
   return (
@@ -25,6 +27,10 @@ export default function MethodToggleButtonGroup(props) {
       <ToggleButton sx={{ color: 'white', width: '200px' }} value={CONFIGURATION}>
         <TuneIcon className='toggle-button-icon' />
         {CONFIGURATION}
+      </ToggleButton>
+      <ToggleButton sx={{ color: 'white', width: '200px' }} value={PHOTO}>
+        <InsertPhotoRoundedIcon className='toggle-button-icon' />
+        {PHOTO}
       </ToggleButton>
     </ToggleButtonGroup >
   );

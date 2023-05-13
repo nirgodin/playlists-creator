@@ -40,23 +40,23 @@ class ImagePlaylistCreator:
         self._artists_filterer = ArtistsFilterer()
         self._top_tracks_collector = ArtistsTopTracksCollector()
 
-    async def create_playlist(self, image_path: str, language: str = 'eng', country: str = 'US') -> Optional[str]:
-        # artists_names = self._extract_artists_names(image_path, language)
-        # if not artists_names:
-        #     return
-        #
-        # artists_details = await self._artists_collector.collect(artists_names)
+    async def create_playlist(self, image_path: str, language: str = 'eng', country: str = 'US') -> Optional[List[str]]:
+        artists_names = self._extract_artists_names(image_path, language)
+        if not artists_names:
+            return
+
+        artists_details = await self._artists_collector.collect(artists_names)
         # with open('/Users/nirgodin/Downloads/artists.json', 'r') as f:
         #     artists_details = json.load(f)
-        #
-        # relevant_artists = self._artists_filterer.filter_relevant_artists(artists_details)
-        # artists_ids = [artist[ID] for artist in relevant_artists]
-        # top_tracks = await self._top_tracks_collector.collect(artists_ids, country)
 
-        with open('/Users/nirgodin/Downloads/tracks.json', 'r') as f:
-            top_tracks = json.load(f)
+        relevant_artists = self._artists_filterer.filter_relevant_artists(artists_details)
+        artists_ids = [artist[ID] for artist in relevant_artists]
+        top_tracks = await self._top_tracks_collector.collect(artists_ids, country)
 
-        tracks_uris = self._extract_tracks_uris(top_tracks)
+        # with open('/Users/nirgodin/Downloads/tracks.json', 'r') as f:
+        #     top_tracks = json.load(f)
+
+        return self._extract_tracks_uris(top_tracks)
 
     def _extract_artists_names(self, image_path: str, language: str = 'eng') -> Optional[List[str]]:
         image_text = self._image_text_extractor.extract_text(image_path, language)

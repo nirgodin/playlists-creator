@@ -5,14 +5,16 @@ import SendButton from ".././components/SendButton"
 import { useState, useEffect } from "react"
 import RequestBody from ".././components/RequestBody"
 import PlaylistTextFields from ".././components/PlaylistTextFields"
-import { PROMPT, CONFIGURATION } from "../consts"
+import { PROMPT, CONFIGURATION, PHOTO } from "../consts"
+import PhotoUpload from "../components/PhotoUpload"
 
 export default function LandingPage(props) {
     const [alignment, setAlignment] = useState(PROMPT);
-    const endpoint = alignment === PROMPT ? PROMPT : CONFIGURATION
-    const [isValidInput, setIsValidInput] = useState(false)
-    const [isValidPrompt, setIsValidPrompt] = useState(false)
-    const [isValidPlaylistName, setIsValidPlaylistName] = useState(false)
+    const [endpoint, setEndpoint] = useState(PROMPT);
+    const [isValidInput, setIsValidInput] = useState(false);
+    const [isValidPrompt, setIsValidPrompt] = useState(false);
+    const [isValidPlaylistName, setIsValidPlaylistName] = useState(false);
+    const [files, setFiles] = useState([]);
 
     useEffect(
         () => {
@@ -24,7 +26,6 @@ export default function LandingPage(props) {
             }
         }, [endpoint, isValidPrompt, isValidPlaylistName]
     )
-
     const playlistDetails = <div className='playlist-details'>
         <PlaylistTextFields
             body={props.body}
@@ -38,6 +39,7 @@ export default function LandingPage(props) {
         <MethodToggleButtonGroup
             alignment={alignment}
             setAlignment={setAlignment}
+            setEndpoint={setEndpoint}
         ></MethodToggleButtonGroup>
     </div>
 
@@ -54,6 +56,8 @@ export default function LandingPage(props) {
                 setErrorMessage={props.setErrorMessage}
                 setPlaylistLink={props.setPlaylistLink}
                 isValidInput={isValidInput}
+                files={files}
+                setFiles={setFiles}
             ></SendButton>
         </Box>
         <p className="skew-y-shaking" key={props.errorMessage}>{props.errorMessage}</p>
@@ -82,7 +86,7 @@ export default function LandingPage(props) {
             </div>
         )
     }
-    else {
+    else if (alignment === CONFIGURATION) {
         return (
             <div>
                 {playlistDetails}
@@ -91,6 +95,18 @@ export default function LandingPage(props) {
                     body={props.body}
                     setBody={props.setBody}
                 ></RequestBody>
+                {buttons}
+            </div>
+        )
+    }
+    else {
+        return (
+            <div>
+                {playlistDetails}
+                {toggleButton}
+                <PhotoUpload
+                    setFiles={setFiles}
+                ></PhotoUpload>
                 {buttons}
             </div>
         )

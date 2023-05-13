@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 import axios from 'axios'
-import { FILTER_PARAMS, IS_SUCCESS, MESSAGE, PLAYLIST_LINK } from "../consts";
+import { FILTER_PARAMS, IS_SUCCESS, MESSAGE, PHOTO, PLAYLIST_LINK } from "../consts";
 
 export default function SendButton(props) {
     const [isClicked, setIsClicked] = useState(true);
@@ -14,13 +14,39 @@ export default function SendButton(props) {
     )
 
     async function sendPlaylistCreationRequest() {
+        if (props.endpoint === PHOTO) {
+            await sendPhotoRequest()
+        } else {
+            await sendPlaylistConfigurationRequest()
+        }
+    };
+
+    async function sendPhotoRequest() {
+        let bodyFormData = new FormData();
+        bodyFormData.append('image', props.files[0]);
+        const json = JSON.stringify(props.body[0]);
+        const blob = new Blob([json], {type: 'application/json'});
+        bodyFormData.append('data', blob);
+
+        await axios({
+            method: "post",
+            url: url,
+            data: bodyFormData,
+            headers: { "Content-Type": "multipart/form-data" },
+        })
+            .then((resp) => JSON.stringify(resp.data))
+            .then((data) => JSON.parse(data))
+            .then((jsonfiedData) => handleResponse(jsonfiedData))
+            .catch((error) => handleError(error))
+    }
+
+    async function sendPlaylistConfigurationRequest() {
         await axios.post(url, props.body[0])
             .then((resp) => JSON.stringify(resp.data))
             .then((data) => JSON.parse(data))
             .then((jsonfiedData) => handleResponse(jsonfiedData))
             .catch((error) => handleError(error))
-        setIsClicked(false);
-    };
+    }
 
     function handleResponse(jsonfiedData) {
         const isSuccess = jsonfiedData[IS_SUCCESS];

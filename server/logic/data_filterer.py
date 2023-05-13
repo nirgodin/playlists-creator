@@ -6,6 +6,7 @@ from pandas import DataFrame
 
 from server.consts.data_consts import DATA_PATH, URI
 from server.data.query_condition import QueryCondition
+from server.utils import sample_list
 
 
 class DataFilterer:
@@ -27,7 +28,7 @@ class DataFilterer:
 
         n_candidates = len(filtered_data)
         n_selected_candidates = min(self._max_playlist_size, n_candidates)
-        candidates_indexes = random.sample(range(0, n_candidates), n_selected_candidates)
+        candidates_indexes = sample_list(n_candidates, n_selected_candidates)
 
         return self._data.iloc[candidates_indexes]
 

@@ -1,3 +1,4 @@
+import random
 from functools import lru_cache
 from typing import List, Dict
 
@@ -61,3 +62,7 @@ def build_spotify_client_credentials_headers() -> Dict[str, str]:
         "Content-Type": "application/json",
         "Authorization": f"Bearer {access_token}"
     }
+
+
+def sample_list(n_candidates: int, n_selected_candidates: int) -> List[int]:
+    return random.sample(range(0, n_candidates), n_selected_candidates)
