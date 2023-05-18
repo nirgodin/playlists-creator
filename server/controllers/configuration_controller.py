@@ -11,5 +11,6 @@ class ConfigurationController(BaseContentController):
     def post(self) -> Response:
         body = request.get_json()
         query_conditions = ParametersTransformer().transform(body)
+        uris = self._data_filterer.filter(query_conditions)
 
-        return self._generate_response(body, query_conditions)
+        return self._generate_response(body, uris)

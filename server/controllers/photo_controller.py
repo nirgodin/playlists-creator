@@ -24,7 +24,7 @@ class PhotoController(BaseContentController):
         photo = request.files[PHOTO]
         uris = self._get_tracks_uris(photo)
 
-        return self._generate_response(body, [], uris)
+        return self._generate_response(body, uris)
 
     @staticmethod
     def _get_body() -> dict:

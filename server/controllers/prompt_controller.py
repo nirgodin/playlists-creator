@@ -4,6 +4,7 @@ from typing import List, Optional, TypeVar
 from flask import Response, request
 
 from server.consts.app_consts import PLAYLIST_DETAILS, PROMPT
+from server.consts.data_consts import URI
 from server.consts.openai_consts import QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT, QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT, \
     TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT
 from server.controllers.base_content_controller import BaseContentController
@@ -27,19 +28,21 @@ class PromptController(BaseContentController):
     def post(self) -> Response:
         body = request.get_json()
         user_text = body[PLAYLIST_DETAILS][PROMPT]
-        # query_conditions = self._generate_query_conditions(user_text)
-        #
-        # if query_conditions is not None:
-        #     return self._generate_response(body, query_conditions)
-        # else:
-        uris = self._generate_uris_from_prompt(user_text)
-        return self._generate_response(body, [], uris)
+        track_details_uris = self._generate_uris_from_tracks_details(user_text)
 
-    def _generate_query_conditions(self, user_text: str) -> Optional[List[QueryCondition]]:
+        if track_details_uris is not None:
+            return self._generate_response(body, track_details_uris)
+        else:
+            query_conditions_uris = self._generate_uris_from_tracks_details(user_text)
+            return self._generate_response(body, query_conditions_uris)
+
+    def _generate_uris_from_query_conditions(self, user_text: str) -> Optional[List[QueryCondition]]:
         prompt = self._build_query_conditions_prompt(user_text)
         json_serialized_response = self._openai_adapter.fetch_openai(prompt, retries_left=1)
+        query_conditions = self._serialize_openai_response(json_serialized_response, klazz=QueryCondition)
 
-        return self._serialize_openai_response(json_serialized_response, klazz=QueryCondition)
+        if query_conditions is not None:
+            return self._data_filterer.filter(query_conditions)
 
     def _build_query_conditions_prompt(self, user_text: str) -> str:
         columns_details = self._columns_details_creator.create()
@@ -58,15 +61,16 @@ class PromptController(BaseContentController):
         except:
             return
 
-    def _generate_uris_from_prompt(self, user_text: str) -> Optional[List[str]]:
-        prompt = TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT.format(user_text)
-        json_serialized_response = self._openai_adapter.fetch_openai(prompt, retries_left=1)
+    def _generate_uris_from_tracks_details(self, user_text: str) -> Optional[List[str]]:
+        prompt = TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT.format(user_text=user_text)
+        json_serialized_response = self._openai_adapter.fetch_openai(prompt, retries_left=2)
         tracks_details = self._serialize_openai_response(json_serialized_response, klazz=TrackDetails)
 
         if tracks_details is None:
             return
 
-        return asyncio.run(self._tracks_collector.collect(tracks_details))
+        tracks = asyncio.run(self._tracks_collector.collect(tracks_details))
+        return [track[URI] for track in tracks][:100]
 
     def _build_uris_prompt(self, user_text: str) -> str:
         columns_details = self._columns_details_creator.create()

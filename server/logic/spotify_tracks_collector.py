@@ -6,7 +6,7 @@ from asyncio_pool import AioPool
 from tqdm import tqdm
 
 from server.consts.api_consts import SEARCH_URL
-from server.consts.data_consts import ARTIST, TYPE, QUERY, ARTISTS, ITEMS, ORIGINAL_INPUT, TRACK
+from server.consts.data_consts import ARTIST, TYPE, QUERY, ARTISTS, ITEMS, ORIGINAL_INPUT, TRACK, TRACKS
 from server.logic.openai.track_details import TrackDetails
 from server.utils import build_spotify_client_credentials_headers
 
@@ -22,7 +22,7 @@ class SpotifyTracksCollector:
 
                 results = await pool.map(fn=func, iterable=tracks_details)
 
-        return [result for result in results if result is not None]
+        return [result for result in results if result is not None and isinstance(result, dict)]
 
     async def _get_single_track(self,
                                 session: ClientSession,
@@ -37,17 +37,15 @@ class SpotifyTracksCollector:
         async with session.get(url=SEARCH_URL, params=params) as raw_response:
             response = await raw_response.json()
 
-        return self._extract_track_uri(response)
+        return self._extract_track(response)
 
     @staticmethod
-    def _extract_track_uri(response: dict) -> Optional[str]:
+    def _extract_track(response: dict) -> Optional[str]:
         if not isinstance(response, dict):
             return
 
-        items = response.get(ARTISTS, {}).get(ITEMS, [])
-        if not items:
+        tracks = response.get(TRACKS, {}).get(ITEMS, [])
+        if not tracks:
             return
 
-        first_item = items[0]
-
-        return first_item
+        return tracks[0]
