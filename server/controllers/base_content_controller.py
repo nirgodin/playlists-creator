@@ -22,7 +22,10 @@ class BaseContentController(Resource, ABC):
         self._data_filterer = DataFilterer()
         self._playlists_creator = PlaylistsCreator()
 
-    def _generate_response(self, body: dict, query_conditions: List[QueryCondition], uris: Optional[List[str]] = None) -> Response:
+    def _generate_response(self,
+                           body: dict,
+                           query_conditions: List[QueryCondition],
+                           uris: Optional[List[str]] = None) -> Response:
         if uris is None:
             uris = self._data_filterer.filter(query_conditions)
 
@@ -51,7 +54,7 @@ class BaseContentController(Resource, ABC):
         if retries_left == 0:
             return
 
-        response = AccessTokenGenerator.generate(config.access_code, config.grant_type)
+        response = AccessTokenGenerator.generate(grant_type=config.grant_type, access_code=config.access_code)
 
         try:
             headers = self._build_request_headers(response)

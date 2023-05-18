@@ -51,10 +51,7 @@ def build_prompt(prompt_prefix: str, prompt_suffix: str) -> str:
 
 
 def build_spotify_client_credentials_headers() -> Dict[str, str]:
-    response = AccessTokenGenerator.generate(
-        access_code='',  # TODO: Make access code optional
-        grant_type=SpotifyGrantType.CLIENT_CREDENTIALS
-    )
+    response = AccessTokenGenerator.generate(SpotifyGrantType.CLIENT_CREDENTIALS)
     access_token = response[ACCESS_TOKEN]
 
     return {

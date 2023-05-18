@@ -1,7 +1,7 @@
 from server.consts.data_consts import SONG, URI, NAME, ARTIST_NAME, GENRES, MAIN_ALBUM, ALBUM_TRACKS_NUMBER, \
     TRACK_NUMBER
 
-PROMPT_PREFIX_FORMAT = """\
+QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT = """\
 In this task you should help serialize free texts inputs that describes the characteristics of a Spotify playlist, to \
 a JSON serializable string that configures the parameters that will generate this playlist. \
 The JSON string should have the following format: An array of dictionaries, each comprised by the following fields: \
@@ -52,7 +52,7 @@ The possible column names for the JSON array are:
 {columns_details}
 """
 
-PROMPT_SUFFIX_FORMAT = """\
+QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT = """\
 Include in the JSON array only relevant column names. For example, if you are asked for "a playlist of instrumental \
 songs", your response should include an array with only one dictionary:
 ```
@@ -97,4 +97,38 @@ operator: {column_operator}
 values: {column_values}
 description: {column_description}
 ---
+"""
+
+
+TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT = """\
+In this task you should help serialize free texts inputs that describes the characteristics of a Spotify playlist, to \
+a JSON serializable string that specifies a list of tracks and artists names. \
+The JSON string should have the following format: An array of dictionaries, each comprised by the following fields: \
+`artist_name`, `track_name`.
+For example:
+The following text "I want a playlist of songs in the style of Eminem" should result a JSON string of the following, \
+structure, denoted in triple brackets:
+```
+[
+    {{
+        "artist_name": "Joyner Lucas",
+        "track_name": "Darkness",
+    }},
+    {{
+        "artist_name": "Machine Gun Kelly",
+        "track_name": "Killshot",
+    }},
+    {{
+        "artist_name": "Token",
+        "track_name": "Legacy",
+    }},    
+]
+```
+Pay attention: the example I provided to you includes only three tracks. However, in your response you should include \
+as many tracks the user requests. In case the user asks for 20 tracks, you should provide a JSON serializable list \
+with 20 entries. Pay attention: No matter how many tracks the user asks, the list length should not exceed 100 entries!
+Your response should include the JSON array and ONLY it. It should be serializable by a single Python `json.loads` \
+command.
+Please generate 50 tracks JSON list based on the following text:
+{user_text}\
 """

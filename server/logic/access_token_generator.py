@@ -14,7 +14,7 @@ from server.data.spotify_grant_type import SpotifyGrantType
 class AccessTokenGenerator:
     @staticmethod
     @lru_cache
-    def generate(access_code: str, grant_type: SpotifyGrantType) -> Optional[Dict[str, str]]:
+    def generate(grant_type: SpotifyGrantType, access_code: Optional[str] = None) -> Optional[Dict[str, str]]:
         encoded_header = AccessTokenGenerator._get_encoded_header()
         headers = {'Authorization': f"Basic {encoded_header}"}
         data = AccessTokenGenerator._build_request_payload(access_code, grant_type)
