@@ -54,6 +54,10 @@ def build_spotify_client_credentials_headers() -> Dict[str, str]:
     response = AccessTokenGenerator.generate(SpotifyGrantType.CLIENT_CREDENTIALS)
     access_token = response[ACCESS_TOKEN]
 
+    return build_spotify_headers(access_token)
+
+
+def build_spotify_headers(access_token: str) -> Dict[str, str]:
     return {
         "Accept": "application/json",
         "Content-Type": "application/json",

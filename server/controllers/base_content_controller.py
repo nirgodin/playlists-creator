@@ -1,6 +1,4 @@
-import json
 from abc import ABC
-from http import HTTPStatus
 from typing import Dict, List, Optional
 
 from flask import jsonify, Response
@@ -8,13 +6,13 @@ from flask_restful import Resource
 
 from server.consts.api_consts import ACCESS_TOKEN, REFRESH_TOKEN
 from server.consts.app_consts import ACCESS_CODE, IS_SUCCESS, PLAYLIST_LINK, PLAYLIST_DETAILS, MESSAGE
-from server.consts.data_consts import URI
 from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.data.query_condition import QueryCondition
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.data_filterer import DataFilterer
 from server.logic.playlists_creator import PlaylistsCreator
+from server.utils import build_spotify_headers
 
 
 class BaseContentController(Resource, ABC):
@@ -71,11 +69,7 @@ class BaseContentController(Resource, ABC):
         if bearer_token is None:
             return
 
-        return {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {bearer_token}"
-        }
+        return build_spotify_headers(bearer_token)
 
     @staticmethod
     def _build_authentication_failure_response() -> Response:
