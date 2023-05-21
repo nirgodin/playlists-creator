@@ -1,5 +1,11 @@
 
 const SPOTIFY_BASE_AUTHORIZATION_URL = 'https://accounts.spotify.com/authorize?'
+const SPOTIFY_SCOPES = [
+    'playlist-modify-public',
+    'playlist-modify-private',
+    'user-read-private',
+    'ugc-image-upload'
+]
 
 function generateAccessCodeURL(clientID, redirectURI) {
     console.log(`Redirect URI ${redirectURI}`);
@@ -7,7 +13,7 @@ function generateAccessCodeURL(clientID, redirectURI) {
         client_id: clientID,
         response_type: 'code',
         redirect_uri: redirectURI,
-        scope: 'playlist-modify-public playlist-modify-private user-read-private',
+        scope: SPOTIFY_SCOPES.join(' ')
     };
     return SPOTIFY_BASE_AUTHORIZATION_URL + Object.entries(params).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
 }
