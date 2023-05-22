@@ -1,8 +1,10 @@
+import os.path
 import random
 from functools import lru_cache
 from typing import List, Dict
 
 import pandas as pd
+from PIL import Image
 from pandas import DataFrame
 
 from server.consts.api_consts import ACCESS_TOKEN
@@ -76,3 +78,13 @@ def sample_list(n_candidates: int, n_selected_candidates: int) -> List[int]:
 
 def string_to_boolean(s: str) -> bool:
     return s.lower() == 'true'
+
+
+def save_image_as_jpeg(image_path: str) -> str:
+    original_file_extension = os.path.splitext(image_path)[-1]
+    formatted_image_path = image_path.replace(original_file_extension, '.jpg')
+    image = Image.open(image_path)
+    rgb_image = image.convert('RGB')
+    rgb_image.save(formatted_image_path)
+
+    return formatted_image_path

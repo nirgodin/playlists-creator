@@ -4,12 +4,13 @@ from typing import List, Union, Optional
 
 import openai
 
+from server.consts.env_consts import OPENAI_API_KEY
 from server.consts.openai_consts import SERIALIZATION_ERROR_PROMPT_FORMAT
 
 
 class OpenAIAdapter:
     def __init__(self):
-        openai.api_key = os.environ['OPENAI_API_KEY']
+        openai.api_key = os.environ[OPENAI_API_KEY]
         self._openai_model = openai.ChatCompletion()
 
     def fetch_openai(self,
