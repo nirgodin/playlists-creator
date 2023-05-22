@@ -30,7 +30,7 @@ class DataFilterer:
         n_selected_candidates = min(self._max_playlist_size, n_candidates)
         candidates_indexes = sample_list(n_candidates, n_selected_candidates)
 
-        return self._data.iloc[candidates_indexes]
+        return filtered_data.iloc[candidates_indexes]
 
     @staticmethod
     def _build_query(query_conditions: List[QueryCondition]) -> str:
