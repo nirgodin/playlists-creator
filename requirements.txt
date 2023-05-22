@@ -12,3 +12,4 @@ opencv-python==4.7.0.72
 pytesseract==0.3.10
 tqdm==4.65.0
 Werkzeug==2.2.3
+asyncio-pool==0.6.0
