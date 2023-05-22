@@ -4,6 +4,7 @@ from typing import Any, Optional
 from dataclasses_json import dataclass_json, LetterCase
 
 from server.consts.openai_consts import IN_OPERATOR
+from server.utils import BOOL_VALUES, string_to_boolean
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -21,13 +22,26 @@ class QueryCondition:
         if not self.value:
             return
 
-        if self.operator == IN_OPERATOR:
-            lowercased_values = [value.lower() for value in self.value]
-            self.value = str(tuple(lowercased_values))
-
+        self._format_value()
         condition = f'{self.column} {self.operator} {self.value}'
 
         if self.include_nan:
             condition += f' | {self.column}.isnull()'
 
         return condition
+
+    def _format_value(self) -> None:
+        if not self.operator == IN_OPERATOR:
+            return
+
+        formatted_values = []
+
+        for sub_value in self.value:
+            if sub_value.lower() in BOOL_VALUES:
+                formatted_value = string_to_boolean(sub_value)
+            else:
+                formatted_value = sub_value
+
+            formatted_values.append(formatted_value)
+
+        self.value = str(tuple(formatted_values))
