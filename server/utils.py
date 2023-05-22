@@ -10,6 +10,11 @@ from server.consts.data_consts import DATA_PATH
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
 
+BOOL_VALUES = [
+    'false',
+    'true'
+]
+
 
 @lru_cache
 def get_column_min_max_values(column_name: str) -> List[float]:
@@ -67,3 +72,7 @@ def build_spotify_headers(access_token: str) -> Dict[str, str]:
 
 def sample_list(n_candidates: int, n_selected_candidates: int) -> List[int]:
     return random.sample(range(0, n_candidates), n_selected_candidates)
+
+
+def string_to_boolean(s: str) -> bool:
+    return s.lower() == 'true'
