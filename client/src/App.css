@@ -153,3 +153,11 @@
 .toggle-button-icon {
   padding-right: 10px;
 }
+
+.photo-dropzone:hover {
+  cursor: pointer;
+}
+
+.photo-preview {
+  padding-bottom: 10px;
+}

@@ -6,7 +6,8 @@ import { useState, useEffect } from "react"
 import RequestBody from ".././components/RequestBody"
 import PlaylistTextFields from ".././components/PlaylistTextFields"
 import { PROMPT, CONFIGURATION, PHOTO } from "../consts"
-import PhotoUpload from "../components/PhotoUpload"
+import PhotoDropzone from "../components/PhotoDropzone"
+import _ from "underscore"
 
 export default function LandingPage(props) {
     const [alignment, setAlignment] = useState(PROMPT);
@@ -21,10 +22,13 @@ export default function LandingPage(props) {
             if (endpoint === PROMPT) {
                 const isValid = (isValidPrompt && isValidPlaylistName);
                 setIsValidInput(isValid);
+            } else if (endpoint === PHOTO){
+                const isValid = (isValidPlaylistName && !_.isEqual(files, []));
+                setIsValidInput(isValid);
             } else {
                 setIsValidInput(isValidPlaylistName);
             }
-        }, [endpoint, isValidPrompt, isValidPlaylistName]
+        }, [endpoint, isValidPrompt, isValidPlaylistName, files]
     )
     const playlistDetails = <div className='playlist-details'>
         <PlaylistTextFields
@@ -43,7 +47,7 @@ export default function LandingPage(props) {
         ></MethodToggleButtonGroup>
     </div>
 
-    const buttons = <div>
+    const buttons = <div className="send-button">
         <Box>
             <SendButton
                 text={'Create Playlist'}
@@ -104,9 +108,10 @@ export default function LandingPage(props) {
             <div>
                 {playlistDetails}
                 {toggleButton}
-                <PhotoUpload
+                <PhotoDropzone
+                    files={files}
                     setFiles={setFiles}
-                ></PhotoUpload>
+                ></PhotoDropzone>
                 {buttons}
             </div>
         )
