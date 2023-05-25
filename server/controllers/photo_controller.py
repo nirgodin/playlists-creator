@@ -7,6 +7,7 @@ from typing import List, Optional
 from flask import Response, request
 from werkzeug.datastructures import FileStorage
 
+from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import REQUEST_BODY, PHOTO
 from server.controllers.base_content_controller import BaseContentController
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
@@ -14,10 +15,9 @@ from server.utils import sample_list
 
 
 class PhotoController(BaseContentController):
-    def __init__(self, max_playlist_size: int = 100):
+    def __init__(self):
         super().__init__()
         self._tracks_uris_extractor = TracksURIsImageExtractor()
-        self._max_playlist_size = max_playlist_size
 
     def post(self) -> Response:
         body = self._get_body()
@@ -33,10 +33,13 @@ class PhotoController(BaseContentController):
 
         return json.loads(data)
 
-    def _get_tracks_uris(self, photo: FileStorage) -> List[str]:
+    def _get_tracks_uris(self, photo: FileStorage) -> Optional[List[str]]:
         uris = self._get_tracks_uri_from_photo(photo)
+        if uris is None:
+            return
+
         n_candidates = len(uris)
-        n_selected_candidates = min(n_candidates, self._max_playlist_size)
+        n_selected_candidates = min(n_candidates, MAX_SPOTIFY_PLAYLIST_SIZE)
         selected_uris_indexes = sample_list(n_candidates, n_selected_candidates)
 
         return [uris[i] for i in selected_uris_indexes]

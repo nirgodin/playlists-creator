@@ -4,15 +4,15 @@ from typing import List
 import pandas as pd
 from pandas import DataFrame
 
+from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.data_consts import DATA_PATH, URI
 from server.data.query_condition import QueryCondition
 from server.utils import sample_list
 
 
 class DataFilterer:
-    def __init__(self, candidates_pool_size: int = 5000, max_playlist_size: int = 100):
+    def __init__(self, candidates_pool_size: int = 5000):
         self._candidates_pool_size = candidates_pool_size
-        self._max_playlist_size = max_playlist_size
         self._data = pd.read_csv(DATA_PATH)
 
     def filter(self, query_conditions: List[QueryCondition]) -> List[str]:
@@ -27,7 +27,7 @@ class DataFilterer:
             return filtered_data
 
         n_candidates = len(filtered_data)
-        n_selected_candidates = min(self._max_playlist_size, n_candidates)
+        n_selected_candidates = min(MAX_SPOTIFY_PLAYLIST_SIZE, n_candidates)
         candidates_indexes = sample_list(n_candidates, n_selected_candidates)
 
         return filtered_data.iloc[candidates_indexes]

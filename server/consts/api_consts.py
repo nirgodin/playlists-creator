@@ -19,3 +19,4 @@ DESCRIPTION = "description"
 PUBLIC = "public"
 CLIENT_ID = 'client_id'
 MARKET = 'market'
+MAX_SPOTIFY_PLAYLIST_SIZE = 100

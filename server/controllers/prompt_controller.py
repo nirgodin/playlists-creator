@@ -3,6 +3,7 @@ from typing import List, Optional, TypeVar
 
 from flask import Response, request
 
+from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import PLAYLIST_DETAILS, PROMPT, ACCESS_CODE
 from server.consts.data_consts import URI
 from server.consts.openai_consts import QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT, QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT, \
@@ -76,7 +77,7 @@ class PromptController(BaseContentController):
             return
 
         tracks = asyncio.run(self._tracks_collector.collect(tracks_details))
-        return [track[URI] for track in tracks][:100]
+        return [track[URI] for track in tracks][:MAX_SPOTIFY_PLAYLIST_SIZE]
 
     def _build_uris_prompt(self, user_text: str) -> str:
         columns_details = self._columns_details_creator.create()
