@@ -132,3 +132,24 @@ command.
 Please generate 50 tracks JSON list based on the following text:
 {user_text}\
 """
+
+PHOTO_ARTISTS_PROMPT_PREFIX = """\
+Please extract from the following text, denoted in triple brackets, all music artists names you can find. You should \
+return the names in a JSON serializable array, where each entry contains a single artist name. Your response should 
+include the JSON array and ONLY it. It should be serializable by a single Python `json.loads` command. For example, \
+given the following text:
+```
+EMINEM: tric Bry ili bopgameempiiges Kid cudi LAROI-Charfi Ruj-dmc, ~
+```
+Your response should look like this:
+```
+[
+    eminem,
+    kid cudi,
+    run dmc
+]
+```
+ 
+In case you do not detect any artists name in the text, return an empty array.
+The text is:
+"""
