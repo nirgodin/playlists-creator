@@ -130,7 +130,7 @@
   100% { transform: skewY(0deg); }
  }
 
-.skew-y-shaking {
+.error-message {
   animation: skew-y-shakeing 1.5s;
   color: red;
   font-size: large;

@@ -64,7 +64,7 @@ export default function LandingPage(props) {
                 setFiles={setFiles}
             ></SendButton>
         </Box>
-        <p className="skew-y-shaking" key={props.errorMessage}>{props.errorMessage}</p>
+        <p className="error-message" key={props.errorMessage}>{props.errorMessage}</p>
     </div>
 
     if (alignment === PROMPT) {

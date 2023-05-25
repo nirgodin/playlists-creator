@@ -1,70 +1,12 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { PHOTO_DROPZONE_ACCEPT_STYLE, PHOTO_DROPZONE_BASE_STYLE, PHOTO_DROPZONE_FOCUSED_STYLE, PHOTO_DROPZONE_IMAGE_STYLE, PHOTO_DROPZONE_REJECT_STYLE, PHOTO_DROPZONE_THUMB_CONTAINER_STYLE, PHOTO_DROPZONE_THUMB_INNER_STYLE, PHOTO_DROPZONE_THUMB_STYLE } from '../consts';
+import _ from 'underscore';
 
-const baseStyle = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    borderWidth: 2,
-    borderRadius: 2,
-    borderColor: '#1976d2',
-    borderStyle: 'dashed',
-    backgroundColor: 'rgb(0, 30, 60)',
-    color: 'white',
-    outline: 'none',
-    transition: 'border .24s ease-in-out',
-    width: '350px',
-    margin: 'auto',
-    fontSize: 16
-};
-
-const focusedStyle = {
-    borderColor: '#2196f3'
-};
-
-const acceptStyle = {
-    borderColor: '#00e676'
-};
-
-const rejectStyle = {
-    borderColor: '#ff1744'
-};
-
-const thumbsContainer = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 16,
-};
-
-const thumb = {
-    display: 'inline-flex',
-    borderRadius: 2,
-    border: '1px solid #eaeaea',
-    marginBottom: 8,
-    marginRight: 8,
-    width: 100,
-    height: 100,
-    padding: 4,
-    boxSizing: 'border-box',
-    margin: 'auto'
-};
-
-const thumbInner = {
-    display: 'flex',
-    minWidth: 0,
-    overflow: 'hidden'
-};
-
-const img = {
-    display: 'block',
-    width: 'auto',
-    height: '100%'
-};
 
 export default function PhotoDropzone(props) {
+    const [errorMessage, setErrorMessage] = useState('');
+
     const {
         getRootProps,
         getInputProps,
@@ -73,37 +15,66 @@ export default function PhotoDropzone(props) {
         isDragReject
     } = useDropzone(
         {
-            onDrop: acceptedFiles => {
-                props.setFiles(acceptedFiles.map(file => Object.assign(file, {
-                    preview: URL.createObjectURL(file)
-                })));
-            }
+            multiple: false,
+            onDrop: handleDrop,
         }
     );
 
+    function isImage(file) {
+        const fileTypeComponents = file.type.split('/');
+        const fileType = fileTypeComponents[0];
+
+        return fileType === 'image'
+    }
+
+    function handleDrop(acceptedFiles) {
+        const assignedFiles = [];
+        const invalidFiles = [];
+
+        acceptedFiles.forEach(
+            file => {
+                if (isImage(file)) {
+                    Object.assign(
+                        file, { preview: URL.createObjectURL(file) }
+                    )
+                    assignedFiles.push(file)
+                } else {
+                    invalidFiles.push(file)
+                }
+            }
+        )
+
+        if (!_.isEqual(invalidFiles, [])) {
+            setErrorMessage('Invalid file type. Files must be of type Image');
+            props.setFiles([]);
+        } else {
+            props.setFiles(assignedFiles);
+            setErrorMessage('');
+        }
+    }
+
     const thumbs = props.files.map(file => (
-        <div style={thumb} key={file.name}>
-            <div style={thumbInner}>
+        <div style={PHOTO_DROPZONE_THUMB_STYLE} key={file.name}>
+            <div style={PHOTO_DROPZONE_THUMB_INNER_STYLE}>
                 <img
                     src={file.preview}
-                    style={img}
-                    // Revoke data uri after image is loaded
+                    style={PHOTO_DROPZONE_IMAGE_STYLE}
                     onLoad={() => { URL.revokeObjectURL(file.preview) }}
+                    alt=''
                 />
             </div>
         </div>
     ));
 
     useEffect(() => {
-        // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
         return () => props.files.forEach(file => URL.revokeObjectURL(file.preview));
     }, [props.files]);
 
     const style = useMemo(() => ({
-        ...baseStyle,
-        ...(isFocused ? focusedStyle : {}),
-        ...(isDragAccept ? acceptStyle : {}),
-        ...(isDragReject ? rejectStyle : {})
+        ...PHOTO_DROPZONE_BASE_STYLE,
+        ...(isFocused ? PHOTO_DROPZONE_FOCUSED_STYLE : {}),
+        ...(isDragAccept ? PHOTO_DROPZONE_ACCEPT_STYLE : {}),
+        ...(isDragReject ? PHOTO_DROPZONE_REJECT_STYLE : {})
     }), [
         isFocused,
         isDragAccept,
@@ -116,9 +87,10 @@ export default function PhotoDropzone(props) {
                 <input {...getInputProps()} />
                 <p>Drag here or click to select files</p>
             </div>
-            <aside style={thumbsContainer} className='photo-preview'>
+            <aside style={PHOTO_DROPZONE_THUMB_CONTAINER_STYLE} className='photo-preview'>
                 {thumbs}
             </aside>
+            <p className="error-message" key={errorMessage}>{errorMessage}</p>
         </div>
     );
 }

@@ -34,6 +34,71 @@ const MenuProps = {
     },
 };
 
+// Photo dropzone style
+const PHOTO_DROPZONE_BASE_STYLE = {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: '#1976d2',
+    borderStyle: 'dashed',
+    backgroundColor: 'rgb(0, 30, 60)',
+    color: 'white',
+    outline: 'none',
+    transition: 'border .24s ease-in-out',
+    width: '350px',
+    margin: 'auto',
+    fontSize: 16
+};
+
+const PHOTO_DROPZONE_FOCUSED_STYLE = {
+    borderColor: '#2196f3'
+};
+
+const PHOTO_DROPZONE_ACCEPT_STYLE = {
+    borderColor: '#00e676'
+};
+
+const PHOTO_DROPZONE_REJECT_STYLE = {
+    borderColor: '#ff1744'
+};
+
+const PHOTO_DROPZONE_THUMB_CONTAINER_STYLE = {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16,
+};
+
+const PHOTO_DROPZONE_THUMB_STYLE = {
+    display: 'inline-flex',
+    borderRadius: 2,
+    border: '1px solid #eaeaea',
+    marginBottom: 8,
+    marginRight: 8,
+    width: 100,
+    height: 100,
+    padding: 4,
+    boxSizing: 'border-box',
+    margin: 'auto'
+};
+
+const PHOTO_DROPZONE_THUMB_INNER_STYLE = {
+    display: 'flex',
+    minWidth: 0,
+    overflow: 'hidden'
+};
+
+const PHOTO_DROPZONE_IMAGE_STYLE = {
+    display: 'block',
+    width: 'auto',
+    height: '100%'
+};
+
+
 export {
     PROMPT,
     CONFIGURATION,
@@ -54,5 +119,13 @@ export {
     MESSAGE,
     ACCESS_CODE,
     REQUEST_BODY,
-    MenuProps
+    MenuProps,
+    PHOTO_DROPZONE_IMAGE_STYLE,
+    PHOTO_DROPZONE_THUMB_INNER_STYLE,
+    PHOTO_DROPZONE_THUMB_STYLE,
+    PHOTO_DROPZONE_THUMB_CONTAINER_STYLE,
+    PHOTO_DROPZONE_REJECT_STYLE,
+    PHOTO_DROPZONE_ACCEPT_STYLE,
+    PHOTO_DROPZONE_FOCUSED_STYLE,
+    PHOTO_DROPZONE_BASE_STYLE
 };
