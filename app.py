@@ -39,3 +39,4 @@ api.add_resource(FeaturesDescriptionsController, '/api/featuresDescriptions')
 
 if __name__ == '__main__':
     app.run(debug=False)
+
