@@ -10,6 +10,7 @@ import { toCamelCase } from '../utils/StringUtils';
 import _ from 'underscore'
 import { FILTER_PARAMS, MenuProps, POSSIBLE_VALUES, VALUE } from '../consts';
 import { sendGetRequest } from '../utils/RequestsUtils';
+import AutocompleteSelect from './AutocompleteSelect';
 
 export default function MultipleSelectChip(props) {
     const [possibleValues, setPossibleValues] = React.useState([])
@@ -41,38 +42,44 @@ export default function MultipleSelectChip(props) {
         );
     };
 
-    return (
-        <div className='multiple-select-chip'>
-            <Box sx={{ width: 200 }}>
-                <FormControl sx={{ width: 200 }}>
-                    <InputLabel className='input-label' id="demo-multiple-chip-label" style={{color: 'white'}}>{props.title}</InputLabel>
-                    <Select
-                        labelId="demo-multiple-chip-label"
-                        id="demo-multiple-chip"
-                        multiple
-                        value={selectedOptions}
-                        onChange={handleChange}
-                        input={<OutlinedInput id="select-multiple-chip" label={props.title} />}
-                        renderValue={(selected) => (
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                {selected.map((value) => (
-                                    <Chip key={value} label={value} sx={{ color: 'white' }} />
-                                ))}
-                            </Box>
-                        )}
-                        MenuProps={MenuProps}
-                    >
-                        {possibleValues.map((option) => (
-                            <MenuItem
-                                key={option}
-                                value={option}
-                            >
-                                {option}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </Box>
-        </div>
-    );
+    if (possibleValues.length > 50) {
+        return <AutocompleteSelect
+            possibleValues={possibleValues}
+        ></AutocompleteSelect>
+    } else {
+        return (
+            <div className='multiple-select-chip'>
+                <Box sx={{ width: 200 }}>
+                    <FormControl sx={{ width: 200 }}>
+                        <InputLabel className='input-label' id="demo-multiple-chip-label" style={{ color: 'white' }}>{props.title}</InputLabel>
+                        <Select
+                            labelId="demo-multiple-chip-label"
+                            id="demo-multiple-chip"
+                            multiple
+                            value={selectedOptions}
+                            onChange={handleChange}
+                            input={<OutlinedInput id="select-multiple-chip" label={props.title} />}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                    {selected.map((value) => (
+                                        <Chip key={value} label={value} sx={{ color: 'white' }} />
+                                    ))}
+                                </Box>
+                            )}
+                            MenuProps={MenuProps}
+                        >
+                            {possibleValues.map((option) => (
+                                <MenuItem
+                                    key={option}
+                                    value={option}
+                                >
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+            </div>
+        );
+    }
 }

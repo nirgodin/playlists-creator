@@ -81,7 +81,7 @@ Please regenerate a response that will avoid this exception.
 EXCLUDED_COLUMNS = [
     SONG,
     NAME,
-    ARTIST_NAME,
+    # ARTIST_NAME,
     URI,
     GENRES,
     MAIN_ALBUM,

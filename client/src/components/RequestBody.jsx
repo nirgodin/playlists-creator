@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import _ from 'underscore';
 import { FEATURES_DESCRIPTIONS } from '../consts';
 import { sendGetRequest } from '../utils/RequestsUtils';
+import AutocompleteSelect from './AutocompleteSelect';
 
 export default function RequestBody(props) {
     const [featuresDescriptions, setFeaturesDescriptions] = useState([]);
@@ -33,6 +34,7 @@ export default function RequestBody(props) {
                 setBody={props.setBody}
                 featuresDescriptions={featuresDescriptions}
             ></RangeSliders>
+            {/* <AutocompleteSelect></AutocompleteSelect> */}
         </div>
     </div>
 }

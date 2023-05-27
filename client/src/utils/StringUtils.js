@@ -22,3 +22,8 @@ export function toCamelCase(str) {
 
     return camelCasedTokens.join('')
 }
+
+
+export function getFirstLetter(str) {
+    return str[0].toUpperCase();
+}
