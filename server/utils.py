@@ -8,9 +8,11 @@ from PIL import Image
 from pandas import DataFrame
 
 from server.consts.api_consts import ACCESS_TOKEN
-from server.consts.data_consts import DATA_PATH
+from server.consts.data_consts import DATA_PATH, RESOURCES_DIR_PATH
+from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
+from server.tools.google_drive.google_drive_adapter import GoogleDriveAdapter
 
 BOOL_VALUES = [
     'false',
@@ -88,3 +90,13 @@ def save_image_as_jpeg(image_path: str) -> str:
     rgb_image.save(formatted_image_path)
 
     return formatted_image_path
+
+
+def download_database() -> None:
+    if os.path.exists(DATA_PATH):
+        return
+
+    GoogleDriveAdapter().download_all_dir_files(
+        folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
+        local_dir=RESOURCES_DIR_PATH
+    )

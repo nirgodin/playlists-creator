@@ -4,6 +4,7 @@ from flask import Flask, send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_restful import Api
 
+from server.consts.env_consts import SPOTIPY_CLIENT_SECRET
 from server.controllers.configuration_controller import ConfigurationController
 from server.controllers.features_descriptions_controller import FeaturesDescriptionsController
 from server.controllers.features_names_controller import FeaturesNamesController
@@ -12,8 +13,9 @@ from server.controllers.photo_controller import PhotoController
 from server.controllers.possible_values_controller import PossibleValuesController
 from server.controllers.prompt_controller import PromptController
 from server.controllers.request_body_controller import RequestBodyController
-from server.consts.env_consts import SPOTIPY_CLIENT_SECRET
+from server.utils import download_database
 
+download_database()
 app = Flask(__name__, static_folder='client/build', static_url_path='')
 app.secret_key = os.environ[SPOTIPY_CLIENT_SECRET]
 CORS(app)
