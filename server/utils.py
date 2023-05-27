@@ -1,7 +1,7 @@
 import os.path
 import random
 from functools import lru_cache
-from typing import List, Dict
+from typing import List, Dict, Union
 
 import pandas as pd
 from PIL import Image

@@ -22,5 +22,6 @@
     "artist_followers": "The total number of artist followers.",
     "artist_popularity": "The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular. The artist's popularity is calculated from the popularity of all the artist's tracks.",
     "israeli_radio_play_count": "The number of times the track was played in the Israeli radio during the past two years",
-    "duration_minutes": "The duration of the track in minutes"
+    "duration_minutes": "The duration of the track in minutes",
+    "artist_name": "The artist who performed the track"
 }
