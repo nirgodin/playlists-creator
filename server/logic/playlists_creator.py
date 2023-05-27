@@ -3,7 +3,7 @@ from typing import List, Dict
 import requests
 
 from server.consts.api_consts import CREATE_PLAYLIST_URL_FORMAT, ADD_PLAYLIST_ITEMS_URL_FORMAT, USER_PROFILE_URL, ID, \
-    PLAYLIST_LINK_FORMAT, NAME, DESCRIPTION, PUBLIC
+    NAME, DESCRIPTION, PUBLIC
 from server.consts.app_consts import PLAYLIST_NAME, PLAYLIST_DESCRIPTION, IS_PUBLIC
 
 
@@ -12,9 +12,8 @@ class PlaylistsCreator:
         playlist_id = self._create_playlist(playlist_details, headers)
         valid_uris = [uri for uri in uris if isinstance(uri, str)]
         self._add_playlist_items(playlist_id, valid_uris, headers)
-        playlist_link = PLAYLIST_LINK_FORMAT.format(playlist_id)
 
-        return playlist_link
+        return playlist_id
 
     def _create_playlist(self, playlist_details: dict, headers: dict) -> str:
         user_id = self._fetch_user_id(headers)

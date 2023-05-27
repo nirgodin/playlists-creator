@@ -35,13 +35,10 @@ class PromptController(BaseContentController):
         query_conditions_uris = self._generate_uris_from_query_conditions(user_text)
 
         if query_conditions_uris is not None:
-            return self._generate_response(body, query_conditions_uris)
+            return self._generate_response(body, query_conditions_uris, f'{user_text}, digital art')
         else:
             track_details_uris = self._generate_uris_from_tracks_details(user_text)
-            return self._generate_response(body, track_details_uris)
-        # response = AccessTokenGenerator.generate(grant_type=SpotifyGrantType.AUTHORIZATION_CODE, access_code=body[ACCESS_CODE])
-        # headers = self._build_request_headers(response)
-        # PlaylistCoverPhotoCreator().put_playlist_cover(headers=headers, playlist_id='0tp13KbV1k1qoGzgfTpa36', prompt=body[PLAYLIST_DETAILS][PROMPT])
+            return self._generate_response(body, track_details_uris, f'{user_text}, digital art')
 
     def _generate_uris_from_query_conditions(self, user_text: str) -> Optional[List[str]]:
         prompt = self._build_query_conditions_prompt(user_text)
