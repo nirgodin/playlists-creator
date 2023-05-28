@@ -4,8 +4,6 @@ from tempfile import TemporaryDirectory
 import requests
 
 from server.consts.api_consts import PLAYLIST_COVER_URL_FORMAT
-from PIL import Image
-
 from server.logic.openai.dalle_adapter import DallEAdapter
 from server.utils import save_image_as_jpeg
 
