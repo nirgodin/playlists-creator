@@ -1,12 +1,10 @@
-import json
 from functools import lru_cache
-from typing import List, Generator, Dict
+from typing import List, Generator
 
 from numpy import dtype
 from pandas import DataFrame
 from pandas.core.dtypes.common import is_string_dtype, is_bool_dtype
 
-from server.consts.data_consts import COLUMNS_DESCRIPTIONS_PATH
 from server.consts.openai_consts import EXCLUDED_COLUMNS, IN_OPERATOR, NUMERIC_OPERATORS, \
     SINGLE_COLUMN_DESCRIPTION_FORMAT
 from server.logic.features_descriptions_manager import FeaturesDescriptionsManager
