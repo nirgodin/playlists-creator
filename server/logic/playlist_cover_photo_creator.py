@@ -21,12 +21,11 @@ class PlaylistCoverPhotoCreator:
             image_path = self._dalle_adapter.create_image(prompt, dir_path=dir_name)
             image = self._encode_image_to_base64(image_path)
 
-        res = requests.put(
+        requests.put(
             url=url,
             data=image,
             headers=headers
         )
-        print('b')
 
     @staticmethod
     def _encode_image_to_base64(image_path: str) -> str:
