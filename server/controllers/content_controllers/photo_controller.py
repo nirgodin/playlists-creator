@@ -4,12 +4,12 @@ import os.path
 from tempfile import TemporaryDirectory
 from typing import List, Optional
 
-from flask import Response, request
+from flask import Request
 from werkzeug.datastructures import FileStorage
 
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import REQUEST_BODY, PHOTO
-from server.controllers.base_content_controller import BaseContentController
+from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.utils import sample_list
 
@@ -19,22 +19,16 @@ class PhotoController(BaseContentController):
         super().__init__()
         self._tracks_uris_extractor = TracksURIsImageExtractor()
 
-    def post(self) -> Response:
-        body = self._get_body()
-        photo = request.files[PHOTO]
-        uris = self._get_tracks_uris(photo)
-
-        return self._generate_response(body, uris)
-
-    @staticmethod
-    def _get_body() -> dict:
-        body = request.files[REQUEST_BODY]
+    def _get_request_body(self, client_request: Request) -> dict:
+        body = client_request.files[REQUEST_BODY]
         data = body.read()
+        request_body = json.loads(data)
+        request_body[PHOTO] = client_request.files[PHOTO]
 
-        return json.loads(data)
+        return request_body
 
-    def _get_tracks_uris(self, photo: FileStorage) -> Optional[List[str]]:
-        uris = self._get_tracks_uri_from_photo(photo)
+    def _generate_tracks_uris(self, request_body: dict) -> Optional[List[str]]:
+        uris = self._get_tracks_uri_from_photo(request_body[PHOTO])
         if uris is None:
             return
 
@@ -50,3 +44,6 @@ class PhotoController(BaseContentController):
             photo.save(path)
 
             return asyncio.run(self._tracks_uris_extractor.extract_tracks_uris(path))
+
+    def _generate_playlist_cover_prompt(self, request_body: dict) -> str:
+        raise   # TODO: Fix to enable cover

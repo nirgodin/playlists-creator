@@ -1,15 +1,17 @@
 import asyncio
-from typing import List, Optional, TypeVar
+from typing import List, Optional
+from typing import TypeVar
 
-from flask import Response, request
+from flask import Request
 
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import PLAYLIST_DETAILS, PROMPT
 from server.consts.data_consts import URI
 from server.consts.openai_consts import QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT, QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT, \
     TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT
-from server.controllers.base_content_controller import BaseContentController
+from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.query_condition import QueryCondition
+from server.logic.data_filterer import DataFilterer
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.openai.track_details import TrackDetails
@@ -23,19 +25,25 @@ class PromptController(BaseContentController):
     def __init__(self):
         super().__init__()
         self._openai_adapter = OpenAIAdapter()
+        self._data_filterer = DataFilterer()
         self._columns_details_creator = ColumnsDetailsCreator()
         self._tracks_collector = SpotifyTracksCollector()
 
-    def post(self) -> Response:
-        body = request.get_json()
-        user_text = body[PLAYLIST_DETAILS][PROMPT]
+    def _get_request_body(self, client_request: Request) -> dict:
+        return client_request.get_json()
+
+    def _generate_tracks_uris(self, request_body: dict) -> Optional[List[str]]:
+        user_text = self._extract_prompt_from_request_body(request_body)
         query_conditions_uris = self._generate_uris_from_query_conditions(user_text)
 
         if query_conditions_uris is not None:
-            return self._generate_response(body, query_conditions_uris, f'{user_text}, digital art')
+            return query_conditions_uris
         else:
-            track_details_uris = self._generate_uris_from_tracks_details(user_text)
-            return self._generate_response(body, track_details_uris, f'{user_text}, digital art')
+            return self._generate_uris_from_tracks_details(user_text)
+
+    def _generate_playlist_cover_prompt(self, request_body: dict) -> str:
+        user_text = self._extract_prompt_from_request_body(request_body)
+        return f'{user_text}, digital art'
 
     def _generate_uris_from_query_conditions(self, user_text: str) -> Optional[List[str]]:
         prompt = self._build_query_conditions_prompt(user_text)
@@ -79,3 +87,7 @@ class PromptController(BaseContentController):
         prompt_suffix = QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT.format(user_text=user_text)
 
         return build_prompt(prompt_prefix, prompt_suffix)
+
+    @staticmethod
+    def _extract_prompt_from_request_body(request_body: dict) -> str:
+        return request_body[PLAYLIST_DETAILS][PROMPT]

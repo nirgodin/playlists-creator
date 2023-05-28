@@ -2,14 +2,14 @@ from typing import List, Optional
 
 from flask import Request
 
-from server.controllers.content_controllers.base_content_controller_v2 import BaseContentControllerV2
+from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.logic.data_filterer import DataFilterer
 from server.logic.parameters_transformer import ParametersTransformer
 
 
-class ConfigurationControllerV2(BaseContentControllerV2):
+class ConfigurationController(BaseContentController):
     def __init__(self):
-        super(ConfigurationControllerV2).__init__()
+        super().__init__()
         self._data_filterer = DataFilterer()
         self._parameters_transformer = ParametersTransformer()
 

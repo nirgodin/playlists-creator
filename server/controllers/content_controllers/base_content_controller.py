@@ -12,7 +12,7 @@ from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.response_factory import ResponseFactory
 
 
-class BaseContentControllerV2(Resource, ABC):
+class BaseContentController(Resource, ABC):
     def __init__(self):
         self._playlists_creator = PlaylistsCreator()
         self._playlist_cover_photo_creator = PlaylistCoverPhotoCreator()
