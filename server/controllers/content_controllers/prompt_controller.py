@@ -42,9 +42,8 @@ class PromptController(BaseContentController):
             return self._generate_uris_from_tracks_details(user_text)
 
     def _generate_playlist_cover_prompt(self, request_body: dict) -> str:
-        raise
-        # user_text = self._extract_prompt_from_request_body(request_body)
-        # return f'{user_text}, digital art'
+        user_text = self._extract_prompt_from_request_body(request_body)
+        return f'{user_text}, digital art'
 
     def _generate_uris_from_query_conditions(self, user_text: str) -> Optional[List[str]]:
         prompt = self._build_query_conditions_prompt(user_text)
