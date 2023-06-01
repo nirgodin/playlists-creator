@@ -1,9 +1,11 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 import axios from 'axios'
 import { FILTER_PARAMS, IS_SUCCESS, MESSAGE, PHOTO, PLAYLIST_LINK, REQUEST_BODY } from "../consts";
+import PropTypes from 'prop-types';
 
-export default function SendButton(props) {
+function SendButton(props) {
     const [isClicked, setIsClicked] = useState(true);
     const url = `${process.env.REACT_APP_BASE_URL}/${props.endpoint}`;
 
@@ -19,7 +21,7 @@ export default function SendButton(props) {
         } else {
             await sendPlaylistConfigurationRequest()
         }
-    };
+    }
 
     async function sendPhotoRequest() {
         let bodyFormData = new FormData();
@@ -71,12 +73,12 @@ export default function SendButton(props) {
         setIsClicked(false);
     }
 
-    function handleError(error) {
+    function handleError() {
         props.setErrorMessage('An unexpected error has occured. Please reload the page and try again');
         props.setBody(props.defaultRequestBody);
     }
 
-    function handleClick(e) {
+    function handleClick() {
         props.setWasRequestSent(true);
         setIsClicked(true);
         sendPlaylistCreationRequest();
@@ -91,3 +93,19 @@ export default function SendButton(props) {
         </Button >
     )
 }
+
+SendButton.propTypes = {
+    isValidInput: PropTypes.bool,
+    endpoint: PropTypes.string,
+    files: PropTypes.array,
+    body: PropTypes.array,
+    setBody: PropTypes.func,
+    setPlaylistLink: PropTypes.func,
+    setIsSuccessfull: PropTypes.func,
+    setErrorMessage: PropTypes.func,
+    setWasRequestSent: PropTypes.func,
+    text: PropTypes.string,
+    defaultRequestBody: PropTypes.array
+}
+
+export default SendButton;

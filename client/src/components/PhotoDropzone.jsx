@@ -1,10 +1,11 @@
+import React from 'react';
 import { useMemo, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { PHOTO_DROPZONE_ACCEPT_STYLE, PHOTO_DROPZONE_BASE_STYLE, PHOTO_DROPZONE_FOCUSED_STYLE, PHOTO_DROPZONE_IMAGE_STYLE, PHOTO_DROPZONE_REJECT_STYLE, PHOTO_DROPZONE_THUMB_CONTAINER_STYLE, PHOTO_DROPZONE_THUMB_INNER_STYLE, PHOTO_DROPZONE_THUMB_STYLE } from '../consts';
 import _ from 'underscore';
+import PropTypes from 'prop-types';
 
-
-export default function PhotoDropzone(props) {
+function PhotoDropzone(props) {
     const [errorMessage, setErrorMessage] = useState('');
 
     const {
@@ -94,3 +95,10 @@ export default function PhotoDropzone(props) {
         </div>
     );
 }
+
+PhotoDropzone.propTypes = {
+    files: PropTypes.array,
+    setFiles: PropTypes.func,
+}
+
+export default PhotoDropzone;

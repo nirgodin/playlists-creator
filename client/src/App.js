@@ -16,7 +16,7 @@ function App() {
     const requestBody = await sendGetRequest(REQUEST_BODY, REQUEST_BODY);
     setDefaultRequestBody(cloneJSON(requestBody));
     setBody(requestBody);
-  };
+  }
 
   useEffect(
     () => {

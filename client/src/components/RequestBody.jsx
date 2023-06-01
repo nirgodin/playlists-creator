@@ -1,11 +1,13 @@
+import React from 'react';
 import RangeSliders from './RangeSliders';
 import SelectChips from './SelectChips';
 import { useEffect, useState } from 'react';
 import _ from 'underscore';
 import { FEATURES_DESCRIPTIONS } from '../consts';
 import { sendGetRequest } from '../utils/RequestsUtils';
+import PropTypes from 'prop-types';
 
-export default function RequestBody(props) {
+function RequestBody(props) {
     const [featuresDescriptions, setFeaturesDescriptions] = useState([]);
 
     useEffect(
@@ -21,7 +23,7 @@ export default function RequestBody(props) {
         setFeaturesDescriptions(descriptions);
     }
 
-    return <div>
+    return <div className='request-body'>
         <div className='playlist-configuration'>
             <SelectChips
                 body={props.body}
@@ -36,3 +38,10 @@ export default function RequestBody(props) {
         </div>
     </div>
 }
+
+RequestBody.propTypes = {
+    body: PropTypes.array,
+    setBody: PropTypes.func
+}
+
+export default RequestBody;

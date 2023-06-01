@@ -10,8 +10,9 @@ import { toCamelCase } from '../utils/StringUtils';
 import _ from 'underscore'
 import { FILTER_PARAMS, MenuProps, POSSIBLE_VALUES, VALUE } from '../consts';
 import { sendGetRequest } from '../utils/RequestsUtils';
+import PropTypes from 'prop-types';
 
-export default function MultipleSelectChip(props) {
+function MultipleSelectChip(props) {
     const [possibleValues, setPossibleValues] = React.useState([])
 
     const getPossibleValues = async () => {
@@ -76,3 +77,11 @@ export default function MultipleSelectChip(props) {
         </div>
     );
 }
+
+MultipleSelectChip.propTypes = {
+    title: PropTypes.string,
+    body: PropTypes.array,
+    setBody: PropTypes.func
+}
+
+export default MultipleSelectChip;

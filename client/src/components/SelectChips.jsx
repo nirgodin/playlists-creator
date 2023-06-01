@@ -1,10 +1,12 @@
+import React from "react";
 import { useState, useEffect } from "react"
 import MultipleSelectChipWrapper from "./MultipleSelectChipWrapper"
 import _ from "underscore";
 import { FEATURES_NAMES, POSSIBLE_VALUES } from "../consts";
 import { sendGetRequest } from "../utils/RequestsUtils";
+import PropTypes from 'prop-types';
 
-export default function SelectChips(props) {
+function SelectChips(props) {
     const [featuresNames, setFeaturesNames] = useState([])
 
     async function getFeaturesNames() {
@@ -23,6 +25,7 @@ export default function SelectChips(props) {
     function toSelectChips() {
         return featuresNames.map(
             featureName => <MultipleSelectChipWrapper
+                key={featureName}
                 title={featureName}
                 body={props.body}
                 setBody={props.setBody}
@@ -37,3 +40,11 @@ export default function SelectChips(props) {
         {toSelectChips()}
     </div>
 }
+
+SelectChips.propTypes = {
+    body: PropTypes.array,
+    setBody: PropTypes.func,
+    featuresDescriptions: PropTypes.array
+}
+
+export default SelectChips;

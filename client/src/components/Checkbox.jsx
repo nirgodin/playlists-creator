@@ -4,8 +4,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { toCamelCase } from '../utils/StringUtils';
 import { FILTER_PARAMS, INCLUDE_NAN } from '../consts';
+import PropTypes from 'prop-types'
 
-export default function FilterCheckbox(props) {
+function FilterCheckbox(props) {
   const [checked, setChecked] = React.useState(true)
   const camelCasedLabel = toCamelCase(props.title)
 
@@ -31,3 +32,13 @@ export default function FilterCheckbox(props) {
     </FormGroup>
   );
 }
+
+FilterCheckbox.propTypes = {
+  title: PropTypes.string,
+  label: PropTypes.string,
+  body: PropTypes.array,
+  setBody: PropTypes.func
+}
+
+
+export default FilterCheckbox;

@@ -1,17 +1,18 @@
 import * as React from 'react';
 import ClickButton from './ClickButton';
 import {generateAccessCodeURL} from '../utils/UrlUtils';
+import PropTypes from 'prop-types';
 
-export default function LoginButton(props) {
+function LoginButton(props) {
     const [isClicked, setIsClicked] = React.useState(false)
 
-    const handleClick = (e) => {
+    function handleClick() {
         setIsClicked(true);
         const accessCodeURL = generateAccessCodeURL(process.env.REACT_APP_SPOTIFY_CLIENT_ID, process.env.REACT_APP_SPOTIFY_REDIRECT_URI)
         window.location = accessCodeURL;
     }
 
-    return <div>
+    return <div className='click-button'>
         <ClickButton
             text={props.text}
             isClicked={isClicked}
@@ -19,3 +20,9 @@ export default function LoginButton(props) {
         ></ClickButton>
     </div>
 }
+
+LoginButton.propTypes = {
+    text: PropTypes.string,
+}
+
+export default LoginButton;

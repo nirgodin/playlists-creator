@@ -1,8 +1,10 @@
+import React from "react";
 import MultipleSelectChip from "./MultipleSelectChip";
 import FilterCheckbox from "./Checkbox";
 import InfoToolTip from "./InfoToolTip";
+import PropTypes from 'prop-types';
 
-export default function MultipleSelectChipWrapper(props) {
+function MultipleSelectChipWrapper(props) {
     if (props.includesCheckbox) {
         return (
             <div className="select-chip-wrapper">
@@ -39,4 +41,15 @@ export default function MultipleSelectChipWrapper(props) {
             ></MultipleSelectChip>
         </div>
     }
-};
+}
+
+MultipleSelectChipWrapper.propTypes = {
+    title: PropTypes.string,
+    includesCheckbox: PropTypes.bool,
+    featuresDescriptions: PropTypes.array,
+    checkboxLabel: PropTypes.string,
+    body: PropTypes.array,
+    setBody: PropTypes.func
+}
+
+export default MultipleSelectChipWrapper;

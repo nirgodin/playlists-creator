@@ -1,12 +1,14 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { Slider } from "@mui/material";
 import _ from 'underscore'
 import { toCamelCase } from '../utils/StringUtils';
-import {MIN, MAX, MIN_MAX_VALUES, FILTER_PARAMS, VALUE} from '../consts'
+import { MIN, MAX, MIN_MAX_VALUES, FILTER_PARAMS, VALUE } from '../consts'
 import { sendGetRequest } from "../utils/RequestsUtils";
+import PropTypes from 'prop-types';
 
-export default function MinDistanceRangeSlider(props) {
+function MinDistanceRangeSlider(props) {
     const [minMaxValues, setminMaxValues] = useState([]);
     const [actualValues, setActualValues] = useState([]);
     const [minDistance, setMinDistance] = useState(0);
@@ -18,10 +20,10 @@ export default function MinDistanceRangeSlider(props) {
             const values = await sendGetRequest(`${MIN_MAX_VALUES}/${props.title}`, MIN_MAX_VALUES);
             setminMaxValues(values);
         }
-    };
+    }
 
     useEffect(
-        () => {        
+        () => {
             if (_.isEqual(minMaxValues, [])) {
                 getMinMaxValues();
             }
@@ -58,7 +60,7 @@ export default function MinDistanceRangeSlider(props) {
     function handleChange(event, newValue, activeThumb) {
         updateRangeValues(newValue, activeThumb)
         updateRequestBody()
-    };
+    }
 
     return (
         <div className='range-slider'>
@@ -76,3 +78,11 @@ export default function MinDistanceRangeSlider(props) {
         </div>
     );
 }
+
+MinDistanceRangeSlider.propTypes = {
+    title: PropTypes.string,
+    body: PropTypes.array,
+    setBody: PropTypes.func
+}
+
+export default MinDistanceRangeSlider;

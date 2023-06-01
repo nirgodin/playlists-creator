@@ -5,12 +5,13 @@ import { CONFIGURATION, PROMPT, PHOTO } from '../consts';
 import TuneIcon from '@mui/icons-material/Tune';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import InsertPhotoRoundedIcon from '@mui/icons-material/InsertPhotoRounded';
+import PropTypes from 'prop-types';
 
-export default function MethodToggleButtonGroup(props) {
+function MethodToggleButtonGroup(props) {
   function handleChange(event, newAlignment) {
     props.setAlignment(newAlignment);
     props.setEndpoint(newAlignment);
-  };
+  }
 
   return (
     <ToggleButtonGroup
@@ -35,3 +36,11 @@ export default function MethodToggleButtonGroup(props) {
     </ToggleButtonGroup >
   );
 }
+
+MethodToggleButtonGroup.propTypes = {
+  setAlignment: PropTypes.func,
+  setEndpoint: PropTypes.func,
+  alignment: PropTypes.string
+}
+
+export default MethodToggleButtonGroup;

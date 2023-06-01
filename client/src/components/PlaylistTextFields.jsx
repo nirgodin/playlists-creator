@@ -2,8 +2,9 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import FormTextField from './FormTextField';
 import PlaylistSwitch from './PlaylistSwitch';
+import PropTypes from 'prop-types';
 
-export default function PlaylistTextFields(props) {
+function PlaylistTextFields(props) {
     return (
         <Box
             component="form"
@@ -44,3 +45,12 @@ export default function PlaylistTextFields(props) {
         </Box>
     );
 }
+
+PlaylistTextFields.propTypes = {
+    body: PropTypes.array,
+    setBody: PropTypes.func,
+    isValidPlaylistName: PropTypes.bool,
+    setIsValidPlaylistName: PropTypes.func
+}
+
+export default PlaylistTextFields;

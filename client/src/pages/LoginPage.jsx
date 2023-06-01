@@ -1,7 +1,8 @@
 import LoginButton from ".././components/LoginButton";
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export default function LoginPage(props) {
+function LoginPage(props) {
     return <div className="login-page">
         <h2>Please log in your spotify account</h2>
         <LoginButton
@@ -11,3 +12,10 @@ export default function LoginPage(props) {
         ></LoginButton>
     </div>
 }
+
+LoginPage.propTypes = {
+    body: PropTypes.array,
+    setBody: PropTypes.func,
+}
+
+export default LoginPage;

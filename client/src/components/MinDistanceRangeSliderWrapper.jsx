@@ -1,7 +1,9 @@
+import React from "react";
 import InfoToolTip from "./InfoToolTip";
 import MinDistanceRangeSlider from "./MinDistanceRangeSlider";
+import PropTypes from 'prop-types';
 
-export default function MinDistanceRangeSliderWrapper(props) {
+function MinDistanceRangeSliderWrapper(props) {
     return (
         <div className="range-slider-wrapper">
             <div className='row-items'>
@@ -21,4 +23,13 @@ export default function MinDistanceRangeSliderWrapper(props) {
             </div>
         </div>
     )
-};
+}
+
+MinDistanceRangeSliderWrapper.propTypes = {
+    title: PropTypes.string,
+    featuresDescriptions: PropTypes.array,
+    body: PropTypes.array,
+    setBody: PropTypes.func
+}
+
+export default MinDistanceRangeSlider;

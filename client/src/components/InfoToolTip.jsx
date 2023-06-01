@@ -1,10 +1,12 @@
+import React from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import IconButton from '@mui/material/IconButton';
 import { useState, useEffect } from 'react';
 import _ from 'underscore';
+import PropTypes from 'prop-types';
 
-export default function InfoToolTip(props) {
+function InfoToolTip(props) {
     const [featureDescription, setFeatureDescription] = useState('')
 
     useEffect(
@@ -26,3 +28,10 @@ export default function InfoToolTip(props) {
         </div>
     )
 }
+
+InfoToolTip.propTypes = {
+    featuresDescriptions: PropTypes.array,
+    title: PropTypes.string
+}
+
+export default InfoToolTip;

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
+import PropTypes from 'prop-types'
 
-export default function ClickButton(props) {
+function ClickButton(props) {
     if (props.isClicked) {
         return <Button
             variant="outlined"
@@ -17,3 +18,11 @@ export default function ClickButton(props) {
         </Button >
     }
 }
+
+ClickButton.propTypes = {
+    isClicked: PropTypes.bool,
+    text: PropTypes.string,
+    handleClick: PropTypes.func
+}
+
+export default ClickButton

@@ -1,3 +1,4 @@
+import React from "react"
 import MethodToggleButtonGroup from ".././components/MethodToggleButtonGroup"
 import { Box } from "@mui/material"
 import FormTextField from ".././components/FormTextField"
@@ -8,8 +9,9 @@ import PlaylistTextFields from ".././components/PlaylistTextFields"
 import { PROMPT, CONFIGURATION, PHOTO } from "../consts"
 import PhotoDropzone from "../components/PhotoDropzone"
 import _ from "underscore"
+import PropTypes from 'prop-types';
 
-export default function LandingPage(props) {
+function LandingPage(props) {
     const [alignment, setAlignment] = useState(PROMPT);
     const [endpoint, setEndpoint] = useState(PROMPT);
     const [isValidInput, setIsValidInput] = useState(false);
@@ -117,3 +119,20 @@ export default function LandingPage(props) {
         )
     }
 }
+
+LandingPage.propTypes = {
+    isValidInput: PropTypes.bool,
+    endpoint: PropTypes.string,
+    files: PropTypes.array,
+    body: PropTypes.array,
+    setBody: PropTypes.func,
+    setPlaylistLink: PropTypes.func,
+    setIsSuccessfull: PropTypes.func,
+    setErrorMessage: PropTypes.func,
+    setWasRequestSent: PropTypes.func,
+    text: PropTypes.string,
+    defaultRequestBody: PropTypes.array,
+    errorMessage: PropTypes.string
+}
+
+export default LandingPage;

@@ -1,7 +1,9 @@
+import React from 'react';
 import Button from '@mui/material/Button';
+import PropTypes from 'prop-types'
 
-export default function BackToMainPageButton(props) {
-    function resetState(e) {
+function BackToMainPageButton(props) {
+    function resetState() {
         props.setWasRequestSent(false);
         props.setIsSuccessfull(false);
     }
@@ -14,3 +16,10 @@ export default function BackToMainPageButton(props) {
         </Button >
     )
 }
+
+BackToMainPageButton.propTypes = {
+    setWasRequestSent: PropTypes.func,
+    setIsSuccessfull: PropTypes.func
+}
+
+export default BackToMainPageButton
