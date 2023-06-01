@@ -58,7 +58,7 @@ function LandingPage(props) {
                 setBody={props.setBody}
                 defaultRequestBody={props.defaultRequestBody}
                 setWasRequestSent={props.setWasRequestSent}
-                setIsSuccessfull={props.setIsSuccessfull}
+                setIsSuccessful={props.setIsSuccessful}
                 setErrorMessage={props.setErrorMessage}
                 setPlaylistLink={props.setPlaylistLink}
                 isValidInput={isValidInput}
@@ -127,7 +127,7 @@ LandingPage.propTypes = {
     body: PropTypes.array,
     setBody: PropTypes.func,
     setPlaylistLink: PropTypes.func,
-    setIsSuccessfull: PropTypes.func,
+    setIsSuccessful: PropTypes.func,
     setErrorMessage: PropTypes.func,
     setWasRequestSent: PropTypes.func,
     text: PropTypes.string,

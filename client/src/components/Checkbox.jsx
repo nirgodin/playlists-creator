@@ -1,14 +1,14 @@
-import * as React from 'react';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import { toCamelCase } from '../utils/StringUtils';
-import { FILTER_PARAMS, INCLUDE_NAN } from '../consts';
-import PropTypes from 'prop-types'
+import * as React from "react";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import { toCamelCase } from "../utils/StringUtils";
+import { FILTER_PARAMS, INCLUDE_NAN } from "../consts";
+import PropTypes from "prop-types";
 
 function FilterCheckbox(props) {
-  const [checked, setChecked] = React.useState(true)
-  const camelCasedLabel = toCamelCase(props.title)
+  const [checked, setChecked] = React.useState(true);
+  const camelCasedLabel = toCamelCase(props.title);
 
   function handleChange(event) {
     setChecked(event.target.checked);
@@ -21,12 +21,7 @@ function FilterCheckbox(props) {
     <FormGroup>
       <FormControlLabel
         sx={{ paddingLeft: 1 }}
-        control={
-          <Checkbox
-            checked={checked}
-            onChange={handleChange}
-          />
-        }
+        control={<Checkbox checked={checked} onChange={handleChange} />}
         label={props.label}
       />
     </FormGroup>
@@ -37,8 +32,7 @@ FilterCheckbox.propTypes = {
   title: PropTypes.string,
   label: PropTypes.string,
   body: PropTypes.array,
-  setBody: PropTypes.func
-}
-
+  setBody: PropTypes.func,
+};
 
 export default FilterCheckbox;

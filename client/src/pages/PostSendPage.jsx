@@ -6,7 +6,7 @@ import { Spotify } from "react-spotify-embed";
 import PropTypes from 'prop-types';
 
 function PostSendPage(props) {
-    if (!props.isSuccessfull) {
+    if (!props.isSuccessful) {
         return <LoadingSpinner></LoadingSpinner>
     }
     else {
@@ -19,7 +19,7 @@ function PostSendPage(props) {
             <div className="back-to-main-page-button">
                 <BackToMainPageButton
                     setWasRequestSent={props.setWasRequestSent}
-                    setIsSuccessfull={props.setIsSuccessfull}
+                    setIsSuccessful={props.setIsSuccessful}
                 ></BackToMainPageButton>
             </div>
         </div>
@@ -27,10 +27,10 @@ function PostSendPage(props) {
 }
 
 PostSendPage.propTypes = {
-    isSuccessfull: PropTypes.bool,
+    isSuccessful: PropTypes.bool,
     playlistLink: PropTypes.string,
     setWasRequestSent: PropTypes.func,
-    setIsSuccessfull: PropTypes.func
+    setIsSuccessful: PropTypes.func
 }
 
 export default PostSendPage;

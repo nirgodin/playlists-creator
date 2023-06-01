@@ -69,7 +69,7 @@ function SendButton(props) {
         const newRequestBody = props.body[0];
         newRequestBody[FILTER_PARAMS] = props.defaultRequestBody[0][FILTER_PARAMS]
         props.setBody([newRequestBody]);
-        props.setIsSuccessfull(isSuccess);
+        props.setIsSuccessful(isSuccess);
         setIsClicked(false);
     }
 
@@ -101,7 +101,7 @@ SendButton.propTypes = {
     body: PropTypes.array,
     setBody: PropTypes.func,
     setPlaylistLink: PropTypes.func,
-    setIsSuccessfull: PropTypes.func,
+    setIsSuccessful: PropTypes.func,
     setErrorMessage: PropTypes.func,
     setWasRequestSent: PropTypes.func,
     text: PropTypes.string,

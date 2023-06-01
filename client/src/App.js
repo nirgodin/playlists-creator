@@ -1,12 +1,12 @@
-import './App.css';
-import React, { useEffect } from 'react';
-import Navigator from './Navigator'
-import { useState } from 'react';
-import _ from 'underscore';
-import LoadingSpinner from './components/LoadingSpinner';
-import { sendGetRequest } from './utils/RequestsUtils'
-import cloneJSON from './utils/JsonUtils';
-import { REQUEST_BODY } from './consts';
+import "./App.css";
+import React, { useEffect } from "react";
+import Navigator from "./Navigator";
+import { useState } from "react";
+import _ from "underscore";
+import LoadingSpinner from "./components/LoadingSpinner";
+import { sendGetRequest } from "./utils/RequestsUtils";
+import cloneJSON from "./utils/JsonUtils";
+import { REQUEST_BODY } from "./consts";
 
 function App() {
   const [body, setBody] = useState([]);
@@ -18,13 +18,11 @@ function App() {
     setBody(requestBody);
   }
 
-  useEffect(
-    () => {
-      if (_.isEqual(body, []) || _.isEqual(defaultRequestBody, [])) {
-        setRequestBody();
-      }
+  useEffect(() => {
+    if (_.isEqual(body, []) || _.isEqual(defaultRequestBody, [])) {
+      setRequestBody();
     }
-  )
+  });
 
   if (_.isEqual(body, [])) {
     return (
