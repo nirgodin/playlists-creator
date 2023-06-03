@@ -14,7 +14,7 @@
 }
 
 .App-header {
-  background-color: rgb(0, 30, 60);;
+  background-color: rgb(0, 30, 60);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -100,10 +100,6 @@
   height: 350px;
 }
 
-.error-page {
-  background-color: #070713;
-}
-
 .MuiOutlinedInput-notchedOutline {
   border-width: 1px !important;
   border-color: #1976d2 !important;
@@ -160,4 +156,12 @@
 
 .photo-preview {
   padding-bottom: 10px;
+}
+
+.popup {
+  padding-top: 10px;
+}
+
+.display-line-break {
+  white-space: pre-line;
 }

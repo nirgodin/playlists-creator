@@ -25,7 +25,7 @@ class PlaylistCreationConfig:
         self.headers = self._build_request_headers()
 
     def _build_request_headers(self) -> Optional[Dict[str, str]]:
-        bearer_token = self.access_token_generator_response[ACCESS_TOKEN]
+        bearer_token = self.access_token_generator_response.get(ACCESS_TOKEN)
 
         if bearer_token is None:
             return

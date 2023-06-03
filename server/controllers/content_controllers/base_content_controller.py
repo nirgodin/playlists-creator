@@ -49,8 +49,10 @@ class BaseContentController(Resource, ABC):
             grant_type=SpotifyGrantType.AUTHORIZATION_CODE,
             uris=uris
         )
-        playlist_id = self._playlists_creator.create(config, retries_left=1)
+        if config.headers is None:
+            return
 
+        playlist_id = self._playlists_creator.create(config, retries_left=1)
         if playlist_id is None:
             return
 
