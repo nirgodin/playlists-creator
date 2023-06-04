@@ -12,6 +12,7 @@ from server.consts.data_consts import DATA_PATH, RESOURCES_DIR_PATH
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
+from server.logic.z_scores_metadata_creator import ZScoresMetadataCreator
 from server.tools.google_drive.google_drive_adapter import GoogleDriveAdapter
 
 BOOL_VALUES = [
@@ -100,3 +101,4 @@ def download_database() -> None:
         folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
         local_dir=RESOURCES_DIR_PATH
     )
+    ZScoresMetadataCreator().create()
