@@ -1,10 +1,8 @@
-import re
 from typing import List
-
-from dataclasses_json.stringcase import snakecase
 
 from server.consts.app_consts import FILTER_PARAMS
 from server.data.query_condition import QueryCondition
+from server.utils.string_utils import pre_process_column_name
 
 
 class ParametersTransformer:
@@ -23,13 +21,10 @@ class ParametersTransformer:
 
         return pre_processed_body
 
-    def _pre_process_single_column_details(self, column_name: str, column_details: dict) -> QueryCondition:
-        pre_processed_column_name = self._pre_process_column_name(column_name)
+    @staticmethod
+    def _pre_process_single_column_details(column_name: str, column_details: dict) -> QueryCondition:
+        pre_processed_column_name = pre_process_column_name(column_name)
         pre_processed_details = {'column': pre_processed_column_name}
         pre_processed_details.update(column_details)
-        return QueryCondition.from_dict(pre_processed_details)
 
-    @staticmethod
-    def _pre_process_column_name(column_name: str) -> str:
-        snakecased_column_name = snakecase(column_name)
-        return re.sub(r'min_|max_', '', snakecased_column_name)
+        return QueryCondition.from_dict(pre_processed_details)
