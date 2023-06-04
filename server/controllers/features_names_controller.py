@@ -3,11 +3,12 @@ from typing import List
 from flask import Response, jsonify
 from flask_restful import Resource
 
-from server.consts.app_consts import REQUEST_BODY, MIN_MAX_VALUES, FEATURES_NAMES
+from server.consts.app_consts import MIN_MAX_VALUES, FEATURES_NAMES
 from server.consts.openai_consts import NUMERIC_OPERATORS, IN_OPERATOR
 from server.logic.openai.column_details import ColumnDetails
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
-from server.utils import load_data, titleize_feature_name
+from server.utils.data_utils import load_data
+from server.utils.general_utils import titleize_feature_name
 
 
 class FeaturesNamesController(Resource):

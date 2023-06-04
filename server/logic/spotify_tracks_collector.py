@@ -1,14 +1,14 @@
 from functools import partial
-from typing import List, Dict, Optional
+from typing import List, Optional
 
 from aiohttp import ClientSession
 from asyncio_pool import AioPool
 from tqdm import tqdm
 
 from server.consts.api_consts import SEARCH_URL
-from server.consts.data_consts import ARTIST, TYPE, QUERY, ARTISTS, ITEMS, ORIGINAL_INPUT, TRACK, TRACKS
+from server.consts.data_consts import TYPE, QUERY, ITEMS, TRACK, TRACKS
 from server.logic.openai.track_details import TrackDetails
-from server.utils import build_spotify_client_credentials_headers
+from server.utils.general_utils import build_spotify_client_credentials_headers
 
 
 class SpotifyTracksCollector:

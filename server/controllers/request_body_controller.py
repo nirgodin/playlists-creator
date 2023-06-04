@@ -7,7 +7,7 @@ from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAIL
 from server.consts.openai_consts import IN_OPERATOR
 from server.logic.openai.column_details import ColumnDetails
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
-from server.utils import load_data
+from server.utils.data_utils import load_data
 
 
 class RequestBodyController(Resource):

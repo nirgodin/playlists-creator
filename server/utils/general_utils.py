@@ -5,7 +5,6 @@ from typing import List, Dict
 
 import pandas as pd
 from PIL import Image
-from pandas import DataFrame
 
 from server.consts.api_consts import ACCESS_TOKEN
 from server.consts.data_consts import DATA_PATH, RESOURCES_DIR_PATH
@@ -14,6 +13,7 @@ from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.z_scores_metadata_creator import ZScoresMetadataCreator
 from server.tools.google_drive.google_drive_adapter import GoogleDriveAdapter
+from server.utils.data_utils import load_data
 
 BOOL_VALUES = [
     'false',
@@ -49,11 +49,6 @@ def titleize_feature_name(column_name: str) -> str:
     formatted_tokens = [column_token.capitalize() for column_token in column_tokens]
 
     return ' '.join(formatted_tokens)
-
-
-@lru_cache(maxsize=1)
-def load_data() -> DataFrame:
-    return pd.read_csv(DATA_PATH)
 
 
 def build_prompt(prompt_prefix: str, prompt_suffix: str) -> str:

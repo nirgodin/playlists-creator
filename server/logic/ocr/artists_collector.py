@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 from server.consts.api_consts import SEARCH_URL
 from server.consts.data_consts import ARTIST, TYPE, QUERY, ARTISTS, ITEMS, ORIGINAL_INPUT
-from server.utils import build_spotify_client_credentials_headers
+from server.utils.general_utils import build_spotify_client_credentials_headers
 
 
 class ArtistsCollector:

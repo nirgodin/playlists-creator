@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 from server.consts.api_consts import ARTIST_TOP_TRACKS_URL, MARKET
 from server.consts.data_consts import TRACKS
-from server.utils import build_spotify_client_credentials_headers
+from server.utils.general_utils import build_spotify_client_credentials_headers
 
 
 class ArtistsTopTracksCollector:

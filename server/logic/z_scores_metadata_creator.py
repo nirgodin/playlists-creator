@@ -6,7 +6,7 @@ from pandas.core.dtypes.common import is_numeric_dtype
 
 from server.consts.data_consts import COLUMNS_Z_SCORES_METADATA_PATH
 from server.data.column_z_score_metadata import ColumnZScoreMetadata
-from server.utils import load_data
+from server.utils.data_utils import load_data
 
 
 class ZScoresMetadataCreator:

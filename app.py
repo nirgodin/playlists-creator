@@ -13,7 +13,7 @@ from server.controllers.features_names_controller import FeaturesNamesController
 from server.controllers.min_max_values_controller import MinMaxValuesController
 from server.controllers.possible_values_controller import PossibleValuesController
 from server.controllers.request_body_controller import RequestBodyController
-from server.utils import download_database
+from server.utils.general_utils import download_database
 
 download_database()
 app = Flask(__name__, static_folder='client/build', static_url_path='')

@@ -11,7 +11,7 @@ from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import REQUEST_BODY, PHOTO
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
-from server.utils import sample_list
+from server.utils.general_utils import sample_list
 
 
 class PhotoController(BaseContentController):

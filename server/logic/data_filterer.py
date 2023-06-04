@@ -1,4 +1,3 @@
-import random
 from typing import List
 
 import pandas as pd
@@ -7,7 +6,7 @@ from pandas import DataFrame
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.data_consts import DATA_PATH, URI
 from server.data.query_condition import QueryCondition
-from server.utils import sample_list
+from server.utils.general_utils import sample_list
 
 
 class DataFilterer:

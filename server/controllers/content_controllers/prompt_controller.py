@@ -16,7 +16,7 @@ from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.openai.track_details import TrackDetails
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
-from server.utils import build_prompt
+from server.utils.general_utils import build_prompt
 
 DataClass = TypeVar('DataClass')
 

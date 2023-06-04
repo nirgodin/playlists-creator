@@ -1,7 +1,7 @@
 from flask import Response, jsonify
 from flask_restful import Resource
 
-from server.utils import get_column_min_max_values
+from server.utils.general_utils import get_column_min_max_values
 
 
 class MinMaxValuesController(Resource):

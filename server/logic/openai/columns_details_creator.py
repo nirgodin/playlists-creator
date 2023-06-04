@@ -9,7 +9,8 @@ from server.consts.openai_consts import EXCLUDED_COLUMNS, IN_OPERATOR, NUMERIC_O
     SINGLE_COLUMN_DESCRIPTION_FORMAT
 from server.logic.features_descriptions_manager import FeaturesDescriptionsManager
 from server.logic.openai.column_details import ColumnDetails
-from server.utils import load_data, get_column_possible_values, get_column_min_max_values
+from server.utils.data_utils import load_data
+from server.utils.general_utils import get_column_possible_values, get_column_min_max_values
 
 
 class ColumnsDetailsCreator:

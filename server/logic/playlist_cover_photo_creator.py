@@ -5,7 +5,7 @@ import requests
 
 from server.consts.api_consts import PLAYLIST_COVER_URL_FORMAT
 from server.logic.openai.dalle_adapter import DallEAdapter
-from server.utils import save_image_as_jpeg
+from server.utils.general_utils import save_image_as_jpeg
 
 
 class PlaylistCoverPhotoCreator:

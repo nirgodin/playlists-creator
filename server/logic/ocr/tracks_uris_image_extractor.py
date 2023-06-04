@@ -8,7 +8,7 @@ from server.logic.ocr.artists_filterer import ArtistsFilterer
 from server.logic.ocr.artists_top_tracks_collector import ArtistsTopTracksCollector
 from server.logic.ocr.image_text_extractor import ImageTextExtractor
 from server.logic.openai.openai_adapter import OpenAIAdapter
-from server.utils import build_prompt
+from server.utils.general_utils import build_prompt
 
 
 class TracksURIsImageExtractor:
