@@ -32,4 +32,4 @@ MinDistanceRangeSliderWrapper.propTypes = {
   setBody: PropTypes.func,
 };
 
-export default MinDistanceRangeSlider;
+export default MinDistanceRangeSliderWrapper;

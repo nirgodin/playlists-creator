@@ -9,7 +9,7 @@ import { sendGetRequest } from "../utils/RequestsUtils";
 import PropTypes from "prop-types";
 
 function MinDistanceRangeSlider(props) {
-  const [minMaxValues, setminMaxValues] = useState([]);
+  const [minMaxValues, setMinMaxValues] = useState([]);
   const [actualValues, setActualValues] = useState([]);
   const [minDistance, setMinDistance] = useState(0);
   const minTitleValue = toCamelCase(`${MIN} ${props.title}`);
@@ -21,7 +21,7 @@ function MinDistanceRangeSlider(props) {
         `${MIN_MAX_VALUES}/${props.title}`,
         MIN_MAX_VALUES
       );
-      setminMaxValues(values);
+      setMinMaxValues(values);
     }
   }
 
