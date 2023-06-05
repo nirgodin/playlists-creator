@@ -1,9 +1,10 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import axios from 'axios'
 import { FILTER_PARAMS, IS_SUCCESS, MESSAGE, PHOTO, PLAYLIST_LINK, REQUEST_BODY } from "../consts";
 import PropTypes from 'prop-types';
+import ClickButton from "./ClickButton";
 
 function SendButton(props) {
     const [isClicked, setIsClicked] = useState(true);
@@ -85,12 +86,14 @@ function SendButton(props) {
     }
 
     return (
-        <Button
-            variant="outlined"
-            disabled={isClicked}
-            onClick={handleClick}
-        > {props.text}
-        </Button >
+        <ClickButton
+            isClicked={isClicked}
+            text={props.text}
+            handleClick={handleClick}
+            width={'250px'}
+            height={'50px'}
+            fontSize={22}    
+        ></ClickButton>
     )
 }
 

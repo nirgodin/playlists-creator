@@ -18,6 +18,9 @@ function LoginButton(props) {
   return (
     <div className="click-button">
       <ClickButton
+        width={'100px'}
+        height={'50px'}
+        fontSize={20}
         text={props.text}
         isClicked={isClicked}
         handleClick={handleClick}

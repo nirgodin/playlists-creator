@@ -4,6 +4,7 @@ import { toCamelCase } from "../utils/StringUtils";
 import { useState, useEffect } from "react";
 import { PLAYLIST_DETAILS } from "../consts";
 import PropTypes from "prop-types";
+// import { Box } from "@mui/material";
 
 function FormTextField(props) {
   const [value, setValue] = useState(props.defaultValue);
@@ -29,18 +30,20 @@ function FormTextField(props) {
   };
 
   return (
-    <TextField
-      inputProps={{ style: { color: "white" } }}
-      multiline={true}
-      error={isError}
-      required={props.isRequired}
-      value={value}
-      id={props.id}
-      label={props.label}
-      defaultValue={props.defaultValue}
-      onChange={handleChange}
-      helperText={helperText}
-    />
+      <TextField
+        label={props.label}
+        color="primary"
+        onChange={handleChange}
+        helperText={helperText}
+        focused
+        multiline={true}
+        error={isError}
+        required={props.isRequired}
+        defaultValue={props.defaultValue}
+        inputProps={{ style: { color: "white", fontSize: "22px" } }}
+        value={value}
+        id={props.id}
+      />
   );
 }
 

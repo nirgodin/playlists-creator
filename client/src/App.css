@@ -101,8 +101,21 @@
 }
 
 .MuiOutlinedInput-notchedOutline {
-  border-width: 1px !important;
-  border-color: #1976d2 !important;
+  border-width: 2px !important;
+  border-color: #6db4fc !important;
+  font-size: 22px;
+}
+
+.Mui-focused {
+  color: white !important;
+}
+
+.MuiInputLabel-root {
+  font-size: 20px !important;
+}
+
+.MuiInputBase-input {
+  color: white !important;
 }
 
 .multiple-select-chip {
@@ -164,4 +177,8 @@
 
 .display-line-break {
   white-space: pre-line;
+}
+
+.send-button {
+  padding-top: 20px;
 }

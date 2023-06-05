@@ -11,7 +11,7 @@ function Popup(props) {
       <PopupState variant="popover" popupId="demo-popup-popover">
         {(popupState) => (
           <div>
-            <Button variant="contained" {...bindTrigger(popupState)}>
+            <Button variant="outlined" {...bindTrigger(popupState)}>
               {`${props.endpoint} Usage guidelines`}
             </Button>
             <Popover
