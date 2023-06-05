@@ -1,13 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Optional, List
 
-from flask import request, Request, Response, jsonify
+from flask import request, Request
 from flask_restful import Resource
 
-from server.consts.app_consts import IS_SUCCESS, MESSAGE, ACCESS_CODE, PLAYLIST_DETAILS, FILTER_PARAMS
+from server.consts.app_consts import ACCESS_CODE, PLAYLIST_DETAILS
 from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.data.spotify_grant_type import SpotifyGrantType
-from server.logic.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.response_factory import ResponseFactory
@@ -17,11 +16,9 @@ class BaseContentController(Resource, ABC):
     def __init__(self):
         self._playlists_creator = PlaylistsCreator()
         self._playlist_cover_photo_creator = PlaylistCoverPhotoCreator()
-        self._photo_prompt_creator = ConfigurationPhotoPromptCreator()
 
     def post(self):
         request_body = self._get_request_body(request)
-        self._photo_prompt_creator.create_prompt(request_body[FILTER_PARAMS])
         uris = self._generate_tracks_uris(request_body)
         if not uris:
             return ResponseFactory.build_no_content_response()
