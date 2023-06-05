@@ -19,6 +19,7 @@
 /client/.env.production.local
 /client/.env.development
 /client/.env.production
+/client/.eslintrc.json
 
 /client/npm-debug.log*
 /client/yarn-debug.log*
@@ -35,3 +36,4 @@
 
 # Data
 /server/resources/playlists_creator_database.csv
+/server/resources/z_scores_metadata.json
