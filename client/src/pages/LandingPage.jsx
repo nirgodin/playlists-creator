@@ -54,6 +54,7 @@ function LandingPage(props) {
         alignment={alignment}
         setAlignment={setAlignment}
         setEndpoint={setEndpoint}
+        endpoint={endpoint}
       ></MethodToggleButtonGroup>
       {popup}
     </div>

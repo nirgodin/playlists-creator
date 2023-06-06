@@ -1,11 +1,12 @@
 import * as React from "react";
-import ToggleButton from "@mui/material/ToggleButton";
+// import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { CONFIGURATION, PROMPT, PHOTO } from "../consts";
 import TuneIcon from "@mui/icons-material/Tune";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
 import PropTypes from "prop-types";
+import MethodToggleButton from "./MethodToggleButton";
 
 function MethodToggleButtonGroup(props) {
   function handleChange(event, newAlignment) {
@@ -13,29 +14,43 @@ function MethodToggleButtonGroup(props) {
     props.setEndpoint(newAlignment);
   }
 
+  const toggleButtonsConfig = [
+    {
+      value: PROMPT,
+      icon: <EditNoteIcon sx={{ paddingRight: "10px" }} />,
+    },
+    {
+      value: CONFIGURATION,
+      icon: <TuneIcon sx={{ paddingRight: "10px" }} />,
+    },
+    {
+      value: PHOTO,
+      icon: <InsertPhotoRoundedIcon sx={{ paddingRight: "10px" }} />,
+    },
+  ];
+
+  function toToggleButtons() {
+    return toggleButtonsConfig.map((buttonConfig) => (
+      <MethodToggleButton
+        key={"toggle-button-icon"}
+        value={buttonConfig["value"]}
+        icon={buttonConfig["icon"]}
+        alignment={props.alignment}
+        setAlignment={props.setAlignment}
+      ></MethodToggleButton>
+    ));
+  }
+
   return (
     <ToggleButtonGroup
+      sx={{ borderColor: "white", borderWidth: "1px" }}
       color="primary"
       value={props.alignment}
       exclusive
       onChange={handleChange}
       aria-label="Platform"
     >
-      <ToggleButton sx={{ color: "white", width: "200px" }} value={PROMPT}>
-        <EditNoteIcon className="toggle-button-icon" />
-        {PROMPT}
-      </ToggleButton>
-      <ToggleButton
-        sx={{ color: "white", width: "200px" }}
-        value={CONFIGURATION}
-      >
-        <TuneIcon className="toggle-button-icon" />
-        {CONFIGURATION}
-      </ToggleButton>
-      <ToggleButton sx={{ color: "white", width: "200px" }} value={PHOTO}>
-        <InsertPhotoRoundedIcon className="toggle-button-icon" />
-        {PHOTO}
-      </ToggleButton>
+      {toToggleButtons()}
     </ToggleButtonGroup>
   );
 }

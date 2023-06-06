@@ -66,9 +66,8 @@
 }
 
 .playlist-details {
-  padding-top: 30px;
   padding-bottom: 30px;
-  padding-left: 210px;
+  padding-left: 60px;
 }
 
 .is-public-switch {
@@ -101,20 +100,25 @@
 }
 
 .MuiOutlinedInput-notchedOutline {
-  border-width: 2px !important;
+  border-width: 1px !important;
   border-color: #6db4fc !important;
-  font-size: 22px;
 }
 
-.Mui-focused {
+.playlist-details MuiOutlinedInput-notchedOutline {
+  border-width: 2px !important;
+  border-color: #6db4fc !important;
+  font-size: 20px;
+}
+
+.playlist-details Mui-focused {
   color: white !important;
 }
 
-.MuiInputLabel-root {
+.playlist-details MuiInputLabel-root {
   font-size: 20px !important;
 }
 
-.MuiInputBase-input {
+.playlist-details MuiInputBase-input {
   color: white !important;
 }
 
@@ -130,20 +134,39 @@
   padding-bottom: 25px;
 }
 
-@keyframes skew-y-shakeing{
-  0% { transform: skewY(-5deg); }
-  5% { transform: skewY(5deg); }
-  10% { transform: skewY(-5deg); }
-  15% { transform: skewY(5deg); }
-  20% { transform: skewY(0deg); }
-  100% { transform: skewY(0deg); }
- }
+@keyframes skew-y-shakeing {
+  0% {
+    transform: skewY(-5deg);
+  }
+  5% {
+    transform: skewY(5deg);
+  }
+  10% {
+    transform: skewY(-5deg);
+  }
+  15% {
+    transform: skewY(5deg);
+  }
+  20% {
+    transform: skewY(0deg);
+  }
+  100% {
+    transform: skewY(0deg);
+  }
+}
 
 .error-message {
   animation: skew-y-shakeing 1.5s;
   color: red;
   font-size: large;
 }
+
+/* .range-sliders {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+} */
 
 .range-slider {
   padding-left: 10px;

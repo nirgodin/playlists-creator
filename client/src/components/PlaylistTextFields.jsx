@@ -1,7 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import FormTextField from "./FormTextField";
-import PlaylistSwitch from "./PlaylistSwitch";
+// import PlaylistSwitch from "./PlaylistSwitch";
 import PropTypes from "prop-types";
 
 function PlaylistTextFields(props) {
@@ -36,10 +36,10 @@ function PlaylistTextFields(props) {
           ></FormTextField>
         </div>
         <div className="is-public-switch">
-          <PlaylistSwitch
+          {/* <PlaylistSwitch
             body={props.body}
             setBody={props.setBody}
-          ></PlaylistSwitch>
+          ></PlaylistSwitch> */}
         </div>
       </div>
     </Box>
