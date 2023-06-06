@@ -37,10 +37,6 @@
   }
 }
 
-.toggle-button {
-  padding-bottom: 20px;
-}
-
 .text-field {
   padding-bottom: 20px;
 }
@@ -57,12 +53,12 @@
   text-align: justify;
 }
 
+/* Playlist Configuration */
 .playlist-configuration {
   margin: auto;
   width: 58%;
   padding: 10px;
-  padding-bottom: 30px;
-  padding-left: 265px;
+  padding-left: 170px;
 }
 
 .playlist-details {
@@ -70,11 +66,13 @@
   padding-left: 60px;
 }
 
-.is-public-switch {
+/* .is-public-switch {
   margin-top: 25px;
   padding-left: 15px;
-}
+} */
 
+
+/* Loading spinner */
 @keyframes spinner {
   0% {
     transform: rotate(0deg);
@@ -161,13 +159,6 @@
   font-size: large;
 }
 
-/* .range-sliders {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-} */
-
 .range-slider {
   padding-left: 10px;
 }
@@ -180,10 +171,6 @@
 .select-chip-tooltip {
   padding-right: 3px;
   padding-top: 7px;
-}
-
-.toggle-button-icon {
-  padding-right: 10px;
 }
 
 .photo-dropzone:hover {
@@ -204,4 +191,18 @@
 
 .send-button {
   padding-top: 20px;
+}
+
+/* Toggle Button */
+.MuiToggleButton-root.Mui-selected {
+  background-color: #6db4fc !important;
+  color: rgb(0, 30, 60) !important;
+}
+
+.toggle-button {
+  padding-bottom: 20px;
+}
+
+.toggle-button-icon {
+  padding-right: 10px;
 }

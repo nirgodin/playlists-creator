@@ -74,6 +74,7 @@ function MinDistanceRangeSlider(props) {
       <Box sx={{ width: 180 }}>
         <Typography gutterBottom>{props.title}</Typography>
         <Slider
+          style={{ color: "#6db4fc" }}
           min={minMaxValues[0]}
           max={minMaxValues[1]}
           value={actualValues}

@@ -21,7 +21,13 @@ function FilterCheckbox(props) {
     <FormGroup>
       <FormControlLabel
         sx={{ paddingLeft: 1 }}
-        control={<Checkbox checked={checked} onChange={handleChange} />}
+        control={
+          <Checkbox className="checkbox"
+            checked={checked}
+            onChange={handleChange}
+            style={{ color: "#6db4fc" }}
+          />
+        }
         label={props.label}
       />
     </FormGroup>
