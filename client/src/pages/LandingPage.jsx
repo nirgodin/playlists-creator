@@ -5,12 +5,12 @@ import FormTextField from ".././components/FormTextField";
 import SendButton from ".././components/SendButton";
 import { useState, useEffect } from "react";
 import RequestBody from ".././components/RequestBody";
-import PlaylistTextFields from ".././components/PlaylistTextFields";
 import { PROMPT, CONFIGURATION, PHOTO } from "../consts";
 import PhotoDropzone from "../components/PhotoDropzone";
 import _ from "underscore";
 import PropTypes from "prop-types";
 import Popup from "../components/Popup";
+import PlaylistDetails from "../components/PlaylistDetails";
 
 function LandingPage(props) {
   const [alignment, setAlignment] = useState(PROMPT);
@@ -31,22 +31,17 @@ function LandingPage(props) {
       setIsValidInput(isValidPlaylistName);
     }
   }, [endpoint, isValidPrompt, isValidPlaylistName, files]);
+
   const playlistDetails = (
-    <div className="playlist-details">
-      <PlaylistTextFields
-        body={props.body}
-        setBody={props.setBody}
-        isValidPlaylistName={isValidPlaylistName}
-        setIsValidPlaylistName={setIsValidPlaylistName}
-      ></PlaylistTextFields>
-    </div>
+    <PlaylistDetails
+      body={props.body}
+      setBody={props.setBody}
+      isValidPlaylistName={isValidPlaylistName}
+      setIsValidPlaylistName={setIsValidPlaylistName}
+    ></PlaylistDetails>
   );
 
-  const popup = (
-      <Popup
-        endpoint={endpoint}
-      ></Popup>
-  );
+  const popup = <Popup endpoint={endpoint}></Popup>;
 
   const toggleButton = (
     <div className="toggle-button">

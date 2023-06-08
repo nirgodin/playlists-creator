@@ -17,11 +17,11 @@ function MethodToggleButtonGroup(props) {
   const toggleButtonsConfig = [
     {
       value: PROMPT,
-      icon: <EditNoteIcon sx={{ paddingRight: "10px" }} />,
+      icon: <EditNoteIcon fontSize="large" sx={{ paddingRight: "10px" }} />,
     },
     {
       value: CONFIGURATION,
-      icon: <TuneIcon sx={{ paddingRight: "10px" }} />,
+      icon: <TuneIcon sx={{ paddingRight: "10px", fontSize: 28 }} />,
     },
     {
       value: PHOTO,
@@ -43,7 +43,7 @@ function MethodToggleButtonGroup(props) {
 
   return (
     <ToggleButtonGroup
-      sx={{ borderColor: "white", borderWidth: "1px" }}
+      sx={{ borderColor: "white", borderWidth: "1px", justifyContent: "center" }}
       color="primary"
       value={props.alignment}
       exclusive

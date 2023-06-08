@@ -44,6 +44,7 @@
 .row-items {
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .filter-checkbox {
@@ -58,12 +59,10 @@
   margin: auto;
   width: 58%;
   padding: 10px;
-  padding-left: 170px;
 }
 
 .playlist-details {
   padding-bottom: 30px;
-  padding-left: 60px;
 }
 
 /* .is-public-switch {
@@ -85,7 +84,7 @@
   width: 50px;
   height: 50px;
   border: 10px solid #444b59;
-  border-top: 10px solid #1976d2;
+  border-top: 10px solid #6db4fc;
   border-radius: 50%;
   animation: spinner 1.5s linear infinite;
 }
@@ -98,26 +97,8 @@
 }
 
 .MuiOutlinedInput-notchedOutline {
-  border-width: 1px !important;
-  border-color: #6db4fc !important;
-}
-
-.playlist-details MuiOutlinedInput-notchedOutline {
   border-width: 2px !important;
   border-color: #6db4fc !important;
-  font-size: 20px;
-}
-
-.playlist-details Mui-focused {
-  color: white !important;
-}
-
-.playlist-details MuiInputLabel-root {
-  font-size: 20px !important;
-}
-
-.playlist-details MuiInputBase-input {
-  color: white !important;
 }
 
 .multiple-select-chip {
@@ -130,6 +111,7 @@
 
 .select-chips {
   padding-bottom: 25px;
+  padding-left: 157px;
 }
 
 @keyframes skew-y-shakeing {
@@ -161,6 +143,10 @@
 
 .range-slider {
   padding-left: 10px;
+}
+
+.range-sliders {
+  justify-content: center;
 }
 
 .range-slider-tooltip {
@@ -203,6 +189,6 @@
   padding-bottom: 20px;
 }
 
-.toggle-button-icon {
-  padding-right: 10px;
+.request-body {
+  padding-right: 40px;
 }

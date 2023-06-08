@@ -30,20 +30,21 @@ function FormTextField(props) {
   };
 
   return (
-      <TextField
-        label={props.label}
-        color="primary"
-        onChange={handleChange}
-        helperText={helperText}
-        focused
-        multiline={true}
-        error={isError}
-        required={props.isRequired}
-        defaultValue={props.defaultValue}
-        inputProps={{ style: { color: "white", fontSize: "22px" } }}
-        value={value}
-        id={props.id}
-      />
+    <TextField
+      label={props.label}
+      color="primary"
+      placeholder={props.label}
+      onChange={handleChange}
+      helperText={helperText}
+      focused
+      multiline={true}
+      error={isError}
+      required={props.isRequired}
+      defaultValue={props.defaultValue}
+      inputProps={{ style: { color: "white", fontSize: "18px" } }}
+      value={value}
+      id={props.id}
+    />
   );
 }
 

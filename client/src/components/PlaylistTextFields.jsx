@@ -35,12 +35,12 @@ function PlaylistTextFields(props) {
             setBody={props.setBody}
           ></FormTextField>
         </div>
-        <div className="is-public-switch">
-          {/* <PlaylistSwitch
+        {/* <div className="is-public-switch">
+          <PlaylistSwitch
             body={props.body}
             setBody={props.setBody}
-          ></PlaylistSwitch> */}
-        </div>
+          ></PlaylistSwitch>
+        </div> */}
       </div>
     </Box>
   );
