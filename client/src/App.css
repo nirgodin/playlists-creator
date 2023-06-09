@@ -80,20 +80,16 @@
     transform: rotate(360deg);
   }
 }
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 10px solid white;
-  border-top: 10px solid #6db4fc;
-  border-radius: 50%;
-  animation: spinner 1.5s linear infinite;
-}
 
-.spinner-container {
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  height: 350px;
+.loading-spinner {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  border: 6px solid rgb(0, 30, 60);
+  border-left-color: #6db4fc;
+  border-radius: 50%;
+  border-width: 6px;
+  animation: spinner 1s ease-in-out infinite;
 }
 
 .MuiOutlinedInput-notchedOutline {
@@ -114,7 +110,7 @@
   padding-left: 157px;
 }
 
-@keyframes skew-y-shakeing {
+@keyframes skew-y-shaking {
   0% {
     transform: skewY(-5deg);
   }
@@ -136,7 +132,7 @@
 }
 
 .error-message {
-  animation: skew-y-shakeing 1.5s;
+  animation: skew-y-shaking 1.5s;
   color: red;
   font-size: large;
 }

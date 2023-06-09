@@ -21,7 +21,7 @@ class ArtistsTopTracksCollector:
 
                 results = await pool.map(fn=func, iterable=artists_ids)
 
-        return [result for result in results if result is not None]
+        return [result for result in results if isinstance(result, list)]
 
     async def _get_single_artist_tracks(self,
                                         session: ClientSession,

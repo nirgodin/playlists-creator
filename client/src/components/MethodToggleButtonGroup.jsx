@@ -20,7 +20,7 @@ function MethodToggleButtonGroup(props) {
     },
     {
       value: CONFIGURATION,
-      icon: <TuneIcon sx={{ paddingRight: "10px", fontSize: 28 }} />,
+      icon: <TuneIcon sx={{ paddingRight: "10px" }} />,
     },
     {
       value: PHOTO,

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
+import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
 import axios from "axios";
 import {
   FILTER_PARAMS,
@@ -12,6 +12,7 @@ import {
 } from "../consts";
 import PropTypes from "prop-types";
 import ClickButton from "./ClickButton";
+import { Tooltip } from "@mui/material";
 
 function SendButton(props) {
   const [isClicked, setIsClicked] = useState(false);
@@ -83,30 +84,38 @@ function SendButton(props) {
 
   function handleError() {
     props.setErrorMessage(
-      "An unexpected error has occured. Please reload the page and try again"
+      "An unexpected error has occurred. Please reload the page and try again"
     );
     props.setBody(props.defaultRequestBody);
   }
 
   function handleClick() {
-    props.setWasRequestSent(true);
-    setIsClicked(true);
-    sendPlaylistCreationRequest();
+    if (!props.isValidInput) {
+      props.setErrorMessage(
+        "Please fill in all required fields before submitting"
+      );
+    } else {
+      props.setWasRequestSent(true);
+      setIsClicked(true);
+      sendPlaylistCreationRequest();  
+    }
   }
-  
+
   return (
     <div>
-      <ClickButton
-        startIcon={<AutoFixHighRoundedIcon style={{fontSize: 30}}/>}
-        cursor={cursor}
-        isClicked={isClicked}
-        text={props.text}
-        handleClick={handleClick}
-        width={"justify"} //{"300px"}
-        height={"50px"}
-        fontSize={22}
-      ></ClickButton>
-      </div>
+      <Tooltip title="Delete">
+        <ClickButton
+          startIcon={<AutoFixHighRoundedIcon style={{ fontSize: 30 }} />}
+          cursor={cursor}
+          isClicked={isClicked}
+          text={props.text}
+          handleClick={handleClick}
+          width={"justify"}
+          height={"50px"}
+          fontSize={22}
+        ></ClickButton>
+      </Tooltip>
+    </div>
   );
 }
 
