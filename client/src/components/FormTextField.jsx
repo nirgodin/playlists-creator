@@ -4,7 +4,6 @@ import { toCamelCase } from "../utils/StringUtils";
 import { useState, useEffect } from "react";
 import { PLAYLIST_DETAILS } from "../consts";
 import PropTypes from "prop-types";
-// import { Box } from "@mui/material";
 
 function FormTextField(props) {
   const [value, setValue] = useState(props.defaultValue);
@@ -16,7 +15,7 @@ function FormTextField(props) {
       const validInput = value === "" ? false : true;
       props.setIsValidInput(validInput);
       setIsError(!validInput);
-      const text = isError ? "This field is required" : "";
+      const text = isError ? "* Required" : "";
       setHelperText(text);
     }
   }, [props, value, isError]);
@@ -31,15 +30,28 @@ function FormTextField(props) {
 
   return (
     <TextField
+      sx={{
+        "& .Mui-error": {
+          color: "white",
+        },
+        '& label.Mui-focused': {
+          color: '#6db4fc',
+          fontSize: 20
+        },
+        '& .MuiOutlinedInput-root': {
+          fontSize: 20
+        },
+        '& .MuiFormHelperText-root': {
+          color: '#ff3838'
+        }
+      }}
       label={props.label}
       color="primary"
-      placeholder={props.label}
       onChange={handleChange}
       helperText={helperText}
-      focused
       multiline={true}
       error={isError}
-      required={props.isRequired}
+      focused
       defaultValue={props.defaultValue}
       inputProps={{ style: { color: "white", fontSize: "18px" } }}
       value={value}

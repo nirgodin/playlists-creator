@@ -9,7 +9,7 @@ function BackToMainPageButton(props) {
   }
 
   return (
-    <Button variant="outlined" onClick={resetState}>
+    <Button sx={{fontWeight: 500, fontSize: 15, borderColor: "#6db4fc", color: "#6db4fc"}} variant="outlined" onClick={resetState}>
       {" "}
       {"Create another playlist"}
     </Button>

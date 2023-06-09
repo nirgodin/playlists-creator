@@ -14,23 +14,23 @@ import PlaylistDetails from "../components/PlaylistDetails";
 
 function LandingPage(props) {
   const [alignment, setAlignment] = useState(PROMPT);
-  const [endpoint, setEndpoint] = useState(PROMPT);
+  // const [alignment, setAlignment] = useState(PROMPT);
   const [isValidInput, setIsValidInput] = useState(false);
   const [isValidPrompt, setIsValidPrompt] = useState(false);
   const [isValidPlaylistName, setIsValidPlaylistName] = useState(false);
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
-    if (endpoint === PROMPT) {
+    if (alignment === PROMPT) {
       const isValid = isValidPrompt && isValidPlaylistName;
       setIsValidInput(isValid);
-    } else if (endpoint === PHOTO) {
+    } else if (alignment === PHOTO) {
       const isValid = isValidPlaylistName && !_.isEqual(files, []);
       setIsValidInput(isValid);
     } else {
       setIsValidInput(isValidPlaylistName);
     }
-  }, [endpoint, isValidPrompt, isValidPlaylistName, files]);
+  }, [alignment, isValidPrompt, isValidPlaylistName, files]);
 
   const playlistDetails = (
     <PlaylistDetails
@@ -41,15 +41,13 @@ function LandingPage(props) {
     ></PlaylistDetails>
   );
 
-  const popup = <Popup endpoint={endpoint}></Popup>;
+  const popup = <Popup alignment={alignment}></Popup>;
 
   const toggleButton = (
     <div className="toggle-button">
       <MethodToggleButtonGroup
         alignment={alignment}
         setAlignment={setAlignment}
-        setEndpoint={setEndpoint}
-        endpoint={endpoint}
       ></MethodToggleButtonGroup>
       {popup}
     </div>
@@ -60,7 +58,7 @@ function LandingPage(props) {
       <Box>
         <SendButton
           text={"Create Playlist"}
-          endpoint={endpoint}
+          alignment={alignment}
           body={props.body}
           setBody={props.setBody}
           defaultRequestBody={props.defaultRequestBody}
@@ -124,7 +122,7 @@ function LandingPage(props) {
 
 LandingPage.propTypes = {
   isValidInput: PropTypes.bool,
-  endpoint: PropTypes.string,
+  alignment: PropTypes.string,
   files: PropTypes.array,
   body: PropTypes.array,
   setBody: PropTypes.func,

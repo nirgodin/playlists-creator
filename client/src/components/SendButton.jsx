@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from "react";
-// import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
 import axios from "axios";
 import {
@@ -17,14 +16,14 @@ import ClickButton from "./ClickButton";
 function SendButton(props) {
   const [isClicked, setIsClicked] = useState(false);
   const [cursor, setCursor] = useState(undefined);
-  const url = `${process.env.REACT_APP_BASE_URL}/${props.endpoint}`;
+  const url = `${process.env.REACT_APP_BASE_URL}/${props.alignment}`;
 
   useEffect(() => {
     props.isValidInput ? setCursor(undefined) : setCursor("not-allowed");
   }, [props.isValidInput]);
 
   async function sendPlaylistCreationRequest() {
-    if (props.endpoint === PHOTO) {
+    if (props.alignment === PHOTO) {
       await sendPhotoRequest();
     } else {
       await sendPlaylistConfigurationRequest();
@@ -113,7 +112,7 @@ function SendButton(props) {
 
 SendButton.propTypes = {
   isValidInput: PropTypes.bool,
-  endpoint: PropTypes.string,
+  alignment: PropTypes.string,
   files: PropTypes.array,
   body: PropTypes.array,
   setBody: PropTypes.func,

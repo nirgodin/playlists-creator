@@ -11,7 +11,6 @@ import MethodToggleButton from "./MethodToggleButton";
 function MethodToggleButtonGroup(props) {
   function handleChange(event, newAlignment) {
     props.setAlignment(newAlignment);
-    props.setEndpoint(newAlignment);
   }
 
   const toggleButtonsConfig = [
@@ -57,7 +56,6 @@ function MethodToggleButtonGroup(props) {
 
 MethodToggleButtonGroup.propTypes = {
   setAlignment: PropTypes.func,
-  setEndpoint: PropTypes.func,
   alignment: PropTypes.string,
 };
 

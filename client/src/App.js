@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import Navigator from "./Navigator";
 import { useState } from "react";
 import _ from "underscore";
@@ -18,11 +18,13 @@ function App() {
     setBody(requestBody);
   }
 
-  useEffect(() => {
+  const memoizedEffect = useCallback(() => {
     if (_.isEqual(body, []) || _.isEqual(defaultRequestBody, [])) {
       setRequestBody();
     }
-  });
+  }, [body, defaultRequestBody]);
+  
+  useEffect(memoizedEffect, []);
 
   if (_.isEqual(body, [])) {
     return (

@@ -11,8 +11,8 @@ function Popup(props) {
       <PopupState variant="popover" popupId="demo-popup-popover">
         {(popupState) => (
           <div>
-            <Button variant="outlined" {...bindTrigger(popupState)}>
-              {`${props.endpoint} Usage guidelines`}
+            <Button sx={{fontWeight: 500, fontSize: 15, borderColor: "#6db4fc", color: "#6db4fc"}} variant="outlined" {...bindTrigger(popupState)}>
+              {`${props.alignment} Usage guidelines`}
             </Button>
             <Popover
               {...bindPopover(popupState)}
@@ -26,7 +26,7 @@ function Popup(props) {
               }}
             >
               <DescriptionTypography
-                endpoint={props.endpoint}
+                alignment={props.alignment}
               ></DescriptionTypography>
             </Popover>
           </div>
@@ -37,7 +37,7 @@ function Popup(props) {
 }
 
 Popup.propTypes = {
-  endpoint: PropTypes.string,
+  alignment: PropTypes.string,
 };
 
 export default Popup;

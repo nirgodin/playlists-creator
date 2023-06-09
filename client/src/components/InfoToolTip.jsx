@@ -21,7 +21,16 @@ function InfoToolTip(props) {
 
   return (
     <div>
-      <Tooltip title={featureDescription}>
+      <Tooltip
+        title={
+          <p
+            className="tooltip-title"
+            style={{ fontSize: 14, textAlign: "justify" }}
+          >
+            {featureDescription}
+          </p>
+        }
+      >
         <IconButton color={"inherit"}>
           <HelpRoundedIcon fontSize={"small"} />
         </IconButton>

@@ -9,9 +9,9 @@ function DescriptionTypography(props) {
   );
 
   useEffect(() => {
-    const mapping = ENDPOINTS_DESCRIPTIONS[props.endpoint];
+    const mapping = ENDPOINTS_DESCRIPTIONS[props.alignment];
     setDescriptionMapping(mapping);
-  }, [props.endpoint]);
+  }, [props.alignment]);
 
   function toTypographies() {
     return descriptionMapping.map((typographyDetails) => (
@@ -33,7 +33,7 @@ function DescriptionTypography(props) {
 }
 
 DescriptionTypography.propTypes = {
-  endpoint: PropTypes.string,
+  alignment: PropTypes.string,
 };
 
 export default DescriptionTypography;
