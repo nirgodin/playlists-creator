@@ -14,7 +14,7 @@ function InfoToolTip(props) {
       featureDescription === "" &&
       !_.isEqual(props.featuresDescriptions, [])
     ) {
-      const description = props.featuresDescriptions[0][props.title];
+      const description = props.featuresDescriptions[props.title];
       setFeatureDescription(description);
     }
   }, [featureDescription, props.featuresDescriptions, props.title]);

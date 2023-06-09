@@ -4,8 +4,7 @@ import { Box, Typography } from "@mui/material";
 import { Slider } from "@mui/material";
 import _ from "underscore";
 import { toCamelCase } from "../utils/StringUtils";
-import { MIN, MAX, MIN_MAX_VALUES, FILTER_PARAMS, VALUE } from "../consts";
-import { sendGetRequest } from "../utils/RequestsUtils";
+import { MIN, MAX, MIN_MAX_VALUES, FILTER_PARAMS, VALUE, FEATURES_VALUES } from "../consts";
 import PropTypes from "prop-types";
 
 function MinDistanceRangeSlider(props) {
@@ -15,19 +14,9 @@ function MinDistanceRangeSlider(props) {
   const minTitleValue = toCamelCase(`${MIN} ${props.title}`);
   const maxTitleValue = toCamelCase(`${MAX} ${props.title}`);
 
-  async function getMinMaxValues() {
-    if (_.isEqual(minMaxValues, [])) {
-      const values = await sendGetRequest(
-        `${MIN_MAX_VALUES}/${props.title}`,
-        MIN_MAX_VALUES
-      );
-      setMinMaxValues(values);
-    }
-  }
-
   useEffect(() => {
     if (_.isEqual(minMaxValues, [])) {
-      getMinMaxValues();
+      setMinMaxValues(props.body[0][FEATURES_VALUES][MIN_MAX_VALUES][props.title]);
     }
 
     if (_.isEqual(actualValues, []) && !_.isEqual(minMaxValues, [])) {
@@ -35,7 +24,7 @@ function MinDistanceRangeSlider(props) {
       setMinDistance(updatedMinDistance);
       setActualValues(minMaxValues);
     }
-  }, [minMaxValues, actualValues, getMinMaxValues]);
+  }, [minMaxValues, actualValues]);
 
   function updateRangeValues(newValue, activeThumb) {
     if (!Array.isArray(newValue)) {

@@ -4,7 +4,6 @@ import SelectChips from "./SelectChips";
 import { useEffect, useState } from "react";
 import _ from "underscore";
 import { FEATURES_DESCRIPTIONS } from "../consts";
-import { sendGetRequest } from "../utils/RequestsUtils";
 import PropTypes from "prop-types";
 
 function RequestBody(props) {
@@ -12,17 +11,9 @@ function RequestBody(props) {
 
   useEffect(() => {
     if (_.isEqual(featuresDescriptions, [])) {
-      setDescriptions();
+      setFeaturesDescriptions(props.body[0][FEATURES_DESCRIPTIONS])
     }
   }, [featuresDescriptions]);
-
-  async function setDescriptions() {
-    const descriptions = await sendGetRequest(
-      FEATURES_DESCRIPTIONS,
-      FEATURES_DESCRIPTIONS
-    );
-    setFeaturesDescriptions(descriptions);
-  }
 
   return (
     <div className="request-body">

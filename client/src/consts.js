@@ -19,6 +19,7 @@ const MIN_MAX_VALUES = "minMaxValues";
 const POSSIBLE_VALUES = "possibleValues";
 const FEATURES_NAMES = "featuresNames";
 const FEATURES_DESCRIPTIONS = "featuresDescriptions";
+const FEATURES_VALUES = 'featuresValues';
 
 // Style
 const ITEM_HEIGHT = 48;
@@ -223,6 +224,7 @@ export {
   IS_PUBLIC,
   FEATURES_NAMES,
   FEATURES_DESCRIPTIONS,
+  FEATURES_VALUES,
   IS_SUCCESS,
   PLAYLIST_LINK,
   MESSAGE,

@@ -3,23 +3,14 @@ import { useState, useEffect } from "react";
 import MultipleSelectChipWrapper from "./MultipleSelectChipWrapper";
 import _ from "underscore";
 import { FEATURES_NAMES, POSSIBLE_VALUES } from "../consts";
-import { sendGetRequest } from "../utils/RequestsUtils";
 import PropTypes from "prop-types";
 
 function SelectChips(props) {
   const [featuresNames, setFeaturesNames] = useState([]);
 
-  async function getFeaturesNames() {
-    const featuresNames = await sendGetRequest(
-      `${FEATURES_NAMES}/${POSSIBLE_VALUES}`,
-      FEATURES_NAMES
-    );
-    setFeaturesNames(featuresNames);
-  }
-
   useEffect(() => {
     if (_.isEqual(featuresNames, [])) {
-      getFeaturesNames();
+      setFeaturesNames(props.body[0][FEATURES_NAMES][POSSIBLE_VALUES]);
     }
   }, [featuresNames, setFeaturesNames]);
 
@@ -31,7 +22,7 @@ function SelectChips(props) {
         body={props.body}
         setBody={props.setBody}
         includesCheckbox={true}
-        checkboxLabel={"Include unkowns"}
+        checkboxLabel={"Include unknowns"}
         featuresDescriptions={props.featuresDescriptions}
       ></MultipleSelectChipWrapper>
     ));

@@ -3,23 +3,14 @@ import MinDistanceRangeSliderWrapper from "./MinDistanceRangeSliderWrapper";
 import _ from "underscore";
 import { useState, useEffect } from "react";
 import { FEATURES_NAMES, MIN_MAX_VALUES } from "../consts";
-import { sendGetRequest } from "../utils/RequestsUtils";
 import PropTypes from "prop-types";
 
 function RangeSliders(props) {
   const [featuresNames, setFeaturesNames] = useState([]);
 
-  async function getFeaturesNames() {
-    const featuresNames = await sendGetRequest(
-      `${FEATURES_NAMES}/${MIN_MAX_VALUES}`,
-      FEATURES_NAMES
-    );
-    setFeaturesNames(featuresNames);
-  }
-
   useEffect(() => {
     if (_.isEqual(featuresNames, [])) {
-      getFeaturesNames();
+      setFeaturesNames(props.body[0][FEATURES_NAMES][MIN_MAX_VALUES]);
     }
   }, [featuresNames, setFeaturesNames]);
 
