@@ -1,0 +1,216 @@
+Index: client/src/components/ClickButton.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import * as React from \"react\";\nimport Button from \"@mui/material/Button\";\nimport PropTypes from \"prop-types\";\n\nfunction ClickButton(props) {\n  return (\n    <Button\n      variant=\"outlined\"\n      disabled={props.isClicked}\n      onClick={props.handleClick}\n    >\n      {\" \"}\n      {props.text}\n    </Button>\n  );\n}\n\nClickButton.propTypes = {\n  isClicked: PropTypes.bool,\n  text: PropTypes.string,\n  handleClick: PropTypes.func,\n};\n\nexport default ClickButton;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/ClickButton.jsx b/client/src/components/ClickButton.jsx
+--- a/client/src/components/ClickButton.jsx	(revision a5a798bd15261b9c2c009b3f94496a5bfdb4a705)
++++ b/client/src/components/ClickButton.jsx	(date 1685987528115)
+@@ -5,7 +5,8 @@
+ function ClickButton(props) {
+   return (
+     <Button
+-      variant="outlined"
++      sx={{width: props.width, height: props.height, fontSize: props.fontSize}}
++      variant="contained"
+       disabled={props.isClicked}
+       onClick={props.handleClick}
+     >
+@@ -19,6 +20,9 @@
+   isClicked: PropTypes.bool,
+   text: PropTypes.string,
+   handleClick: PropTypes.func,
++  width: PropTypes.string,
++  height: PropTypes.string,
++  fontSize: PropTypes.number
+ };
+ 
+ export default ClickButton;
+Index: client/src/components/SendButton.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React from \"react\";\nimport { useState, useEffect } from \"react\";\nimport Button from '@mui/material/Button';\nimport axios from 'axios'\nimport { FILTER_PARAMS, IS_SUCCESS, MESSAGE, PHOTO, PLAYLIST_LINK, REQUEST_BODY } from \"../consts\";\nimport PropTypes from 'prop-types';\n\nfunction SendButton(props) {\n    const [isClicked, setIsClicked] = useState(true);\n    const url = `${process.env.REACT_APP_BASE_URL}/${props.endpoint}`;\n\n    useEffect(\n        () => {\n            setIsClicked(!props.isValidInput)\n        }, [props.isValidInput]\n    )\n\n    async function sendPlaylistCreationRequest() {\n        if (props.endpoint === PHOTO) {\n            await sendPhotoRequest()\n        } else {\n            await sendPlaylistConfigurationRequest()\n        }\n    }\n\n    async function sendPhotoRequest() {\n        let bodyFormData = new FormData();\n        bodyFormData.append(PHOTO, props.files[0]);\n        const json = JSON.stringify(props.body[0]);\n        const blob = new Blob([json], {type: 'application/json'});\n        bodyFormData.append(REQUEST_BODY, blob);\n\n        await axios({\n            method: \"post\",\n            url: url,\n            data: bodyFormData,\n            headers: { \"Content-Type\": \"multipart/form-data\" },\n        })\n            .then((resp) => JSON.stringify(resp.data))\n            .then((data) => JSON.parse(data))\n            .then((jsonfiedData) => handleResponse(jsonfiedData))\n            .catch((error) => handleError(error))\n    }\n\n    async function sendPlaylistConfigurationRequest() {\n        await axios.post(url, props.body[0])\n            .then((resp) => JSON.stringify(resp.data))\n            .then((data) => JSON.parse(data))\n            .then((jsonfiedData) => handleResponse(jsonfiedData))\n            .catch((error) => handleError(error))\n    }\n\n    function handleResponse(jsonfiedData) {\n        const isSuccess = jsonfiedData[IS_SUCCESS];\n\n        if (isSuccess) {\n            const playlistLink = jsonfiedData[PLAYLIST_LINK];\n            props.setPlaylistLink(playlistLink);\n            props.setErrorMessage('');\n        } else {\n            const errorMessage = jsonfiedData[MESSAGE];\n            props.setErrorMessage(errorMessage);\n        }\n\n        resetState(isSuccess);\n    }\n\n    function resetState(isSuccess) {\n        const newRequestBody = props.body[0];\n        newRequestBody[FILTER_PARAMS] = props.defaultRequestBody[0][FILTER_PARAMS]\n        props.setBody([newRequestBody]);\n        props.setIsSuccessful(isSuccess);\n        setIsClicked(false);\n    }\n\n    function handleError() {\n        props.setErrorMessage('An unexpected error has occured. Please reload the page and try again');\n        props.setBody(props.defaultRequestBody);\n    }\n\n    function handleClick() {\n        props.setWasRequestSent(true);\n        setIsClicked(true);\n        sendPlaylistCreationRequest();\n    }\n\n    return (\n        <Button\n            variant=\"outlined\"\n            disabled={isClicked}\n            onClick={handleClick}\n        > {props.text}\n        </Button >\n    )\n}\n\nSendButton.propTypes = {\n    isValidInput: PropTypes.bool,\n    endpoint: PropTypes.string,\n    files: PropTypes.array,\n    body: PropTypes.array,\n    setBody: PropTypes.func,\n    setPlaylistLink: PropTypes.func,\n    setIsSuccessful: PropTypes.func,\n    setErrorMessage: PropTypes.func,\n    setWasRequestSent: PropTypes.func,\n    text: PropTypes.string,\n    defaultRequestBody: PropTypes.array\n}\n\nexport default SendButton;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/SendButton.jsx b/client/src/components/SendButton.jsx
+--- a/client/src/components/SendButton.jsx	(revision a5a798bd15261b9c2c009b3f94496a5bfdb4a705)
++++ b/client/src/components/SendButton.jsx	(date 1685987386384)
+@@ -1,9 +1,10 @@
+ import React from "react";
+ import { useState, useEffect } from "react";
+-import Button from '@mui/material/Button';
++// import Button from '@mui/material/Button';
+ import axios from 'axios'
+ import { FILTER_PARAMS, IS_SUCCESS, MESSAGE, PHOTO, PLAYLIST_LINK, REQUEST_BODY } from "../consts";
+ import PropTypes from 'prop-types';
++import ClickButton from "./ClickButton";
+ 
+ function SendButton(props) {
+     const [isClicked, setIsClicked] = useState(true);
+@@ -85,13 +86,20 @@
+     }
+ 
+     return (
+-        <Button
+-            variant="outlined"
+-            disabled={isClicked}
+-            onClick={handleClick}
+-        > {props.text}
+-        </Button >
++        <ClickButton
++            isClicked={isClicked}
++            text={props.text}
++            handleClick={handleClick}
++        ></ClickButton>
+     )
++    // return (
++    //     <Button
++    //         variant="outlined"
++    //         disabled={isClicked}
++    //         onClick={handleClick}
++    //     > {props.text}
++    //     </Button >
++    // )
+ }
+ 
+ SendButton.propTypes = {
+Index: client/src/components/MethodToggleButtonGroup.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import * as React from \"react\";\nimport ToggleButton from \"@mui/material/ToggleButton\";\nimport ToggleButtonGroup from \"@mui/material/ToggleButtonGroup\";\nimport { CONFIGURATION, PROMPT, PHOTO } from \"../consts\";\nimport TuneIcon from \"@mui/icons-material/Tune\";\nimport EditNoteIcon from \"@mui/icons-material/EditNote\";\nimport InsertPhotoRoundedIcon from \"@mui/icons-material/InsertPhotoRounded\";\nimport PropTypes from \"prop-types\";\n\nfunction MethodToggleButtonGroup(props) {\n  function handleChange(event, newAlignment) {\n    props.setAlignment(newAlignment);\n    props.setEndpoint(newAlignment);\n  }\n\n  return (\n    <ToggleButtonGroup\n      color=\"primary\"\n      value={props.alignment}\n      exclusive\n      onChange={handleChange}\n      aria-label=\"Platform\"\n    >\n      <ToggleButton sx={{ color: \"white\", width: \"200px\" }} value={PROMPT}>\n        <EditNoteIcon className=\"toggle-button-icon\" />\n        {PROMPT}\n      </ToggleButton>\n      <ToggleButton\n        sx={{ color: \"white\", width: \"200px\" }}\n        value={CONFIGURATION}\n      >\n        <TuneIcon className=\"toggle-button-icon\" />\n        {CONFIGURATION}\n      </ToggleButton>\n      <ToggleButton sx={{ color: \"white\", width: \"200px\" }} value={PHOTO}>\n        <InsertPhotoRoundedIcon className=\"toggle-button-icon\" />\n        {PHOTO}\n      </ToggleButton>\n    </ToggleButtonGroup>\n  );\n}\n\nMethodToggleButtonGroup.propTypes = {\n  setAlignment: PropTypes.func,\n  setEndpoint: PropTypes.func,\n  alignment: PropTypes.string,\n};\n\nexport default MethodToggleButtonGroup;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/MethodToggleButtonGroup.jsx b/client/src/components/MethodToggleButtonGroup.jsx
+--- a/client/src/components/MethodToggleButtonGroup.jsx	(revision a5a798bd15261b9c2c009b3f94496a5bfdb4a705)
++++ b/client/src/components/MethodToggleButtonGroup.jsx	(date 1685988188547)
+@@ -21,18 +21,18 @@
+       onChange={handleChange}
+       aria-label="Platform"
+     >
+-      <ToggleButton sx={{ color: "white", width: "200px" }} value={PROMPT}>
++      <ToggleButton sx={{ color: "#1b1c55", width: "200px", borderWidth:"1.5px" }} value={PROMPT}>
+         <EditNoteIcon className="toggle-button-icon" />
+         {PROMPT}
+       </ToggleButton>
+       <ToggleButton
+-        sx={{ color: "white", width: "200px" }}
++        sx={{ color: "#1b1c55", width: "200px" }}
+         value={CONFIGURATION}
+       >
+         <TuneIcon className="toggle-button-icon" />
+         {CONFIGURATION}
+       </ToggleButton>
+-      <ToggleButton sx={{ color: "white", width: "200px" }} value={PHOTO}>
++      <ToggleButton sx={{ color: "#1b1c55", width: "200px" }} value={PHOTO}>
+         <InsertPhotoRoundedIcon className="toggle-button-icon" />
+         {PHOTO}
+       </ToggleButton>
+Index: client/src/components/LoginButton.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import * as React from \"react\";\nimport ClickButton from \"./ClickButton\";\nimport { generateAccessCodeURL } from \"../utils/UrlUtils\";\nimport PropTypes from \"prop-types\";\n\nfunction LoginButton(props) {\n  const [isClicked, setIsClicked] = React.useState(false);\n\n  function handleClick() {\n    setIsClicked(true);\n    const accessCodeURL = generateAccessCodeURL(\n      process.env.REACT_APP_SPOTIFY_CLIENT_ID,\n      process.env.REACT_APP_SPOTIFY_REDIRECT_URI\n    );\n    window.location = accessCodeURL;\n  }\n\n  return (\n    <div className=\"click-button\">\n      <ClickButton\n        text={props.text}\n        isClicked={isClicked}\n        handleClick={handleClick}\n      ></ClickButton>\n    </div>\n  );\n}\n\nLoginButton.propTypes = {\n  text: PropTypes.string,\n};\n\nexport default LoginButton;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/LoginButton.jsx b/client/src/components/LoginButton.jsx
+--- a/client/src/components/LoginButton.jsx	(revision a5a798bd15261b9c2c009b3f94496a5bfdb4a705)
++++ b/client/src/components/LoginButton.jsx	(date 1685987486826)
+@@ -18,6 +18,9 @@
+   return (
+     <div className="click-button">
+       <ClickButton
++        width={'100px'}
++        height={'50px'}
++        fontSize={20}
+         text={props.text}
+         isClicked={isClicked}
+         handleClick={handleClick}
+Index: client/src/components/FormTextField.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React from \"react\";\nimport TextField from \"@mui/material/TextField\";\nimport { toCamelCase } from \"../utils/StringUtils\";\nimport { useState, useEffect } from \"react\";\nimport { PLAYLIST_DETAILS } from \"../consts\";\nimport PropTypes from \"prop-types\";\n\nfunction FormTextField(props) {\n  const [value, setValue] = useState(props.defaultValue);\n  const [isError, setIsError] = useState(false);\n  const [helperText, setHelperText] = useState(\"\");\n\n  useEffect(() => {\n    if (props.isRequired) {\n      const validInput = value === \"\" ? false : true;\n      props.setIsValidInput(validInput);\n      setIsError(!validInput);\n      const text = isError ? \"This field is required\" : \"\";\n      setHelperText(text);\n    }\n  }, [props, value, isError]);\n\n  const handleChange = (event) => {\n    setValue(event.target.value);\n    const newBody = props.body[0];\n    const bodyKey = toCamelCase(props.label);\n    newBody[PLAYLIST_DETAILS][bodyKey] = event.target.value;\n    props.setBody([newBody]);\n  };\n\n  return (\n    <TextField\n      inputProps={{ style: { color: \"white\" } }}\n      multiline={true}\n      error={isError}\n      required={props.isRequired}\n      value={value}\n      id={props.id}\n      label={props.label}\n      defaultValue={props.defaultValue}\n      onChange={handleChange}\n      helperText={helperText}\n    />\n  );\n}\n\nFormTextField.propTypes = {\n  defaultValue: PropTypes.string,\n  isRequired: PropTypes.bool,\n  setIsValidInput: PropTypes.func,\n  body: PropTypes.array,\n  setBody: PropTypes.func,\n  label: PropTypes.string,\n  id: PropTypes.string,\n};\n\nexport default FormTextField;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/FormTextField.jsx b/client/src/components/FormTextField.jsx
+--- a/client/src/components/FormTextField.jsx	(revision a5a798bd15261b9c2c009b3f94496a5bfdb4a705)
++++ b/client/src/components/FormTextField.jsx	(date 1685987872833)
+@@ -30,7 +30,7 @@
+ 
+   return (
+     <TextField
+-      inputProps={{ style: { color: "white" } }}
++      inputProps={{ style: { color: "#1b1c55" } }}
+       multiline={true}
+       error={isError}
+       required={props.isRequired}
+Index: client/src/App.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.App {\n  text-align: center;\n}\n\n.App-logo {\n  height: 40vmin;\n  pointer-events: none;\n}\n\n@media (prefers-reduced-motion: no-preference) {\n  .App-logo {\n    animation: App-logo-spin infinite 20s linear;\n  }\n}\n\n.App-header {\n  background-color: rgb(0, 30, 60);\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  font-size: calc(10px + 2vmin);\n  color: white;\n}\n\n.App-link {\n  color: #61dafb;\n}\n\n@keyframes App-logo-spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n.toggle-button {\n  padding-bottom: 20px;\n}\n\n.text-field {\n  padding-bottom: 20px;\n}\n\n.row-items {\n  display: flex;\n  flex-direction: row;\n}\n\n.filter-checkbox {\n  vertical-align: bottom;\n  padding-right: 30px;\n  padding-top: 8px;\n  text-align: justify;\n}\n\n.playlist-configuration {\n  margin: auto;\n  width: 58%;\n  padding: 10px;\n  padding-bottom: 30px;\n  padding-left: 265px;\n}\n\n.playlist-details {\n  padding-top: 30px;\n  padding-bottom: 30px;\n  padding-left: 210px;\n}\n\n.is-public-switch {\n  margin-top: 25px;\n  padding-left: 15px;\n}\n\n@keyframes spinner {\n  0% {\n    transform: rotate(0deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n.loading-spinner {\n  width: 50px;\n  height: 50px;\n  border: 10px solid #444b59;\n  border-top: 10px solid #1976d2;\n  border-radius: 50%;\n  animation: spinner 1.5s linear infinite;\n}\n\n.spinner-container {\n  display: grid;\n  justify-content: center;\n  align-items: center;\n  height: 350px;\n}\n\n.MuiOutlinedInput-notchedOutline {\n  border-width: 1px !important;\n  border-color: #1976d2 !important;\n}\n\n.multiple-select-chip {\n  padding-bottom: 10px;\n}\n\n.back-to-main-page-button {\n  padding-top: 30px;\n}\n\n.select-chips {\n  padding-bottom: 25px;\n}\n\n@keyframes skew-y-shakeing{\n  0% { transform: skewY(-5deg); }\n  5% { transform: skewY(5deg); }\n  10% { transform: skewY(-5deg); }\n  15% { transform: skewY(5deg); }\n  20% { transform: skewY(0deg); }\n  100% { transform: skewY(0deg); }\n }\n\n.error-message {\n  animation: skew-y-shakeing 1.5s;\n  color: red;\n  font-size: large;\n}\n\n.range-slider {\n  padding-left: 10px;\n}\n\n.range-slider-tooltip {\n  padding-right: 3px;\n  padding-top: 25px;\n}\n\n.select-chip-tooltip {\n  padding-right: 3px;\n  padding-top: 7px;\n}\n\n.toggle-button-icon {\n  padding-right: 10px;\n}\n\n.photo-dropzone:hover {\n  cursor: pointer;\n}\n\n.photo-preview {\n  padding-bottom: 10px;\n}\n\n.popup {\n  padding-top: 10px;\n}\n\n.display-line-break {\n  white-space: pre-line;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/App.css b/client/src/App.css
+--- a/client/src/App.css	(revision a5a798bd15261b9c2c009b3f94496a5bfdb4a705)
++++ b/client/src/App.css	(date 1685988162114)
+@@ -14,14 +14,14 @@
+ }
+ 
+ .App-header {
+-  background-color: rgb(0, 30, 60);
++  background-color: #7cff8f;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   font-size: calc(10px + 2vmin);
+-  color: white;
++  color: #1b1c55;
+ }
+ 
+ .App-link {
+@@ -88,7 +88,7 @@
+   width: 50px;
+   height: 50px;
+   border: 10px solid #444b59;
+-  border-top: 10px solid #1976d2;
++  border-top: 10px solid #1b1c55;
+   border-radius: 50%;
+   animation: spinner 1.5s linear infinite;
+ }
+@@ -101,8 +101,8 @@
+ }
+ 
+ .MuiOutlinedInput-notchedOutline {
+-  border-width: 1px !important;
+-  border-color: #1976d2 !important;
++  border-width: 1.5px !important;
++  border-color: #1b1c55 !important;
+ }
+ 
+ .multiple-select-chip {
+Index: client/src/components/Popup.jsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React from \"react\";\nimport Button from \"@mui/material/Button\";\nimport Popover from \"@mui/material/Popover\";\nimport PopupState, { bindTrigger, bindPopover } from \"material-ui-popup-state\";\nimport PropTypes from \"prop-types\";\nimport DescriptionTypography from \"./DescriptionTypography\";\n\nfunction Popup(props) {\n  return (\n    <div className=\"popup\">\n      <PopupState variant=\"popover\" popupId=\"demo-popup-popover\">\n        {(popupState) => (\n          <div>\n            <Button variant=\"contained\" {...bindTrigger(popupState)}>\n              {`${props.endpoint} Usage guidelines`}\n            </Button>\n            <Popover\n              {...bindPopover(popupState)}\n              anchorOrigin={{\n                vertical: \"bottom\",\n                horizontal: \"center\",\n              }}\n              transformOrigin={{\n                vertical: \"top\",\n                horizontal: \"center\",\n              }}\n            >\n              <DescriptionTypography\n                endpoint={props.endpoint}\n              ></DescriptionTypography>\n            </Popover>\n          </div>\n        )}\n      </PopupState>\n    </div>\n  );\n}\n\nPopup.propTypes = {\n  endpoint: PropTypes.string,\n};\n\nexport default Popup;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/Popup.jsx b/client/src/components/Popup.jsx
+--- a/client/src/components/Popup.jsx	(revision a5a798bd15261b9c2c009b3f94496a5bfdb4a705)
++++ b/client/src/components/Popup.jsx	(date 1685987817993)
+@@ -11,7 +11,7 @@
+       <PopupState variant="popover" popupId="demo-popup-popover">
+         {(popupState) => (
+           <div>
+-            <Button variant="contained" {...bindTrigger(popupState)}>
++            <Button sx={{'color': "#1b1c55"}} variant="outlined" {...bindTrigger(popupState)}>
+               {`${props.endpoint} Usage guidelines`}
+             </Button>
+             <Popover
