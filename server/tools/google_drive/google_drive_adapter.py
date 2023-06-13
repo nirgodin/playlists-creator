@@ -10,7 +10,7 @@ class GoogleDriveAdapter:
     def download_all_dir_files(self, folder_id: str, local_dir: str) -> None:
         query = f"'{folder_id}' in parents"
         results = self._drive_service.files().list(q=query).execute()
-        files = results.generate_features_names('files', [])
+        files = results.get('files', [])
 
         for file in files:
             file_path = os.path.join(local_dir, file['name'])
