@@ -5,8 +5,11 @@ AUTHORIZATION_REQUEST_URL_FORMAT = 'https://accounts.spotify.com/authorize?{}'
 PLAYLIST_LINK_FORMAT = 'https://open.spotify.com/playlist/{}'
 USER_PROFILE_URL = 'https://api.spotify.com/v1/me'
 SEARCH_URL = 'https://api.spotify.com/v1/search'
-ARTIST_TOP_TRACKS_URL = 'https://api.spotify.com/v1/artists/{artist_id}/top-tracks'
+ARTIST_TOP_TRACKS_URL = 'https://api.spotify.com/v1/artists/{}/top-tracks'
 PLAYLIST_COVER_URL_FORMAT = 'https://api.spotify.com/v1/playlists/{}/images'
+PLAYLIST_URL_FORMAT = 'https://api.spotify.com/v1/playlists/{}'
+AUDIO_FEATURES_URL_FORMAT = "https://api.spotify.com/v1/audio-features?ids={}"
+ARTIST_URL_FORMAT = 'https://api.spotify.com/v1/artists?ids={}'
 REDIRECT_URI = 'redirect_uri'
 CODE = 'code'
 GRANT_TYPE = 'grant_type'
@@ -20,3 +23,4 @@ PUBLIC = "public"
 CLIENT_ID = 'client_id'
 MARKET = 'market'
 MAX_SPOTIFY_PLAYLIST_SIZE = 100
+AIO_POOL_SIZE = 5

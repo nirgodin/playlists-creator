@@ -29,7 +29,7 @@ class ArtistsTopTracksCollector:
                                         country: str,
                                         artist_id: str) -> Optional[List[dict]]:
         progress_bar.update(1)
-        url = ARTIST_TOP_TRACKS_URL.format(artist_id=artist_id)
+        url = ARTIST_TOP_TRACKS_URL.format(artist_id)
         params = {
             MARKET: country
         }
