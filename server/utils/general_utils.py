@@ -1,6 +1,6 @@
 import os.path
 import random
-from functools import lru_cache
+from functools import lru_cache, reduce
 from typing import List, Dict
 
 import pandas as pd
@@ -97,3 +97,7 @@ def download_database() -> None:
         local_dir=RESOURCES_DIR_PATH
     )
     ZScoresMetadataCreator().create()
+
+
+def chain_dicts(dicts: List[dict]) -> dict:
+    return reduce(lambda dict1, dict2: {**dict1, **dict2}, dicts)
