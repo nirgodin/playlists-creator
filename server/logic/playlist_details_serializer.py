@@ -55,14 +55,15 @@ class PlaylistDetailsSerializer:
         serialized_details = []
 
         for i in range(len(playlist_details[TRACKS])):
-            track_details = self._serialize_single_track_features(playlist_details[TRACKS][i])
-            artist_details = self._serialize_single_artist_features(playlist_details[ARTISTS][i])
-            audio_features_details = self._serialize_single_track_features(playlist_details[AUDIO_FEATURES][i])
-            serialized_track_details = chain_dicts([track_details, artist_details, audio_features_details])
+            details = [
+                self._serialize_single_track_features(playlist_details[TRACKS][i]),
+                self._serialize_single_artist_features(playlist_details[ARTISTS][i]),
+                self._serialize_single_track_features(playlist_details[AUDIO_FEATURES][i])
+            ]
+            serialized_track_details = chain_dicts(details)
             serialized_details.append(serialized_track_details)
 
-        data = pd.DataFrame.from_records(serialized_details)
-        print('b')
+        return pd.DataFrame.from_records(serialized_details)
 
     @staticmethod
     def _serialize_single_track_audio_features(audio_features: dict) -> Dict[str, float]:
@@ -115,6 +116,6 @@ class PlaylistDetailsSerializer:
 
 if __name__ == '__main__':
     with open('/Users/nirgodin/Downloads/playlist_details_sample.json', 'r') as f:
-        details = json.load(f)
+        raw_details = json.load(f)
 
-    PlaylistDetailsSerializer().serialize(details)
+    PlaylistDetailsSerializer().serialize(raw_details)
