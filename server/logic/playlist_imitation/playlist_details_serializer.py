@@ -4,13 +4,13 @@ from typing import Dict, List, Callable, Optional
 import pandas as pd
 from pandas import DataFrame
 
-from server.consts.data_consts import FOLLOWERS, TOTAL, ALBUM, TRACKS, ARTISTS, AUDIO_FEATURES
+from server.consts.data_consts import FOLLOWERS, TOTAL, ALBUM, TRACKS, ARTISTS, AUDIO_FEATURES, URI
 from server.utils.general_utils import chain_dicts
 
 AUDIO_FEATURES_IRRELEVANT_KEYS = [
     'type',
     'id',
-    'uri',
+    URI,
     'track_href',
     'analysis_url',
     'type'
@@ -20,7 +20,7 @@ ARTISTS_FEATURES_IRRELEVANT_KEYS = [
     'external_urls',
     'href',
     'id',
-    'uri',
+    URI,
     'images',
     'type'
 ]
@@ -40,7 +40,8 @@ TRACKS_FEATURES_IRRELEVANT_KEYS = [
     'images',
     'type',
     'analysis_url',
-    'track_href'
+    'track_href',
+    'is_local'
 ]
 
 ALBUM_RELEVANT_FEATURES = [
