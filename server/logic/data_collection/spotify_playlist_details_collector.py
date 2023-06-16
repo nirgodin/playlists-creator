@@ -18,7 +18,7 @@ class PlaylistDetailsCollector:
         self._session = session
         self._tracks_collector = SpotifyTracksCollector()
 
-    async def collect_playlist(self, playlist_id: str) -> Dict[str, List[dict]]:
+    async def collect_playlist(self, playlist_id: str) -> Optional[Dict[str, List[dict]]]:
         playlist = await self._collect(url_format=PLAYLIST_URL_FORMAT, spotify_id=playlist_id)
         if playlist is None:
             return
