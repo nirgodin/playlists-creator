@@ -20,7 +20,7 @@ const MIN_MAX_VALUES = "minMaxValues";
 const POSSIBLE_VALUES = "possibleValues";
 const FEATURES_NAMES = "featuresNames";
 const FEATURES_DESCRIPTIONS = "featuresDescriptions";
-const FEATURES_VALUES = 'featuresValues';
+const FEATURES_VALUES = "featuresValues";
 
 // Style
 const ITEM_HEIGHT = 48;
@@ -204,10 +204,34 @@ const CONFIGURATION_DESCRIPTION = [
   },
 ];
 
+const EXISTING_PLAYLIST_DESCRIPTION = [
+  {
+    variant: "h6",
+    text: "Using Existing Playlist",
+    textAlign: "center",
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+  },
+];
+
 const ENDPOINTS_DESCRIPTIONS = {
   [CONFIGURATION]: CONFIGURATION_DESCRIPTION,
   [PROMPT]: PROMPT_DESCRIPTION,
   [PHOTO]: PHOTO_DESCRIPTION,
+  [EXISTING_PLAYLIST]: EXISTING_PLAYLIST_DESCRIPTION,
 };
 
 export {

@@ -1,5 +1,4 @@
 import * as React from "react";
-// import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { CONFIGURATION, PROMPT, PHOTO, EXISTING_PLAYLIST } from "../consts";
 import TuneIcon from "@mui/icons-material/Tune";
@@ -7,6 +6,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
 import PropTypes from "prop-types";
 import MethodToggleButton from "./MethodToggleButton";
+import QueueMusicRoundedIcon from '@mui/icons-material/QueueMusicRounded';
 
 function MethodToggleButtonGroup(props) {
   function handleChange(event, newAlignment) {
@@ -15,20 +15,20 @@ function MethodToggleButtonGroup(props) {
 
   const toggleButtonsConfig = [
     {
-      value: PROMPT,
-      icon: <EditNoteIcon fontSize="large" sx={{ paddingRight: "10px" }} />,
-    },
-    {
       value: CONFIGURATION,
       icon: <TuneIcon sx={{ paddingRight: "10px" }} />,
+    },
+    {
+      value: EXISTING_PLAYLIST,
+      icon: <QueueMusicRoundedIcon sx={{ paddingRight: "10px" }} />,
     },
     {
       value: PHOTO,
       icon: <InsertPhotoRoundedIcon sx={{ paddingRight: "10px" }} />,
     },
     {
-      value: EXISTING_PLAYLIST,
-      icon: <InsertPhotoRoundedIcon sx={{ paddingRight: "10px" }} />,
+      value: PROMPT,
+      icon: <EditNoteIcon sx={{ paddingRight: "10px" }} />,
     },
   ];
 

@@ -1,10 +1,11 @@
 import { ToggleButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { convertCamelToTitle } from "../utils/StringUtils";
 
 function MethodToggleButton(props) {
   const [selected, setSelected] = useState(false);
-
+  
   useEffect(() => {
     setSelected(props.alignment === props.value)
   });
@@ -16,13 +17,13 @@ function MethodToggleButton(props) {
 
   return (
     <ToggleButton
-    sx={{ color: 'white', bgcolor: "#02305e", width: "250px", fontSize: "20px"}}
+    sx={{ color: 'white', bgcolor: "#02305e", width: "260px", fontSize: "20px"}}
       selected={selected}
-      value={props.value}
+      value={convertCamelToTitle(props.value)}
       onClick={handleClick}
     >
       {props.icon}
-      {props.value}
+      {convertCamelToTitle(props.value)}
     </ToggleButton>
   );
 }

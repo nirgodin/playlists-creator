@@ -19,3 +19,12 @@ export function toCamelCase(str) {
 
   return camelCasedTokens.join("");
 }
+
+export function convertCamelToTitle(camelCaseString) {
+  var words = camelCaseString.split(/(?=[A-Z])/);
+  var titleCaseString = words.map(function(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }).join(' ');
+
+  return titleCaseString;
+}
