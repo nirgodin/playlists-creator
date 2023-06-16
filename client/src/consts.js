@@ -166,12 +166,17 @@ const PHOTO_DESCRIPTION = [
   },
   {
     variant: "p",
-    text: "1. For optimal results, the model performs best when provided with images featuring dark backgrounds and light text. If you provide photos with light backgrounds, the model may struggle to detect the artists' names accurately, resulting in a failure to create your playlist.",
+    text: "1. Currently, only English is supported as the language. In the event that you provide photos containing languages other than English, it may have a negative impact on the performance, potentially resulting in the inability to generate your playlist successfully.",
     textAlign: "justify",
   },
   {
     variant: "p",
-    text: "2. The model's training focused on identifying artists' names, rather than songs or albums. Therefore, it is essential to ensure that your photo includes the names of the artists. Without this information, the model will be unable to generate a playlist for you.",
+    text: "2. For optimal results, the model performs best when provided with images featuring dark backgrounds and light text. If you provide photos with light backgrounds, the model may struggle to detect the artists' names accurately, resulting in a failure to create your playlist.",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
+    text: "3. The model's training focused on identifying artists' names, rather than songs or albums. Therefore, it is essential to ensure that your photo includes the names of the artists. Without this information, the model will be unable to generate a playlist for you.",
     textAlign: "justify",
   },
   {
@@ -212,12 +217,22 @@ const EXISTING_PLAYLIST_DESCRIPTION = [
   },
   {
     variant: "p",
-    text: "",
+    text: "Are you finding your current playlist enjoyable but starting to feel like you've heard it all? Then this is just what you need.",
     textAlign: "justify",
   },
   {
     variant: "p",
-    text: "",
+    text: "The `Existing Playlist` feature allows you to input the URL of a playlist you already have and receive a fresh new playlist that captures the essence of the one you provided.",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
+    text: "To experience this feature, simply visit your playlist page on Spotify, click on the Share button, select \"Copy link to playlist\" and paste it into the text box provided below.",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
+    text: "Sit back and enjoy!",
     textAlign: "justify",
   },
   {
