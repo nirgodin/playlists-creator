@@ -129,7 +129,7 @@ function LandingPage(props) {
           <FormTextField
             isRequired={true}
             id={EXISTING_PLAYLIST}
-            label={'Existing Playlist'}
+            label={'Playlist URL'}
             defaultValue={""}
             body={props.body}
             setBody={props.setBody}
