@@ -5,7 +5,7 @@ from flask_restful import Resource
 
 from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
     IS_PUBLIC, PROMPT, REQUEST_BODY, FEATURES_NAMES, FEATURES_VALUES, MIN_MAX_VALUES, POSSIBLE_VALUES, \
-    FEATURES_DESCRIPTIONS
+    FEATURES_DESCRIPTIONS, EXISTING_PLAYLIST
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.features_descriptions_manager import FeaturesDescriptionsManager
 from server.logic.features_names_generator import FeaturesNamesGenerator
@@ -26,7 +26,7 @@ class RequestBodyController(Resource):
             PLAYLIST_DETAILS: self._generate_default_playlist_details(),
             FEATURES_NAMES: self._features_names_generator.generate_features_names(),
             FEATURES_VALUES: self._get_features_values(features_names),
-            FEATURES_DESCRIPTIONS: self._features_descriptions_manager.get_features_descriptions()
+            FEATURES_DESCRIPTIONS: self._features_descriptions_manager.get_features_descriptions(),
         }
         response = {
             REQUEST_BODY: [body]
@@ -40,7 +40,8 @@ class RequestBodyController(Resource):
             PLAYLIST_NAME: '',
             PLAYLIST_DESCRIPTION: '',
             IS_PUBLIC: False,
-            PROMPT: ''
+            PROMPT: '',
+            EXISTING_PLAYLIST: ''
         }
 
     @staticmethod

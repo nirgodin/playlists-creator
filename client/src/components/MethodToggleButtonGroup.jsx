@@ -1,7 +1,7 @@
 import * as React from "react";
 // import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { CONFIGURATION, PROMPT, PHOTO } from "../consts";
+import { CONFIGURATION, PROMPT, PHOTO, EXISTING_PLAYLIST } from "../consts";
 import TuneIcon from "@mui/icons-material/Tune";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
@@ -24,6 +24,10 @@ function MethodToggleButtonGroup(props) {
     },
     {
       value: PHOTO,
+      icon: <InsertPhotoRoundedIcon sx={{ paddingRight: "10px" }} />,
+    },
+    {
+      value: EXISTING_PLAYLIST,
       icon: <InsertPhotoRoundedIcon sx={{ paddingRight: "10px" }} />,
     },
   ];

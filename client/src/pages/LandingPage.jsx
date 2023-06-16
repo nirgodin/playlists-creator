@@ -5,7 +5,7 @@ import FormTextField from ".././components/FormTextField";
 import SendButton from ".././components/SendButton";
 import { useState, useEffect } from "react";
 import RequestBody from ".././components/RequestBody";
-import { PROMPT, CONFIGURATION, PHOTO } from "../consts";
+import { PROMPT, CONFIGURATION, PHOTO, EXISTING_PLAYLIST } from "../consts";
 import PhotoDropzone from "../components/PhotoDropzone";
 import _ from "underscore";
 import PropTypes from "prop-types";
@@ -14,9 +14,9 @@ import PlaylistDetails from "../components/PlaylistDetails";
 
 function LandingPage(props) {
   const [alignment, setAlignment] = useState(PROMPT);
-  // const [alignment, setAlignment] = useState(PROMPT);
   const [isValidInput, setIsValidInput] = useState(false);
   const [isValidPrompt, setIsValidPrompt] = useState(false);
+  const [isValidExistingPlaylist, setIsValidExistingPlaylist] = useState(false);
   const [isValidPlaylistName, setIsValidPlaylistName] = useState(false);
   const [files, setFiles] = useState([]);
 
@@ -27,8 +27,11 @@ function LandingPage(props) {
     } else if (alignment === PHOTO) {
       const isValid = isValidPlaylistName && !_.isEqual(files, []);
       setIsValidInput(isValid);
-    } else {
+    } else if (alignment === CONFIGURATION) {
       setIsValidInput(isValidPlaylistName);
+    } else {
+      const isValid = isValidExistingPlaylist && isValidPlaylistName;
+      setIsValidInput(isValid);
     }
   }, [alignment, isValidPrompt, isValidPlaylistName, files]);
 
@@ -108,12 +111,32 @@ function LandingPage(props) {
         {buttons}
       </div>
     );
-  } else {
+  } else if (alignment === PHOTO) {
     return (
       <div>
         {playlistDetails}
         {toggleButton}
         <PhotoDropzone files={files} setFiles={setFiles}></PhotoDropzone>
+        {buttons}
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        {playlistDetails}
+        {toggleButton}
+        <div className="text-field">
+          <FormTextField
+            isRequired={true}
+            id={EXISTING_PLAYLIST}
+            label={'Existing Playlist'}
+            defaultValue={""}
+            body={props.body}
+            setBody={props.setBody}
+            isValidInput={isValidExistingPlaylist}
+            setIsValidInput={setIsValidExistingPlaylist}
+          ></FormTextField>
+        </div>
         {buttons}
       </div>
     );

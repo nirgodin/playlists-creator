@@ -1,4 +1,3 @@
-import asyncio
 from typing import List, Union, Optional, Callable, Dict
 
 from aiohttp import ClientSession
@@ -14,8 +13,7 @@ MAX_TRACKS_NUMBER_PER_REQUEST = 50
 
 
 class PlaylistDetailsCollector:
-    def __init__(self, session: ClientSession):
-        self._session = session
+    def __init__(self):
         self._tracks_collector = SpotifyTracksCollector()
 
     async def collect_playlist(self, playlist_id: str) -> Optional[Dict[str, List[dict]]]:
@@ -28,10 +26,12 @@ class PlaylistDetailsCollector:
 
     async def _collect(self, url_format: str, spotify_id: str) -> Union[dict, list]:
         url = url_format.format(spotify_id)
+        headers = build_spotify_client_credentials_headers()
 
-        async with self._session.get(url) as raw_response:
-            if raw_response.ok:
-                return await raw_response.json()
+        async with ClientSession(headers=headers) as session:
+            async with session.get(url) as raw_response:
+                if raw_response.ok:
+                    return await raw_response.json()
 
     async def _collect_tracks_data(self, tracks: List[dict]):
         track_data = {}
@@ -81,10 +81,3 @@ class PlaylistDetailsCollector:
             ARTISTS: self._fetch_tracks_artists,
             AUDIO_FEATURES: self._fetch_audio_features
         }
-
-
-if __name__ == '__main__':
-    headers = build_spotify_client_credentials_headers()
-    session = ClientSession(headers=headers)
-    collector = PlaylistDetailsCollector(session)
-    asyncio.get_event_loop().run_until_complete(collector.collect_playlist(''))

@@ -6,6 +6,7 @@ from flask_restful import Api
 
 from server.consts.env_consts import SPOTIPY_CLIENT_SECRET
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
+from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.request_body_controller import RequestBodyController
@@ -28,6 +29,8 @@ api.add_resource(ConfigurationController, '/api/configuration')
 api.add_resource(PromptController, '/api/prompt')
 api.add_resource(PhotoController, '/api/photo')
 api.add_resource(RequestBodyController, '/api/requestBody')
+api.add_resource(ExistingPlaylistController, '/api/existingPlaylist')
+
 
 if __name__ == '__main__':
     app.run(debug=False)

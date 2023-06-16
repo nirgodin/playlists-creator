@@ -1,4 +1,5 @@
 const PROMPT = "prompt";
+const EXISTING_PLAYLIST = "existingPlaylist";
 const CONFIGURATION = "configuration";
 const PHOTO = "photo";
 const FILTER_PARAMS = "filterParams";
@@ -211,6 +212,7 @@ const ENDPOINTS_DESCRIPTIONS = {
 
 export {
   PROMPT,
+  EXISTING_PLAYLIST,
   CONFIGURATION,
   PHOTO,
   FILTER_PARAMS,
