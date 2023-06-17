@@ -18,7 +18,7 @@ function PlaylistTextFields(props) {
         <div>
           <FormTextField
             isRequired={true}
-            id={"playlist-name"}
+            id={"playlist name"}
             label={"Playlist name"}
             defaultValue={""}
             body={props.body}
@@ -28,7 +28,7 @@ function PlaylistTextFields(props) {
           ></FormTextField>
           <FormTextField
             isRequired={false}
-            id={"playlist-description"}
+            id={"playlist description"}
             label={"Playlist description"}
             defaultValue={""}
             body={props.body}

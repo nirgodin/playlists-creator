@@ -23,7 +23,7 @@ function FormTextField(props) {
   const handleChange = (event) => {
     setValue(event.target.value);
     const newBody = props.body[0];
-    let bodyKey = toCamelCase(props.label);
+    let bodyKey = toCamelCase(props.id);
     newBody[PLAYLIST_DETAILS][bodyKey] = event.target.value;
     props.setBody([newBody]);
   };

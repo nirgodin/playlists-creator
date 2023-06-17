@@ -3,18 +3,17 @@ from typing import List, Union, Optional, Callable, Dict
 from aiohttp import ClientSession
 
 from server.consts.api_consts import PLAYLIST_URL_FORMAT, ID, AUDIO_FEATURES_URL_FORMAT, \
-    ARTIST_URL_FORMAT
+    ARTIST_URL_FORMAT, MAX_TRACKS_NUMBER_PER_REQUEST
 from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.utils.general_utils import build_spotify_client_credentials_headers
 from server.utils.spotify_utils import extract_tracks_from_response
 
-MAX_TRACKS_NUMBER_PER_REQUEST = 50
-
 
 class PlaylistDetailsCollector:
-    def __init__(self):
+    def __init__(self, session: Optional[ClientSession] = None):
         self._tracks_collector = SpotifyTracksCollector()
+        self._session = session
 
     async def collect_playlist(self, playlist_id: str) -> Optional[Dict[str, List[dict]]]:
         playlist = await self._collect(url_format=PLAYLIST_URL_FORMAT, spotify_id=playlist_id)
@@ -26,12 +25,10 @@ class PlaylistDetailsCollector:
 
     async def _collect(self, url_format: str, spotify_id: str) -> Union[dict, list]:
         url = url_format.format(spotify_id)
-        headers = build_spotify_client_credentials_headers()
 
-        async with ClientSession(headers=headers) as session:
-            async with session.get(url) as raw_response:
-                if raw_response.ok:
-                    return await raw_response.json()
+        async with self._session.get(url) as raw_response:
+            if raw_response.ok:
+                return await raw_response.json()
 
     async def _collect_tracks_data(self, tracks: List[dict]):
         track_data = {}
@@ -81,3 +78,12 @@ class PlaylistDetailsCollector:
             ARTISTS: self._fetch_tracks_artists,
             AUDIO_FEATURES: self._fetch_audio_features
         }
+
+    async def __aenter__(self) -> "PlaylistDetailsCollector":
+        headers = build_spotify_client_credentials_headers()
+        self._session = await ClientSession(headers=headers).__aenter__()
+
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+        await self._session.__aexit__(exc_type, exc_val, exc_tb)

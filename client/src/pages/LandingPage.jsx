@@ -5,7 +5,7 @@ import FormTextField from ".././components/FormTextField";
 import SendButton from ".././components/SendButton";
 import { useState, useEffect } from "react";
 import RequestBody from ".././components/RequestBody";
-import { PROMPT, CONFIGURATION, PHOTO, EXISTING_PLAYLIST } from "../consts";
+import { PROMPT, CONFIGURATION, PHOTO } from "../consts";
 import PhotoDropzone from "../components/PhotoDropzone";
 import _ from "underscore";
 import PropTypes from "prop-types";
@@ -33,7 +33,7 @@ function LandingPage(props) {
       const isValid = isValidExistingPlaylist && isValidPlaylistName;
       setIsValidInput(isValid);
     }
-  }, [alignment, isValidPrompt, isValidPlaylistName, files]);
+  }, [alignment, isValidPrompt, isValidPlaylistName, isValidExistingPlaylist, files]);
 
   const playlistDetails = (
     <PlaylistDetails
@@ -128,7 +128,7 @@ function LandingPage(props) {
         <div className="text-field">
           <FormTextField
             isRequired={true}
-            id={EXISTING_PLAYLIST}
+            id={"Existing Playlist"}
             label={'Playlist URL'}
             defaultValue={""}
             body={props.body}

@@ -1,26 +1,24 @@
 import pandas as pd
 from pandas import DataFrame
 
-from server.consts.data_consts import ALBUM_NAME, TRACK_NAME, TRACK_URI, ARTIST_NAME, RELEASE_YEAR, RELEASE_DATE
+from server.consts.audio_features_consts import KEY_NAMES_MAPPING, KEY
+from server.consts.data_consts import RELEASE_YEAR, RELEASE_DATE
+from server.logic.playlist_imitation.playlist_imitator_consts import CATEGORICAL_COLUMNS
 from server.utils.regex_utils import extract_year
-
-METADATA_COLUMNS = [
-    ALBUM_NAME,
-    TRACK_NAME,
-    ARTIST_NAME
-]
-ID_COLUMNS = [
-    TRACK_URI
-]
 
 
 class PlaylistDetailsPipeline:
+    def __init__(self):
+        self._key_categories = list(KEY_NAMES_MAPPING.values())
+
     def transform(self, data: DataFrame) -> DataFrame:
-        data[RELEASE_YEAR] = [extract_year(date) for date in data[RELEASE_DATE]]
-        # data[MAIN_GENRE] =
+        data[RELEASE_YEAR] = data[RELEASE_DATE].apply(lambda x: extract_year(x))
+        one_hot_data = self._encode_dummy_columns(data)
 
+        return one_hot_data
 
+    def _encode_dummy_columns(self, data: DataFrame) -> DataFrame:
+        data[KEY] = data[KEY].map(KEY_NAMES_MAPPING)
+        data[KEY] = pd.Categorical(data[KEY], categories=self._key_categories)
 
-if __name__ == '__main__':
-    data = pd.read_csv('/Users/nirgodin/Downloads/serialized_playlist_details.csv')
-    PlaylistDetailsPipeline().transform(data)
+        return pd.get_dummies(data, columns=CATEGORICAL_COLUMNS)
