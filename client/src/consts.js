@@ -232,6 +232,11 @@ const EXISTING_PLAYLIST_DESCRIPTION = [
   },
   {
     variant: "p",
+    text: "Please be aware that if you submit a playlist containing more than 50 songs, only a random selection of 50 songs will be chosen to represent the playlist.",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
     text: "Sit back and enjoy!",
     textAlign: "justify",
   },
