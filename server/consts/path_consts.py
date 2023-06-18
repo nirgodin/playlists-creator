@@ -1,0 +1,8 @@
+RESOURCES_DIR_PATH = 'server/resources'
+DATA_PATH = f'{RESOURCES_DIR_PATH}/playlists_creator_database.csv'
+COLUMNS_DESCRIPTIONS_PATH = f'{RESOURCES_DIR_PATH}/columns_details_descriptions.json'
+COLUMNS_Z_SCORES_METADATA_PATH = f'{RESOURCES_DIR_PATH}/z_scores_metadata.json'
+PLAYLIST_IMITATOR_DATABASE_PATH = f'{RESOURCES_DIR_PATH}/playlist_imitator_database.csv'
+PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR = f'{RESOURCES_DIR_PATH}/playlist_imitator_pipeline_resources'
+PLAYLIST_IMITATOR_IMPUTER_FILENAME = 'imputer.pkl'
+PLAYLIST_IMITATOR_SCALER_FILENAME = 'scaler.pkl'

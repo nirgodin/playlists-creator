@@ -4,7 +4,8 @@ import pandas as pd
 from pandas import DataFrame
 
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
-from server.consts.data_consts import DATA_PATH, URI
+from server.consts.data_consts import URI
+from server.consts.path_consts import DATA_PATH
 from server.data.query_condition import QueryCondition
 from server.utils.general_utils import sample_list
 

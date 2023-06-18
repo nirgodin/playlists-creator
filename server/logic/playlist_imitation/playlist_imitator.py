@@ -10,7 +10,7 @@ class PlaylistImitator:
     def __init__(self):
         self._playlist_details_serializer = PlaylistDetailsSerializer()
         self._tracks_selector = PlaylistImitatorTracksSelector()
-        self._transformation_pipeline = PlaylistDetailsPipeline()
+        self._transformation_pipeline = PlaylistDetailsPipeline(is_training=False)
 
     async def imitate_playlist(self, playlist_url: str) -> Optional[List[str]]:
         playlist_id = self._extract_playlist_id_from_url(playlist_url)

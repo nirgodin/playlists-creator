@@ -2,7 +2,7 @@ import json
 from functools import lru_cache
 from typing import Dict
 
-from server.consts.data_consts import COLUMNS_DESCRIPTIONS_PATH
+from server.consts.path_consts import COLUMNS_DESCRIPTIONS_PATH
 from server.utils.general_utils import titleize_feature_name
 
 

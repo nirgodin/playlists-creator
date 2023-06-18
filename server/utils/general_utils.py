@@ -7,7 +7,7 @@ import pandas as pd
 from PIL import Image
 
 from server.consts.api_consts import ACCESS_TOKEN
-from server.consts.data_consts import DATA_PATH, RESOURCES_DIR_PATH
+from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator

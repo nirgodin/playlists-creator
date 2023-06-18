@@ -1,6 +1,6 @@
 from collections import Counter
 from itertools import chain
-from typing import List, Tuple
+from typing import List
 
 import numpy as np
 import pandas as pd
@@ -9,20 +9,23 @@ from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
-from server.consts.audio_features_consts import AUDIO_FEATURES, MODE, KEY, MAJOR, KEY_NAMES_MAPPING
-from server.consts.data_consts import URI, GENRES, SONG, RELEASE_YEAR, RELEASE_DATE
+from server.consts.data_consts import URI, GENRES, RELEASE_YEAR
+from server.consts.path_consts import PLAYLIST_IMITATOR_DATABASE_PATH
 from server.logic.playlist_imitation.playlist_details_pipeline import PlaylistDetailsPipeline
-from server.logic.playlist_imitation.playlist_imitator_consts import NON_AUDIO_DATABASE_COLUMNS, DATABASE_COLUMNS, \
+from server.logic.playlist_imitation.playlist_imitator_consts import DATABASE_COLUMNS, \
     SIMILARITY_SCORE, N_MOST_COMMON_GENRES, NON_NUMERIC_COLUMNS, SIMILARITY_SCORE_THRESHOLD, \
-    PLAYLIST_IRRELEVANT_COLUMNS, CATEGORICAL_COLUMNS
-from server.utils.data_utils import load_data
+    PLAYLIST_IRRELEVANT_COLUMNS
 from server.utils.general_utils import sample_list
-from server.utils.regex_utils import extract_year
 
 
 class PlaylistImitatorTracksSelector:
     def __init__(self):
-        self._key_categories = list(KEY_NAMES_MAPPING.values())
+        self._database = pd.read_csv(
+            filepath_or_buffer=PLAYLIST_IMITATOR_DATABASE_PATH,
+            converters={
+                GENRES: lambda x: self._serialize_track_genres(x)
+            }
+        )
 
     def select_tracks(self, playlist_data: DataFrame) -> List[str]:
         filtered_database = self._filter_database(playlist_data)
@@ -40,7 +43,8 @@ class PlaylistImitatorTracksSelector:
         most_common_genres = self._get_most_common_genres(playlist_data)
         min_max_release_years = [int(playlist_data[RELEASE_YEAR].min()), int(playlist_data[RELEASE_YEAR].max())]
         relevant_rows = [
-            i for i, row in self._database.iterrows() if self._is_relevant_row(row, most_common_genres, min_max_release_years)
+            i for i, row in self._database.iterrows() if
+            self._is_relevant_row(row, most_common_genres, min_max_release_years)
         ]
 
         return self._database.iloc[relevant_rows]
@@ -115,31 +119,16 @@ class PlaylistImitatorTracksSelector:
 
         return relevant_uris
 
-    @property
-    def _database(self) -> DataFrame:
-        data = load_data().copy(deep=True)
-        data[MODE] = data[MODE].apply(lambda x: 1 if x == MAJOR else 0)
-        data[GENRES] = data[GENRES].apply(lambda x: self._serialize_track_genres(x))
-        data[KEY] = pd.Categorical(data[KEY], categories=self._key_categories)
-        data = pd.get_dummies(data, columns=CATEGORICAL_COLUMNS)
-        data = data[[col for col in DATABASE_COLUMNS if col != KEY]]
-
-        for column in AUDIO_FEATURES:
-            if column not in NON_AUDIO_DATABASE_COLUMNS and column != KEY:
-                data[column] = data[column] / 100
-
-        return data
-
     @staticmethod
     def _serialize_track_genres(genres: str) -> List[str]:
         try:
             return eval(genres)
-        except:
+        except SyntaxError:
             return []
 
 
 if __name__ == '__main__':
     data = pd.read_csv('/Users/nirgodin/Downloads/mock_playlist_data.csv')
     data[GENRES] = data[GENRES].apply(lambda x: eval(x))
-    transformed_data = PlaylistDetailsPipeline().transform(data)
+    transformed_data = PlaylistDetailsPipeline(is_training=False).transform(data)
     PlaylistImitatorTracksSelector().select_tracks(transformed_data)

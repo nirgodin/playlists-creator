@@ -1,7 +1,7 @@
 import json
 from typing import Dict
 
-from server.consts.data_consts import COLUMNS_Z_SCORES_METADATA_PATH
+from server.consts.path_consts import COLUMNS_Z_SCORES_METADATA_PATH
 from server.data.column_z_score_metadata import ColumnZScoreMetadata
 
 
