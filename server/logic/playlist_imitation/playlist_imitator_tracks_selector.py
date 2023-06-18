@@ -41,7 +41,7 @@ class PlaylistImitatorTracksSelector:
 
     def _filter_database(self, playlist_data: DataFrame):
         most_common_genres = self._get_most_common_genres(playlist_data)
-        min_max_release_years = [int(playlist_data[RELEASE_YEAR].min()), int(playlist_data[RELEASE_YEAR].max())]
+        min_max_release_years = [float(playlist_data[RELEASE_YEAR].min()), float(playlist_data[RELEASE_YEAR].max())]
         relevant_rows = [
             i for i, row in self._database.iterrows() if
             self._is_relevant_row(row, most_common_genres, min_max_release_years)
@@ -52,7 +52,7 @@ class PlaylistImitatorTracksSelector:
     def _is_relevant_row(self,
                          row: Series,
                          most_common_genres: List[str],
-                         min_max_release_years: List[int]) -> bool:
+                         min_max_release_years: List[float]) -> bool:
         if not self._has_any_relevant_genre(row, most_common_genres):
             return False
 
@@ -64,7 +64,7 @@ class PlaylistImitatorTracksSelector:
         return any(genre in most_common_genres for genre in row_genres)
 
     @staticmethod
-    def _has_relevant_release_year(row: Series, min_max_release_years: List[int]) -> bool:
+    def _has_relevant_release_year(row: Series, min_max_release_years: List[float]) -> bool:
         row_release_year = row[RELEASE_YEAR]
         return min_max_release_years[0] <= row_release_year <= min_max_release_years[1]
 

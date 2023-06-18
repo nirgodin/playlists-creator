@@ -1,11 +1,9 @@
 from dataclasses import dataclass
 
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.compose import ColumnTransformer
 
 
 @dataclass
 class PlaylistImitatorResources:
-    imputer: SimpleImputer
-    scaler: MinMaxScaler
+    pipeline: ColumnTransformer
     method: str

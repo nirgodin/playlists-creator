@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from server.consts.data_consts import SONG, ARTIST_NAME, NAME
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.playlist_imitation.playlist_details_pipeline import PlaylistDetailsPipeline
 from server.logic.playlist_imitation.playlist_details_serializer import PlaylistDetailsSerializer
@@ -22,6 +23,7 @@ class PlaylistImitator:
             return
 
         serialized_playlist_data = self._playlist_details_serializer.serialize(raw_playlist_details)
+        serialized_playlist_data[SONG] = serialized_playlist_data[ARTIST_NAME] + ' - ' + serialized_playlist_data[NAME]
         transformed_playlist_data = self._transformation_pipeline.transform(serialized_playlist_data)
 
         return self._tracks_selector.select_tracks(transformed_playlist_data)

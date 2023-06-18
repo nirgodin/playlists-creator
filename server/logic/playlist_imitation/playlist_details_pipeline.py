@@ -1,10 +1,10 @@
 import os.path
 import pickle
+from typing import List
 
 import pandas as pd
 from pandas import DataFrame
 from pandas.core.dtypes.common import is_string_dtype, is_numeric_dtype
-from sklearn.base import BaseEstimator
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
@@ -12,8 +12,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 from server.consts.audio_features_consts import KEY_NAMES_MAPPING, KEY, MODE, MAJOR
 from server.consts.data_consts import RELEASE_YEAR, RELEASE_DATE
-from server.consts.path_consts import PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, \
-    PLAYLIST_IMITATOR_SCALER_FILENAME, PLAYLIST_IMITATOR_IMPUTER_FILENAME
+from server.consts.path_consts import PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, PLAYLIST_IMITATOR_PIPELINE
 from server.logic.playlist_imitation.playlist_imitator_consts import CATEGORICAL_COLUMNS, DATABASE_COLUMNS
 from server.logic.playlist_imitation.playlist_imitator_resources import PlaylistImitatorResources
 from server.utils.data_utils import sort_data_columns_alphabetically
@@ -47,8 +46,27 @@ class PlaylistDetailsPipeline:
 
     def _apply_transformations(self, data: DataFrame) -> DataFrame:
         numeric_columns = [col for col in data.columns if is_numeric_dtype(data[col])]
-        pipeline_resources = self._load_pipeline_resources()
-        columns_transformer = ColumnTransformer(
+        pipeline_resources = self._load_pipeline_resources(numeric_columns)
+        transformed_data = getattr(pipeline_resources.pipeline, pipeline_resources.method)(data)
+        self._dump_pipeline(pipeline_resources)
+
+        return transformed_data
+
+    def _load_pipeline_resources(self, numeric_columns: List[str]) -> PlaylistImitatorResources:
+        if self._is_training:
+            return PlaylistImitatorResources(
+                pipeline=self._create_new_pipeline(numeric_columns),
+                method='fit_transform'
+            )
+
+        return PlaylistImitatorResources(
+            pipeline=self._load_pipeline(),
+            method='transform'
+        )
+
+    @staticmethod
+    def _create_new_pipeline(numeric_columns: List[str]) -> ColumnTransformer:
+        column_transformer = ColumnTransformer(
             verbose_feature_names_out=False,
             remainder='passthrough',
             transformers=[
@@ -56,51 +74,31 @@ class PlaylistDetailsPipeline:
                     'pipeline',
                     Pipeline(
                         [
-                            ('imputer', pipeline_resources.imputer),
-                            ('scaler', pipeline_resources.scaler)
+                            ('imputer', SimpleImputer(strategy='median')),
+                            ('scaler', MinMaxScaler())
                         ]
                     ),
                     numeric_columns
                 )
             ]
         )
-        columns_transformer.set_output(transform='pandas')
-        transformed_data = getattr(columns_transformer, pipeline_resources.method)(data)
-        self._dump_pipeline_resources(pipeline_resources)
+        column_transformer.set_output(transform='pandas')
 
-        return transformed_data
-
-    def _load_pipeline_resources(self) -> PlaylistImitatorResources:
-        if self._is_training:
-            return PlaylistImitatorResources(
-                imputer=SimpleImputer(),
-                scaler=MinMaxScaler(),
-                method='fit_transform'
-            )
-
-        return PlaylistImitatorResources(
-            imputer=self._load_single_pipeline_resource(PLAYLIST_IMITATOR_IMPUTER_FILENAME),
-            scaler=self._load_single_pipeline_resource(PLAYLIST_IMITATOR_SCALER_FILENAME),
-            method='transform'
-        )
-
-    def _dump_pipeline_resources(self, pipeline_resources: PlaylistImitatorResources) -> None:
-        if pipeline_resources.method == 'transform':
-            return
-
-        self._dump_single_pipeline_resource(pipeline_resources.imputer, PLAYLIST_IMITATOR_IMPUTER_FILENAME)
-        self._dump_single_pipeline_resource(pipeline_resources.scaler, PLAYLIST_IMITATOR_SCALER_FILENAME)
+        return column_transformer
 
     @staticmethod
-    def _load_single_pipeline_resource(file_name: str) -> BaseEstimator:
-        path = os.path.join(PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, file_name)
+    def _load_pipeline() -> ColumnTransformer:
+        path = os.path.join(PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, PLAYLIST_IMITATOR_PIPELINE)
 
         with open(path, 'rb') as f:
             return pickle.load(f)
 
     @staticmethod
-    def _dump_single_pipeline_resource(estimator: BaseEstimator, file_name: str) -> None:
-        path = os.path.join(PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, file_name)
+    def _dump_pipeline(pipeline_resources: PlaylistImitatorResources) -> None:
+        if pipeline_resources.method == 'transform':
+            return
+
+        path = os.path.join(PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, PLAYLIST_IMITATOR_PIPELINE)
 
         with open(path, 'wb') as f:
-            pickle.dump(estimator, f)
+            pickle.dump(pipeline_resources.pipeline, f)

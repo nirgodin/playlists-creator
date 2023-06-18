@@ -12,6 +12,7 @@ from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.configuration_photo_prompt.z_scores_metadata_creator import ZScoresMetadataCreator
+from server.logic.playlist_imitation.playlist_imitator_database_creator import PlaylistImitatorDatabaseCreator
 from server.tools.google_drive.google_drive_adapter import GoogleDriveAdapter
 from server.utils.data_utils import load_data
 
@@ -97,6 +98,7 @@ def download_database() -> None:
         local_dir=RESOURCES_DIR_PATH
     )
     ZScoresMetadataCreator().create()
+    PlaylistImitatorDatabaseCreator().create()
 
 
 def chain_dicts(dicts: List[dict]) -> dict:
