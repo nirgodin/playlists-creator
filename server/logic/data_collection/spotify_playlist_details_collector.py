@@ -6,7 +6,7 @@ from server.consts.api_consts import PLAYLIST_URL_FORMAT, ID, AUDIO_FEATURES_URL
     ARTIST_URL_FORMAT, MAX_TRACKS_NUMBER_PER_REQUEST
 from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
-from server.utils.general_utils import build_spotify_client_credentials_headers
+from server.utils.general_utils import build_spotify_client_credentials_headers, sample_list
 from server.utils.spotify_utils import extract_tracks_from_response
 
 
@@ -17,11 +17,15 @@ class PlaylistDetailsCollector:
 
     async def collect_playlist(self, playlist_id: str) -> Optional[Dict[str, List[dict]]]:
         playlist = await self._collect(url_format=PLAYLIST_URL_FORMAT, spotify_id=playlist_id)
+
         if playlist is None:
             return
 
         tracks = extract_tracks_from_response(playlist)
-        return await self._collect_tracks_data(tracks[:MAX_TRACKS_NUMBER_PER_REQUEST])
+        tracks_sample_indexes = sample_list(len(tracks), MAX_TRACKS_NUMBER_PER_REQUEST)
+        tracks_sample = [tracks[i] for i in tracks_sample_indexes]
+
+        return await self._collect_tracks_data(tracks_sample)
 
     async def _collect(self, url_format: str, spotify_id: str) -> Union[dict, list]:
         url = url_format.format(spotify_id)

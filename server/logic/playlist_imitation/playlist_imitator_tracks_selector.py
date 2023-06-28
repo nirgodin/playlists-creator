@@ -1,21 +1,29 @@
 from collections import Counter
+from collections import Counter
 from itertools import chain
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import FunctionTransformer
 from tqdm import tqdm
 
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
-from server.consts.data_consts import URI, GENRES, RELEASE_YEAR
+from server.consts.data_consts import URI, GENRES, RELEASE_YEAR, POPULARITY, ARTIST_POPULARITY
 from server.consts.path_consts import PLAYLIST_IMITATOR_DATABASE_PATH
-from server.logic.playlist_imitation.playlist_details_pipeline import PlaylistDetailsPipeline
 from server.logic.playlist_imitation.playlist_imitator_consts import DATABASE_COLUMNS, \
     SIMILARITY_SCORE, N_MOST_COMMON_GENRES, NON_NUMERIC_COLUMNS, SIMILARITY_SCORE_THRESHOLD, \
-    PLAYLIST_IRRELEVANT_COLUMNS
+    PLAYLIST_IRRELEVANT_COLUMNS, KEY_COLUMNS
 from server.utils.general_utils import sample_list
+
+NUMERIC_RANGE_FILTER_COLUMNS = [
+    RELEASE_YEAR,
+    POPULARITY,
+    ARTIST_POPULARITY
+]
 
 
 class PlaylistImitatorTracksSelector:
@@ -31,8 +39,8 @@ class PlaylistImitatorTracksSelector:
         filtered_database = self._filter_database(playlist_data)
         vectorized_playlist = self._average_playlist(playlist_data)
         similarity_scores = self._compute_similarity_scores(
-            filtered_database.drop(NON_NUMERIC_COLUMNS, axis=1),
-            vectorized_playlist
+            filtered_database.drop(NON_NUMERIC_COLUMNS + NUMERIC_RANGE_FILTER_COLUMNS + KEY_COLUMNS, axis=1),
+            vectorized_playlist.drop(NUMERIC_RANGE_FILTER_COLUMNS + KEY_COLUMNS, axis=1)
         )
         filtered_database[SIMILARITY_SCORE] = similarity_scores
         filtered_database.sort_values(by=SIMILARITY_SCORE, ascending=False, inplace=True)
@@ -41,32 +49,14 @@ class PlaylistImitatorTracksSelector:
 
     def _filter_database(self, playlist_data: DataFrame):
         most_common_genres = self._get_most_common_genres(playlist_data)
-        min_max_release_years = [float(playlist_data[RELEASE_YEAR].min()), float(playlist_data[RELEASE_YEAR].max())]
-        relevant_rows = [
-            i for i, row in self._database.iterrows() if
-            self._is_relevant_row(row, most_common_genres, min_max_release_years)
-        ]
+        pipeline = Pipeline(
+            [
+                ('genres', FunctionTransformer(lambda x: self._filter_non_relevant_genres(x, most_common_genres))),
+                ('range_values', FunctionTransformer(lambda x: self._filter_out_of_range_values(x, NUMERIC_RANGE_FILTER_COLUMNS))),
+            ]
+        )
 
-        return self._database.iloc[relevant_rows]
-
-    def _is_relevant_row(self,
-                         row: Series,
-                         most_common_genres: List[str],
-                         min_max_release_years: List[float]) -> bool:
-        if not self._has_any_relevant_genre(row, most_common_genres):
-            return False
-
-        return self._has_relevant_release_year(row, min_max_release_years)
-
-    @staticmethod
-    def _has_any_relevant_genre(row: Series, most_common_genres: List[str]) -> bool:
-        row_genres = row[GENRES]
-        return any(genre in most_common_genres for genre in row_genres)
-
-    @staticmethod
-    def _has_relevant_release_year(row: Series, min_max_release_years: List[float]) -> bool:
-        row_release_year = row[RELEASE_YEAR]
-        return min_max_release_years[0] <= row_release_year <= min_max_release_years[1]
+        return pipeline.transform(self._database)
 
     @staticmethod
     def _get_most_common_genres(playlist_data: DataFrame) -> List[str]:
@@ -77,11 +67,34 @@ class PlaylistImitatorTracksSelector:
         return [genre for genre, count in most_common_genres]
 
     @staticmethod
+    def _get_series_interquartile_percentiles_values(series: Series) -> Tuple[float, float]:
+        return float(series.quantile(0.25)), float(series.quantile(0.75))
+
+    @staticmethod
+    def _has_any_relevant_genre(genres: List[str], most_common_genres: List[str]) -> bool:
+        return any(genre in most_common_genres for genre in genres)
+
+    def _filter_out_of_range_values(self, data: DataFrame, columns: List[str]) -> DataFrame:
+        for column in columns:
+            interquartile_range = self._get_series_interquartile_percentiles_values(data[column])
+            query = f"`{column}` >= {interquartile_range[0]} and `{column}` <= {interquartile_range[1]}"
+            data = data.query(query)
+
+        return data
+
+    def _filter_non_relevant_genres(self, data: DataFrame, most_common_genres: List[str]) -> bool:
+        data['has_any_relevant_genre'] = data['genres'].apply(lambda x: self._has_any_relevant_genre(x, most_common_genres))
+        data = data[data['has_any_relevant_genre'] == True]
+        data.drop('has_any_relevant_genre', axis=1, inplace=True)
+
+        return data
+
+    @staticmethod
     def _average_playlist(playlist_data: DataFrame) -> DataFrame:
         playlist_columns = [col for col in DATABASE_COLUMNS if col not in PLAYLIST_IRRELEVANT_COLUMNS]
         filtered_playlist_data = playlist_data[playlist_columns]
 
-        return filtered_playlist_data.mean(axis=0)
+        return filtered_playlist_data.mean(axis=0).to_frame().transpose()
 
     @staticmethod
     def _compute_similarity_scores(filtered_database: DataFrame, averaged_playlist: DataFrame) -> List[float]:
@@ -128,7 +141,8 @@ class PlaylistImitatorTracksSelector:
 
 
 if __name__ == '__main__':
-    data = pd.read_csv('/Users/nirgodin/Downloads/mock_playlist_data.csv')
+    data = pd.read_csv('/Users/nirgodin/Downloads/mock_morning_playlist_data.csv')
+    # data['song'] = ''
     data[GENRES] = data[GENRES].apply(lambda x: eval(x))
-    transformed_data = PlaylistDetailsPipeline(is_training=False).transform(data)
-    PlaylistImitatorTracksSelector().select_tracks(transformed_data)
+    # transformed_data = PlaylistDetailsPipeline(is_training=False).transform(data)
+    PlaylistImitatorTracksSelector().select_tracks(data)
