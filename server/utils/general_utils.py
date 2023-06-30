@@ -73,7 +73,8 @@ def build_spotify_headers(access_token: str) -> Dict[str, str]:
 
 
 def sample_list(n_candidates: int, n_selected_candidates: int) -> List[int]:
-    return random.sample(range(0, n_candidates), n_selected_candidates)
+    k = min(n_selected_candidates, n_candidates)
+    return random.sample(range(0, n_candidates), k)
 
 
 def string_to_boolean(s: str) -> bool:

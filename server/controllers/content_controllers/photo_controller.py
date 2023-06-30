@@ -33,8 +33,7 @@ class PhotoController(BaseContentController):
             return
 
         n_candidates = len(uris)
-        n_selected_candidates = min(n_candidates, MAX_SPOTIFY_PLAYLIST_SIZE)
-        selected_uris_indexes = sample_list(n_candidates, n_selected_candidates)
+        selected_uris_indexes = sample_list(n_candidates, MAX_SPOTIFY_PLAYLIST_SIZE)
 
         return [uris[i] for i in selected_uris_indexes]
 

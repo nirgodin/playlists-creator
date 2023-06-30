@@ -70,8 +70,7 @@ class PlaylistImitatorTracksSelector:
     def _select_tracks_uris(self, filtered_database: DataFrame, existing_uris: List[str]) -> List[str]:
         uris = self._filter_relevant_uris(filtered_database, existing_uris)
         n_candidates = len(uris)
-        n_selected_candidates = min(n_candidates, MAX_SPOTIFY_PLAYLIST_SIZE)
-        uris_indexes = sample_list(n_candidates, n_selected_candidates)
+        uris_indexes = sample_list(n_candidates, MAX_SPOTIFY_PLAYLIST_SIZE)
 
         return [uris[i] for i in uris_indexes]
 

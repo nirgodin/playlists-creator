@@ -22,13 +22,13 @@ class DataFilterer:
 
         return candidates_data[URI].tolist()
 
-    def _generate_candidates(self, filtered_data: DataFrame) -> DataFrame:
+    @staticmethod
+    def _generate_candidates(filtered_data: DataFrame) -> DataFrame:
         if filtered_data.empty:
             return filtered_data
 
         n_candidates = len(filtered_data)
-        n_selected_candidates = min(MAX_SPOTIFY_PLAYLIST_SIZE, n_candidates)
-        candidates_indexes = sample_list(n_candidates, n_selected_candidates)
+        candidates_indexes = sample_list(n_candidates, MAX_SPOTIFY_PLAYLIST_SIZE)
 
         return filtered_data.iloc[candidates_indexes]
 
