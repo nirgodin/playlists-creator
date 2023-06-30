@@ -2,7 +2,6 @@ import os.path
 import pickle
 from typing import List
 
-import pandas as pd
 from pandas import DataFrame
 from pandas.core.dtypes.common import is_string_dtype, is_numeric_dtype
 from sklearn.compose import ColumnTransformer
@@ -10,10 +9,10 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 
-from server.consts.audio_features_consts import KEY_NAMES_MAPPING, KEY, MODE, MAJOR
+from server.consts.audio_features_consts import KEY_NAMES_MAPPING, MODE, MAJOR
 from server.consts.data_consts import RELEASE_YEAR, RELEASE_DATE
 from server.consts.path_consts import PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, PLAYLIST_IMITATOR_PIPELINE
-from server.logic.playlist_imitation.playlist_imitator_consts import CATEGORICAL_COLUMNS, DATABASE_COLUMNS
+from server.logic.playlist_imitation.playlist_imitator_consts import DATABASE_COLUMNS
 from server.logic.playlist_imitation.playlist_imitator_resources import PlaylistImitatorResources
 from server.utils.data_utils import sort_data_columns_alphabetically
 from server.utils.regex_utils import extract_year
@@ -31,18 +30,10 @@ class PlaylistDetailsPipeline:
         if RELEASE_YEAR not in raw_data.columns:
             raw_data[RELEASE_YEAR] = raw_data[RELEASE_DATE].apply(lambda x: extract_year(x))
 
-        one_hot_data = self._encode_dummy_columns(raw_data)
-        data_subset = one_hot_data[DATABASE_COLUMNS]
+        data_subset = raw_data[DATABASE_COLUMNS]
         sorted_data = sort_data_columns_alphabetically(data_subset)
 
         return self._apply_transformations(sorted_data)
-
-    def _encode_dummy_columns(self, data: DataFrame) -> DataFrame:
-        if is_numeric_dtype(data[KEY]):
-            data[KEY] = data[KEY].map(KEY_NAMES_MAPPING)
-
-        data[KEY] = pd.Categorical(data[KEY], categories=self._key_categories)
-        return pd.get_dummies(data, columns=CATEGORICAL_COLUMNS)
 
     def _apply_transformations(self, data: DataFrame) -> DataFrame:
         numeric_columns = [col for col in data.columns if is_numeric_dtype(data[col])]
