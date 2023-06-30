@@ -3,12 +3,13 @@ from typing import Dict
 
 from server.consts.path_consts import COLUMNS_Z_SCORES_METADATA_PATH
 from server.data.column_z_score_metadata import ColumnZScoreMetadata
+from server.utils.statistics_utils import calculate_z_score
 
 
 class ZScoreCalculator:
     def calculate(self, value: float, column_name: str):
         column_metadata = self._z_scores_metadata[column_name]
-        return (value - column_metadata.mean) / column_metadata.std
+        return calculate_z_score(value, column_metadata.mean, column_metadata.std)
 
     @property
     def _z_scores_metadata(self) -> Dict[str, ColumnZScoreMetadata]:
