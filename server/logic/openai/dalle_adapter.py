@@ -3,7 +3,9 @@ import urllib
 
 import openai
 
+from server.consts.openai_consts import DATA, URL, CREATED
 from server.consts.env_consts import OPENAI_API_KEY
+from server.utils.image_utils import save_image
 
 
 class DallEAdapter:
@@ -17,14 +19,22 @@ class DallEAdapter:
             n=1,
             size="512x512",
         )
-        image_url = response['data'][0]['url']
-        image_creation_timestamp = response['created']
+        return self._save_result(response, dir_path)
+
+    def variate_image(self, original_image_path: str, dir_path: str) -> str:
+        response = openai.Image.create_variation(
+            image=open(original_image_path, 'rb'),
+            n=1,
+            size="512x512",
+        )
+        return self._save_result(response, dir_path)
+
+    @staticmethod
+    def _save_result(response: dict, dir_path: str) -> str:
+        image_url = response[DATA][0][URL]
+        image_creation_timestamp = response[CREATED]
         file_name = f'{image_creation_timestamp}.png'
         image_path = os.path.join(dir_path, file_name)
-        urllib.request.urlretrieve(image_url, image_path)
+        save_image(image_url, image_path)
 
         return image_path
-
-
-if __name__ == '__main__':
-    DallEAdapter().create_image('Hip hop songs with high energy and danceability, digital art', dir_path='/Users/nirgodin/Downloads')

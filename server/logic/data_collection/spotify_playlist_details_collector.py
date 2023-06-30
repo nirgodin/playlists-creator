@@ -4,7 +4,8 @@ from aiohttp import ClientSession
 
 from server.consts.api_consts import PLAYLIST_URL_FORMAT, ID, AUDIO_FEATURES_URL_FORMAT, \
     ARTIST_URL_FORMAT, MAX_TRACKS_NUMBER_PER_REQUEST
-from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS
+from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES
+from server.consts.openai_consts import URL
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.utils.general_utils import build_spotify_client_credentials_headers, sample_list
 from server.utils.spotify_utils import extract_tracks_from_response
@@ -24,8 +25,10 @@ class PlaylistDetailsCollector:
         tracks = extract_tracks_from_response(playlist)
         tracks_sample_indexes = sample_list(len(tracks), MAX_TRACKS_NUMBER_PER_REQUEST)
         tracks_sample = [tracks[i] for i in tracks_sample_indexes]
+        tracks_data = await self._collect_tracks_data(tracks_sample)
+        tracks_data['image_url'] = self._extract_playlist_image_url(playlist)
 
-        return await self._collect_tracks_data(tracks_sample)
+        return tracks_data
 
     async def _collect(self, url_format: str, spotify_id: str) -> Union[dict, list]:
         url = url_format.format(spotify_id)
@@ -74,6 +77,16 @@ class PlaylistDetailsCollector:
 
         first_artist = artists[0]
         return first_artist.get(ID)
+
+    @staticmethod
+    def _extract_playlist_image_url(playlist: dict) -> Optional[str]:
+        images = playlist.get(IMAGES, [])
+
+        if not images:
+            return
+
+        first_image = images[0]
+        return first_image.get(URL)
 
     @property
     def _fetch_functions(self) -> Dict[str, Callable]:

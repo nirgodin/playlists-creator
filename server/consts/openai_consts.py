@@ -154,3 +154,6 @@ In case you do not detect any artists name in the text, return an empty array. R
 serializable string, and nothing else.
 Please generate artists names JSON list based on the following text:
 """
+DATA = 'data'
+URL = 'url'
+CREATED = 'created'
