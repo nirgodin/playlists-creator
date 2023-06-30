@@ -7,7 +7,8 @@ import pandas as pd
 from PIL import Image
 
 from server.consts.api_consts import ACCESS_TOKEN
-from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH
+from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH, COLUMNS_Z_SCORES_METADATA_PATH, \
+    PLAYLIST_IMITATOR_DATABASE_PATH
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
@@ -90,15 +91,17 @@ def save_image_as_jpeg(image_path: str) -> str:
 
 
 def download_database() -> None:
-    if os.path.exists(DATA_PATH):
-        return
+    if not os.path.exists(DATA_PATH):
+        GoogleDriveAdapter().download_all_dir_files(
+            folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
+            local_dir=RESOURCES_DIR_PATH
+        )
 
-    GoogleDriveAdapter().download_all_dir_files(
-        folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
-        local_dir=RESOURCES_DIR_PATH
-    )
-    ZScoresMetadataCreator().create()
-    PlaylistImitatorDatabaseCreator().create()
+    if not os.path.exists(COLUMNS_Z_SCORES_METADATA_PATH):
+        ZScoresMetadataCreator().create()
+
+    if not os.path.exists(PLAYLIST_IMITATOR_DATABASE_PATH):
+        PlaylistImitatorDatabaseCreator().create()
 
 
 def chain_dicts(dicts: List[dict]) -> dict:
