@@ -37,25 +37,31 @@ class PlaylistImitatorTracksSelector:
         playlist_columns = [col for col in DATABASE_COLUMNS if col not in PLAYLIST_IRRELEVANT_COLUMNS]
         filtered_playlist_data = playlist_data[playlist_columns]
 
-        return filtered_playlist_data.mean(axis=0).to_frame().transpose()
+        return filtered_playlist_data.median(axis=0).to_frame().transpose()
 
     def _compute_similarity_scores(self, filtered_database: DataFrame, averaged_playlist: DataFrame) -> List[float]:
         scores = []
-        vectorized_playlist = np.array(averaged_playlist).reshape(1, -1)
+        vectorized_playlist = self._vectorize(averaged_playlist).reshape(1, -1)
+        vectorized_database = self._vectorize(filtered_database)
         n_records = len(filtered_database)
 
         with tqdm(total=n_records) as progress_bar:
             for i in range(n_records):
-                similarity = self._compute_single_similarity_score(vectorized_playlist, filtered_database.iloc[i])
+                similarity = self._compute_single_similarity_score(vectorized_playlist, vectorized_database[i])
                 scores.append(similarity)
                 progress_bar.update(1)
 
         return scores
 
     @staticmethod
-    def _compute_single_similarity_score(vectorized_playlist: ndarray, database_row: Series) -> float:
+    def _vectorize(data: DataFrame) -> ndarray:
+        sorted_columns_data = data[sorted(data.columns)]
+        return sorted_columns_data.to_numpy()
+
+    @staticmethod
+    def _compute_single_similarity_score(vectorized_playlist: ndarray, database_row: ndarray) -> float:
         try:
-            vectorized_database_row = np.array(database_row).reshape(1, -1)
+            vectorized_database_row = database_row.reshape(1, -1)
             return cosine_similarity(vectorized_playlist, vectorized_database_row)[0][0]
 
         except:
