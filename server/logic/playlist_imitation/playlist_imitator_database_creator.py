@@ -24,7 +24,3 @@ class PlaylistImitatorDatabaseCreator:
                 data[column] = data[column] / 100
 
         return data
-
-
-if __name__ == '__main__':
-    PlaylistImitatorDatabaseCreator().create()
