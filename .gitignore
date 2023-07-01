@@ -37,5 +37,5 @@
 # Data
 /server/resources/playlists_creator_database.csv
 /server/resources/z_scores_metadata.json
-/server/resources/playlist_imitator_pipeline_resources/pipeline.pkl
 /server/resources/playlist_imitator_database.csv
+/server/resources/pipeline.pkl
