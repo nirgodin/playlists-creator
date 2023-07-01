@@ -81,17 +81,15 @@ def string_to_boolean(s: str) -> bool:
 
 
 def download_database() -> None:
-    if not os.path.exists(DATA_PATH):
-        GoogleDriveAdapter().download_all_dir_files(
-            folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
-            local_dir=RESOURCES_DIR_PATH
-        )
+    if os.path.exists(DATA_PATH):
+        return
 
-    if not os.path.exists(COLUMNS_Z_SCORES_METADATA_PATH):
-        ZScoresMetadataCreator().create()
-
-    if not os.path.exists(PLAYLIST_IMITATOR_DATABASE_PATH):
-        PlaylistImitatorDatabaseCreator().create()
+    GoogleDriveAdapter().download_all_dir_files(
+        folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
+        local_dir=RESOURCES_DIR_PATH
+    )
+    ZScoresMetadataCreator().create()
+    PlaylistImitatorDatabaseCreator().create()
 
 
 def chain_dicts(dicts: List[dict]) -> dict:
