@@ -1,4 +1,3 @@
-import os.path
 import pickle
 from typing import List
 
@@ -11,7 +10,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 from server.consts.audio_features_consts import KEY_NAMES_MAPPING, MODE, MAJOR
 from server.consts.data_consts import RELEASE_YEAR, RELEASE_DATE
-from server.consts.path_consts import PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, PLAYLIST_IMITATOR_PIPELINE
+from server.consts.path_consts import PLAYLIST_IMITATOR_PIPELINE_PATH
 from server.logic.playlist_imitation.playlist_imitator_consts import DATABASE_COLUMNS
 from server.logic.playlist_imitation.playlist_imitator_resources import PlaylistImitatorResources
 from server.utils.data_utils import sort_data_columns_alphabetically
@@ -79,9 +78,7 @@ class PlaylistDetailsPipeline:
 
     @staticmethod
     def _load_pipeline() -> ColumnTransformer:
-        path = os.path.join(PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, PLAYLIST_IMITATOR_PIPELINE)
-
-        with open(path, 'rb') as f:
+        with open(PLAYLIST_IMITATOR_PIPELINE_PATH, 'rb') as f:
             return pickle.load(f)
 
     @staticmethod
@@ -89,7 +86,5 @@ class PlaylistDetailsPipeline:
         if pipeline_resources.method == 'transform':
             return
 
-        path = os.path.join(PLAYLIST_IMITATOR_PIPELINE_RESOURCES_DIR, PLAYLIST_IMITATOR_PIPELINE)
-
-        with open(path, 'wb') as f:
+        with open(PLAYLIST_IMITATOR_PIPELINE_PATH, 'wb') as f:
             pickle.dump(pipeline_resources.pipeline, f)
