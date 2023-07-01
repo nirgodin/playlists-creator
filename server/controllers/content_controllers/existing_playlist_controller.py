@@ -22,5 +22,5 @@ class ExistingPlaylistController(BaseContentController):
 
         return imitator_response
 
-    def _generate_playlist_cover_prompt(self, request_body: dict) -> str:
+    def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
         raise  # TODO: Rethink how to generate cover here

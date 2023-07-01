@@ -41,9 +41,11 @@ class PromptController(BaseContentController):
         else:
             return self._generate_uris_from_tracks_details(user_text)
 
-    def _generate_playlist_cover_prompt(self, request_body: dict) -> str:
+    def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
         user_text = self._extract_prompt_from_request_body(request_body)
-        return f'{user_text}, digital art'
+        playlist_cover_prompt = f'{user_text}, digital art'
+
+        return self._dalle_adapter.create_image(playlist_cover_prompt, dir_path)
 
     def _generate_uris_from_query_conditions(self, user_text: str) -> Optional[List[str]]:
         prompt = self._build_query_conditions_prompt(user_text)

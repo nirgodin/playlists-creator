@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from tempfile import TemporaryDirectory
 from typing import Optional, List
 
 from flask import request, Request
@@ -7,6 +8,7 @@ from flask_restful import Resource
 from server.consts.app_consts import ACCESS_CODE, PLAYLIST_DETAILS
 from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.data.spotify_grant_type import SpotifyGrantType
+from server.logic.openai.dalle_adapter import DallEAdapter
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.response_factory import ResponseFactory
@@ -16,6 +18,7 @@ class BaseContentController(Resource, ABC):
     def __init__(self):
         self._playlists_creator = PlaylistsCreator()
         self._playlist_cover_photo_creator = PlaylistCoverPhotoCreator()
+        self._dalle_adapter = DallEAdapter()
 
     def post(self):
         request_body = self._get_request_body(request)
@@ -38,7 +41,7 @@ class BaseContentController(Resource, ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _generate_playlist_cover_prompt(self, request_body: dict) -> str:
+    def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
         raise NotImplementedError
 
     def _create_playlist(self, request_body: dict, uris: List[str]) -> Optional[str]:
@@ -61,12 +64,13 @@ class BaseContentController(Resource, ABC):
 
     def _create_playlist_cover(self, request_body: dict, playlist_id: str, headers: dict) -> None:
         try:
-            prompt = self._generate_playlist_cover_prompt(request_body)
-            self._playlist_cover_photo_creator.put_playlist_cover(
-                headers=headers,
-                playlist_id=playlist_id,
-                prompt=prompt
-            )
+            with TemporaryDirectory() as dir_path:
+                image_path = self._generate_playlist_cover(request_body, dir_path)
+                self._playlist_cover_photo_creator.put_playlist_cover(
+                    headers=headers,
+                    playlist_id=playlist_id,
+                    image_path=image_path
+                )
 
         except:
             print('Failed to create playlist cover')

@@ -44,5 +44,5 @@ class PhotoController(BaseContentController):
 
             return asyncio.run(self._tracks_uris_extractor.extract_tracks_uris(path))
 
-    def _generate_playlist_cover_prompt(self, request_body: dict) -> str:
+    def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
         raise   # TODO: Fix to enable cover

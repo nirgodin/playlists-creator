@@ -1,0 +1,2 @@
+JPG_FILE_SUFFIX = '.jpg'
+RGB = 'RGB'
