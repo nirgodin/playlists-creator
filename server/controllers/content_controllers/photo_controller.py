@@ -10,6 +10,7 @@ from werkzeug.datastructures import FileStorage
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import REQUEST_BODY, PHOTO
 from server.controllers.content_controllers.base_content_controller import BaseContentController
+from server.data.playlist_resources import PlaylistResources
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.utils.general_utils import sample_list
 
@@ -27,15 +28,20 @@ class PhotoController(BaseContentController):
 
         return request_body
 
-    def _generate_tracks_uris(self, request_body: dict) -> Optional[List[str]]:
+    def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         uris = self._get_tracks_uri_from_photo(request_body[PHOTO])
+
         if uris is None:
-            return
+            return PlaylistResources(None, None)
 
         n_candidates = len(uris)
         selected_uris_indexes = sample_list(n_candidates, MAX_SPOTIFY_PLAYLIST_SIZE)
+        tracks_uris = [uris[i] for i in selected_uris_indexes]
 
-        return [uris[i] for i in selected_uris_indexes]
+        return PlaylistResources(
+            uris=tracks_uris,
+            cover_image_path=None
+        )
 
     def _get_tracks_uri_from_photo(self, photo: FileStorage) -> Optional[List[str]]:
         with TemporaryDirectory() as dir_name:

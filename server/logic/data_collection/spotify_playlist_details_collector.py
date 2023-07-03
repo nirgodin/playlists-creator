@@ -4,8 +4,9 @@ from aiohttp import ClientSession
 
 from server.consts.api_consts import PLAYLIST_URL_FORMAT, ID, AUDIO_FEATURES_URL_FORMAT, \
     ARTIST_URL_FORMAT, MAX_TRACKS_NUMBER_PER_REQUEST
-from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES
+from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES, COVER_IMAGE_URL
 from server.consts.openai_consts import URL
+from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.utils.general_utils import build_spotify_client_credentials_headers, sample_list
 from server.utils.spotify_utils import extract_tracks_from_response
@@ -16,7 +17,7 @@ class PlaylistDetailsCollector:
         self._tracks_collector = SpotifyTracksCollector()
         self._session = session
 
-    async def collect_playlist(self, playlist_id: str) -> Optional[Dict[str, List[dict]]]:
+    async def collect_playlist(self, playlist_id: str) -> Optional[PlaylistDetails]:
         playlist = await self._collect(url_format=PLAYLIST_URL_FORMAT, spotify_id=playlist_id)
 
         if playlist is None:
@@ -26,9 +27,9 @@ class PlaylistDetailsCollector:
         tracks_sample_indexes = sample_list(len(tracks), MAX_TRACKS_NUMBER_PER_REQUEST)
         tracks_sample = [tracks[i] for i in tracks_sample_indexes]
         tracks_data = await self._collect_tracks_data(tracks_sample)
-        tracks_data['image_url'] = self._extract_playlist_image_url(playlist)
+        tracks_data[COVER_IMAGE_URL] = self._extract_playlist_image_url(playlist)
 
-        return tracks_data
+        return PlaylistDetails.from_dict(tracks_data)
 
     async def _collect(self, url_format: str, spotify_id: str) -> Union[dict, list]:
         url = url_format.format(spotify_id)
@@ -37,7 +38,7 @@ class PlaylistDetailsCollector:
             if raw_response.ok:
                 return await raw_response.json()
 
-    async def _collect_tracks_data(self, tracks: List[dict]):
+    async def _collect_tracks_data(self, tracks: List[dict]) -> Dict[str, List[dict]]:
         track_data = {}
 
         for name, fetch_fn in self._fetch_functions.items():

@@ -10,6 +10,7 @@ from server.consts.data_consts import URI
 from server.consts.openai_consts import QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT, QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT, \
     TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT
 from server.controllers.content_controllers.base_content_controller import BaseContentController
+from server.data.playlist_resources import PlaylistResources
 from server.data.query_condition import QueryCondition
 from server.logic.data_filterer import DataFilterer
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
@@ -32,14 +33,19 @@ class PromptController(BaseContentController):
     def _get_request_body(self, client_request: Request) -> dict:
         return client_request.get_json()
 
-    def _generate_tracks_uris(self, request_body: dict) -> Optional[List[str]]:
+    def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         user_text = self._extract_prompt_from_request_body(request_body)
         query_conditions_uris = self._generate_uris_from_query_conditions(user_text)
 
         if query_conditions_uris is not None:
-            return query_conditions_uris
+            tracks_uris = query_conditions_uris
         else:
-            return self._generate_uris_from_tracks_details(user_text)
+            tracks_uris = self._generate_uris_from_tracks_details(user_text)
+
+        return PlaylistResources(
+            uris=tracks_uris,
+            cover_image_path=None
+        )
 
     def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
         user_text = self._extract_prompt_from_request_body(request_body)

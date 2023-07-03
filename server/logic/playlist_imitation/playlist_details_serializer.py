@@ -6,6 +6,7 @@ from pandas import DataFrame
 
 from server.consts.data_consts import FOLLOWERS, TOTAL, ALBUM, TRACKS, ARTISTS, AUDIO_FEATURES, TRACK, ARTIST, NAME, \
     POPULARITY
+from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_imitator_consts import AUDIO_FEATURES_IRRELEVANT_KEYS, \
     ARTISTS_FEATURES_IRRELEVANT_KEYS, TRACKS_FEATURES_IRRELEVANT_KEYS, ALBUM_RELEVANT_FEATURES
 from server.utils.general_utils import chain_dicts
@@ -21,14 +22,14 @@ ALBUM_REQUIRED_PREFIX_FEATURES = [
 
 
 class PlaylistDetailsSerializer:
-    def serialize(self, playlist_details: Dict[str, List[dict]]) -> DataFrame:
+    def serialize(self, playlist_details: PlaylistDetails) -> DataFrame:
         serialized_details = []
 
-        for i in range(len(playlist_details[TRACKS])):
+        for i in range(len(playlist_details.tracks)):
             details = [
-                self._serialize_single_track_audio_features(playlist_details[AUDIO_FEATURES][i]),
-                self._serialize_single_track_features(playlist_details[TRACKS][i]),
-                self._serialize_single_artist_features(playlist_details[ARTISTS][i])
+                self._serialize_single_track_audio_features(playlist_details.audio_features[i]),
+                self._serialize_single_track_features(playlist_details.tracks[i]),
+                self._serialize_single_artist_features(playlist_details.artists[i])
             ]
             serialized_track_details = chain_dicts(details)
             serialized_details.append(serialized_track_details)

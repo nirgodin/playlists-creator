@@ -5,6 +5,7 @@ from flask import Request
 
 from server.consts.app_consts import PLAYLIST_DETAILS, EXISTING_PLAYLIST
 from server.controllers.content_controllers.base_content_controller import BaseContentController
+from server.data.playlist_resources import PlaylistResources
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 
 
@@ -16,11 +17,11 @@ class ExistingPlaylistController(BaseContentController):
     def _get_request_body(self, client_request: Request) -> dict:
         return client_request.get_json()
 
-    def _generate_tracks_uris(self, request_body: dict) -> Optional[List[str]]:
+    def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         existing_playlist_url = request_body[PLAYLIST_DETAILS][EXISTING_PLAYLIST]
-        imitator_response = asyncio.run(self._playlist_imitator.imitate_playlist(existing_playlist_url))
+        future = self._playlist_imitator.imitate_playlist(existing_playlist_url, dir_path)
 
-        return imitator_response
+        return asyncio.run(future)
 
     def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
         raise  # TODO: Rethink how to generate cover here
