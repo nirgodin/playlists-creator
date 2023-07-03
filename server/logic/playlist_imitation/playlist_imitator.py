@@ -11,7 +11,7 @@ from server.logic.playlist_imitation.playlist_details_pipeline import PlaylistDe
 from server.logic.playlist_imitation.playlist_details_serializer import PlaylistDetailsSerializer
 from server.logic.playlist_imitation.playlist_imitator_tracks_selector import PlaylistImitatorTracksSelector
 from server.utils.datetime_utils import get_current_timestamp
-from server.utils.image_utils import save_image_from_url
+from server.utils.image_utils import save_image_from_url, current_timestamp_image_path
 
 
 class PlaylistImitator:
@@ -56,9 +56,7 @@ class PlaylistImitator:
 
     @staticmethod
     def _save_original_cover_image(dir_path: str, cover_image_url: str) -> str:
-        timestamp = get_current_timestamp()
-        file_name = f'{timestamp}.png'
-        image_path = os.path.join(dir_path, file_name)
+        image_path = current_timestamp_image_path(dir_path)
         save_image_from_url(cover_image_url, image_path)
 
         return image_path

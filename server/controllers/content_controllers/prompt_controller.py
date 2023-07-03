@@ -18,6 +18,7 @@ from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.openai.track_details import TrackDetails
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.utils.general_utils import build_prompt
+from server.utils.image_utils import current_timestamp_image_path
 
 DataClass = TypeVar('DataClass')
 
@@ -44,7 +45,7 @@ class PromptController(BaseContentController):
 
         return PlaylistResources(
             uris=tracks_uris,
-            cover_image_path=None
+            cover_image_path=current_timestamp_image_path(dir_path)
         )
 
     def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:

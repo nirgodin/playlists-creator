@@ -13,6 +13,7 @@ from server.controllers.content_controllers.base_content_controller import BaseC
 from server.data.playlist_resources import PlaylistResources
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.utils.general_utils import sample_list
+from server.utils.image_utils import current_timestamp_image_path
 
 
 class PhotoController(BaseContentController):
@@ -29,7 +30,8 @@ class PhotoController(BaseContentController):
         return request_body
 
     def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
-        uris = self._get_tracks_uri_from_photo(request_body[PHOTO])
+        cover_image_path = self._save_photo(request_body[PHOTO], dir_path)
+        uris = asyncio.run(self._tracks_uris_extractor.extract_tracks_uris(cover_image_path))
 
         if uris is None:
             return PlaylistResources(None, None)
@@ -40,15 +42,15 @@ class PhotoController(BaseContentController):
 
         return PlaylistResources(
             uris=tracks_uris,
-            cover_image_path=None
+            cover_image_path=cover_image_path
         )
 
-    def _get_tracks_uri_from_photo(self, photo: FileStorage) -> Optional[List[str]]:
-        with TemporaryDirectory() as dir_name:
-            path = os.path.join(dir_name, photo.name)
-            photo.save(path)
+    @staticmethod
+    def _save_photo(photo: FileStorage, dir_path: str) -> str:
+        image_path = current_timestamp_image_path(dir_path)
+        photo.save(image_path)
 
-            return asyncio.run(self._tracks_uris_extractor.extract_tracks_uris(path))
+        return image_path
 
     def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
         raise   # TODO: Fix to enable cover

@@ -9,6 +9,7 @@ from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator 
 from server.logic.data_filterer import DataFilterer
 from server.logic.openai.dalle_adapter import DallEAdapter
 from server.logic.parameters_transformer import ParametersTransformer
+from server.utils.image_utils import current_timestamp_image_path
 
 
 class ConfigurationController(BaseContentController):
@@ -27,7 +28,7 @@ class ConfigurationController(BaseContentController):
 
         return PlaylistResources(
             uris=tracks_uris,
-            cover_image_path=None
+            cover_image_path=current_timestamp_image_path(dir_path)
         )
 
     def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
