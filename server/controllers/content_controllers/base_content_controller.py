@@ -47,7 +47,7 @@ class BaseContentController(Resource, ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
+    def _generate_playlist_cover(self, request_body: dict, image_path: str) -> None:
         raise NotImplementedError
 
     def _create_playlist(self, request_body: dict, playlist_resources: PlaylistResources) -> Optional[str]:
@@ -70,7 +70,10 @@ class BaseContentController(Resource, ABC):
 
     def _create_playlist_cover(self, request_body: dict, playlist_id: str, headers: dict, image_path: str) -> None:
         try:
-            image_path = self._generate_playlist_cover(request_body, image_path)
+            created_image_path = self._generate_playlist_cover(request_body, image_path)
+            if created_image_path is None:
+                return
+
             self._playlist_cover_photo_creator.put_playlist_cover(
                 headers=headers,
                 playlist_id=playlist_id,

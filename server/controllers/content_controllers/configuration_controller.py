@@ -31,8 +31,8 @@ class ConfigurationController(BaseContentController):
             cover_image_path=current_timestamp_image_path(dir_path)
         )
 
-    def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
+    def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         filter_params = request_body[FILTER_PARAMS]
         playlist_cover_prompt = self._photo_prompt_creator.create_prompt(filter_params)
 
-        return self._dalle_adapter.create_image(playlist_cover_prompt, dir_path)
+        return self._dalle_adapter.create_image(playlist_cover_prompt, image_path)

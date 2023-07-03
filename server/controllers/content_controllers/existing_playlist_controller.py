@@ -23,5 +23,5 @@ class ExistingPlaylistController(BaseContentController):
 
         return asyncio.run(future)
 
-    def _generate_playlist_cover(self, request_body: dict, dir_path: str) -> Optional[str]:
-        raise  # TODO: Rethink how to generate cover here
+    def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
+        return self._dalle_adapter.variate_image(image_path, image_path)
