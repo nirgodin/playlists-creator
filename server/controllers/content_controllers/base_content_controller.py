@@ -77,7 +77,7 @@ class BaseContentController(Resource, ABC):
             self._playlist_cover_photo_creator.put_playlist_cover(
                 headers=headers,
                 playlist_id=playlist_id,
-                image_path=image_path
+                image_path=created_image_path
             )
 
         except:

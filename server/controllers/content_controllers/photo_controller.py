@@ -53,4 +53,4 @@ class PhotoController(BaseContentController):
         return image_path
 
     def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
-        return self._dalle_adapter.variate_image(image_path, image_path)
+        return image_path

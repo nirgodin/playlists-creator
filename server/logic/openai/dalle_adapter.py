@@ -40,4 +40,4 @@ class DallEAdapter:
         save_image_from_url(image_url, created_image_path)
 
         if os.path.exists(image_path):
-            return image_path
+            return created_image_path
