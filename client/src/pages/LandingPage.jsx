@@ -5,12 +5,17 @@ import FormTextField from ".././components/FormTextField";
 import SendButton from ".././components/SendButton";
 import { useState, useEffect } from "react";
 import RequestBody from ".././components/RequestBody";
-import { PROMPT, CONFIGURATION, PHOTO } from "../consts";
+import { PROMPT, CONFIGURATION, PHOTO, EXISTING_PLAYLIST } from "../consts";
 import PhotoDropzone from "../components/PhotoDropzone";
 import _ from "underscore";
 import PropTypes from "prop-types";
 import Popup from "../components/Popup";
 import PlaylistDetails from "../components/PlaylistDetails";
+import TuneIcon from "@mui/icons-material/Tune";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
+import QueueMusicRoundedIcon from '@mui/icons-material/QueueMusicRounded';
+
 
 function LandingPage(props) {
   const [alignment, setAlignment] = useState(PROMPT);
@@ -46,11 +51,32 @@ function LandingPage(props) {
 
   const popup = <Popup alignment={alignment}></Popup>;
 
+  const toggleButtonsConfig = [
+    {
+      value: CONFIGURATION,
+      icon: <TuneIcon sx={{ paddingRight: "10px" }} />,
+    },
+    {
+      value: EXISTING_PLAYLIST,
+      icon: <QueueMusicRoundedIcon sx={{ paddingRight: "10px" }} />,
+    },
+    {
+      value: PHOTO,
+      icon: <InsertPhotoRoundedIcon sx={{ paddingRight: "10px" }} />,
+    },
+    {
+      value: PROMPT,
+      icon: <EditNoteIcon sx={{ paddingRight: "10px" }} />,
+    },
+  ];
+
   const toggleButton = (
     <div className="toggle-button">
       <MethodToggleButtonGroup
         alignment={alignment}
         setAlignment={setAlignment}
+        config={toggleButtonsConfig}
+        sx={{ borderColor: "white", borderWidth: "1px", justifyContent: "center" }}
       ></MethodToggleButtonGroup>
       {popup}
     </div>
