@@ -8,6 +8,7 @@ import { sendGetRequest } from "./utils/RequestsUtils";
 import cloneJSON from "./utils/JsonUtils";
 import { CREATE_PLAYLIST, REQUEST_BODY } from "./consts";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
+import FeaturedPlaylists from "./components/FeaturedPlaylists";
 
 function App() {
   const [body, setBody] = useState([]);
@@ -60,7 +61,7 @@ function App() {
           setCurrentPage={setCurrentPage}
         ></ResponsiveAppBar>
         <header className="App-header">
-          <h1>Featured Playlists!</h1>
+          <FeaturedPlaylists></FeaturedPlaylists>
         </header>
       </div>
     );

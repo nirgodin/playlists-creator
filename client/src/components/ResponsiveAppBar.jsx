@@ -18,7 +18,7 @@ function ResponsiveAppBar(props) {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl" sx={{ backgroundColor: "#7cff8f" }} disableGutters>
+      <Container maxWidth="justify" sx={{ backgroundColor: "#7cff8f" }} disableGutters>
         <Toolbar disableGutters>
           <div className="row-items" style={{paddingLeft: "5px"}}>
             <div className="svg-logo">
