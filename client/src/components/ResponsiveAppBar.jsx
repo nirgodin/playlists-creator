@@ -7,9 +7,9 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { ReactComponent as Logo } from "../static/logo.svg";
 import PropTypes from "prop-types";
-import { CREATE_PLAYLIST, FEATURED_PLAYLISTS } from "../consts";
+import { ABOUT, CREATE_PLAYLIST, FEATURED_PLAYLISTS } from "../consts";
 
-const pages = [CREATE_PLAYLIST, FEATURED_PLAYLISTS];
+const pages = [CREATE_PLAYLIST, FEATURED_PLAYLISTS, ABOUT];
 
 function ResponsiveAppBar(props) {
   function handleClick(e) {

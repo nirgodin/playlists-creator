@@ -16,13 +16,13 @@ function FeaturedPlaylists() {
   function toPlaylistIFrames() {
     return playlistLinks.map((playlistLink) => (
         <Grid key="" item xs={4}>
-          <Spotify link={playlistLink} />
+          <Spotify link={playlistLink} width={'400px'}/>
         </Grid>
     ));
   }
 
   return (
-    <Box sx={{ flexGrow: 1, paddingTop: "20px"}}>
+    <Box sx={{ flexGrow: 1, paddingTop: "20px", width: '1400px'}}>
       <Grid container spacing={5} direction="row" justifyContent="center" alignItems="center" >
         {toPlaylistIFrames()}
       </Grid>

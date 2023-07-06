@@ -1,14 +1,12 @@
 import "./App.css";
 import React, { useCallback, useEffect } from "react";
-import Navigator from "./Navigator";
 import { useState } from "react";
 import _ from "underscore";
-import LoadingSpinner from "./components/LoadingSpinner";
 import { sendGetRequest } from "./utils/RequestsUtils";
 import cloneJSON from "./utils/JsonUtils";
 import { CREATE_PLAYLIST, REQUEST_BODY } from "./consts";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
-import FeaturedPlaylists from "./components/FeaturedPlaylists";
+import AppNavigator from "./navigators/AppNavigator";
 
 function App() {
   const [body, setBody] = useState([]);
@@ -29,43 +27,22 @@ function App() {
 
   useEffect(memoizedEffect, []);
 
-  if (_.isEqual(body, [])) {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <LoadingSpinner></LoadingSpinner>
-        </header>
-      </div>
-    );
-  } else if (currentPage === CREATE_PLAYLIST) {
-    return (
-      <div className="App">
-        <ResponsiveAppBar
+  return (
+    <div className="App">
+      <ResponsiveAppBar
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      ></ResponsiveAppBar>
+      <header className="App-header">
+        <AppNavigator
+          body={body}
+          setBody={setBody}
+          defaultRequestBody={defaultRequestBody}
           currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        ></ResponsiveAppBar>
-        <header className="App-header">
-          <Navigator
-            body={body}
-            setBody={setBody}
-            defaultRequestBody={defaultRequestBody}
-          ></Navigator>
-        </header>
-      </div>
-    );
-  } else {
-    return (
-      <div className="App">
-        <ResponsiveAppBar
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        ></ResponsiveAppBar>
-        <header className="App-header">
-          <FeaturedPlaylists></FeaturedPlaylists>
-        </header>
-      </div>
-    );
-  }
+        ></AppNavigator>
+      </header>
+    </div>
+  );
 }
 
 export default App;

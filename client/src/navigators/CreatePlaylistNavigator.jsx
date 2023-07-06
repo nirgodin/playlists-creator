@@ -1,14 +1,14 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import LandingPage from "./pages/LandingPage";
-import PostSendPage from "./pages/PostSendPage";
-import { isLoggedIn, extractCode } from "./utils/UrlUtils";
-import LoginPage from "./pages/LoginPage";
-import LoadingSpinner from "./components/LoadingSpinner";
-import { ACCESS_CODE } from "./consts";
+import LandingPage from "../pages/LandingPage";
+import PostSendPage from "../pages/PostSendPage";
+import { isLoggedIn, extractCode } from "../utils/UrlUtils";
+import LoginPage from "../pages/LoginPage";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { ACCESS_CODE } from "../consts";
 import PropTypes from "prop-types";
 
-function Navigator(props) {
+function CreatePlaylistNavigator(props) {
   const [wasRequestSent, setWasRequestSent] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -62,10 +62,10 @@ function Navigator(props) {
   }
 }
 
-Navigator.propTypes = {
+CreatePlaylistNavigator.propTypes = {
   body: PropTypes.array,
   defaultRequestBody: PropTypes.array,
   setBody: PropTypes.func,
 };
 
-export default Navigator;
+export default CreatePlaylistNavigator;

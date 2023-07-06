@@ -25,6 +25,7 @@ const FEATURES_VALUES = "featuresValues";
 // Pages
 const CREATE_PLAYLIST = "Create Playlist";
 const FEATURED_PLAYLISTS = "Featured Playlists";
+const ABOUT = 'About'
 
 // Style
 const ITEM_HEIGHT = 48;
@@ -291,5 +292,6 @@ export {
   PHOTO_DROPZONE_BASE_STYLE,
   ENDPOINTS_DESCRIPTIONS,
   CREATE_PLAYLIST,
-  FEATURED_PLAYLISTS
+  FEATURED_PLAYLISTS,
+  ABOUT
 };
