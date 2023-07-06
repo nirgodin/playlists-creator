@@ -21,7 +21,7 @@ function AppNavigator(props) {
   } else if (props.currentPage === FEATURED_PLAYLISTS) {
     return <FeaturedPlaylists></FeaturedPlaylists>;
   } else {
-    return <p>ABOUT US!</p>
+    return <p>ABOUT US!</p>;
   }
 }
 

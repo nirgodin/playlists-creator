@@ -13,18 +13,22 @@ const pages = [CREATE_PLAYLIST, FEATURED_PLAYLISTS, ABOUT];
 
 function ResponsiveAppBar(props) {
   function handleClick(e) {
-    props.setCurrentPage(e.currentTarget.textContent)
+    props.setCurrentPage(e.currentTarget.textContent);
   }
 
   return (
     <AppBar position="static">
-      <Container maxWidth="justify" sx={{ backgroundColor: "#7cff8f" }} disableGutters>
+      <Container
+        maxWidth="justify"
+        sx={{ backgroundColor: "#7cff8f" }}
+        disableGutters
+      >
         <Toolbar disableGutters>
-          <div className="row-items" style={{paddingLeft: "5px"}}>
+          <div className="row-items" style={{ paddingLeft: "5px" }}>
             <div className="svg-logo">
               <Logo />
             </div>
-            <Box sx={{'paddingTop': '7px'}}>
+            <Box sx={{ paddingTop: "7px" }}>
               <Typography
                 variant="h6"
                 component="a"
@@ -36,7 +40,7 @@ function ResponsiveAppBar(props) {
                   fontWeight: 700,
                   letterSpacing: ".1rem",
                   color: "black",
-                  textDecoration: "none"
+                  textDecoration: "none",
                 }}
               >
                 Playlists
@@ -52,7 +56,7 @@ function ResponsiveAppBar(props) {
                   fontWeight: 700,
                   letterSpacing: ".1rem",
                   color: "black",
-                  textDecoration: "none"
+                  textDecoration: "none",
                 }}
               >
                 Creator
@@ -64,7 +68,14 @@ function ResponsiveAppBar(props) {
               <Button
                 key={page}
                 onClick={handleClick}
-                sx={{ my: 2, color: "black", display: "block", fontSize: 17, paddingLeft: "20px", fontWeight: 500}}
+                sx={{
+                  ":hover": { bgcolor: "#b4fabe" },
+                  my: 2,
+                  color: "black",
+                  fontSize: 17,
+                  fontWeight: 500,
+                  margin: "15px"
+                }}
               >
                 {page}
               </Button>
