@@ -7,10 +7,10 @@ from pandas import DataFrame, Series
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer
 
-from server.consts.data_consts import GENRES
+from server.consts.data_consts import GENRES, SERIES, Z_SCORE, OUTLIER_THRESHOLD
 from server.consts.path_consts import PLAYLIST_IMITATOR_DATABASE_PATH
 from server.logic.playlist_imitation.playlist_imitator_consts import N_MOST_COMMON_GENRES, NUMERIC_RANGE_FILTER_COLUMNS, \
-    HAS_RELEVANT_GENRES, SERIES, Z_SCORE, OUTLIER_THRESHOLD
+    HAS_RELEVANT_GENRES
 from server.utils.statistics_utils import calculate_z_score
 
 

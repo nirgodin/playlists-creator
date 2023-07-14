@@ -44,3 +44,6 @@ ARTIST_POPULARITY = 'artist_popularity'
 ARTIST_FOLLOWERS = 'artist_followers'
 EXPLICIT = 'explicit'
 COVER_IMAGE_URL = 'cover_image_url'
+SERIES = 'series'
+Z_SCORE = 'z_score'
+OUTLIER_THRESHOLD = 2
