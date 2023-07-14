@@ -2,6 +2,7 @@ import * as React from "react";
 import ClickButton from "./ClickButton";
 import { generateAccessCodeURL } from "../utils/UrlUtils";
 import PropTypes from "prop-types";
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 
 function LoginButton(props) {
   const [isClicked, setIsClicked] = React.useState(false);
@@ -16,9 +17,10 @@ function LoginButton(props) {
   }
 
   return (
-    <div className="click-button">
+    <div className="login-button">
       <ClickButton
-        width={'100px'}
+        startIcon={<LoginRoundedIcon style={{ fontSize: 30 }} />}
+        width={'justify'}
         height={'50px'}
         fontSize={20}
         text={props.text}
@@ -28,6 +30,7 @@ function LoginButton(props) {
     </div>
   );
 }
+
 
 LoginButton.propTypes = {
   text: PropTypes.string,

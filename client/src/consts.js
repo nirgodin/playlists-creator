@@ -252,6 +252,101 @@ const EXISTING_PLAYLIST_DESCRIPTION = [
   },
 ];
 
+// Look no further! With PlaylistGenie, you have the power to create your own custom playlists that cater to your unique taste and mood, without relying on pre-existing collections. Gone are the days of settling for playlists that only partially satisfy your musical cravings. With PlaylistGenie, you become the master of your musical destiny. Our innovative application empowers you to handpick every song that goes into your playlist, ensuring that each track perfectly aligns with your mood, preferences, and the vibe you are seeking.Creating your personalized playlist is a breeze. Simply input your desired genre, mood, or even specific artists, and watch as PlaylistGenie works its magic, curating a seamless blend of songs that captures your individual style. You are not limited to popular hits or predictable tracks; our extensive music library gives you access to a vast world of undiscovered gems, enabling you to truly expand your musical horizons. With PlaylistGenie, the possibilities are endless. Whether you are looking for upbeat tunes to kickstart your morning, soothing melodies to unwind after a long day, or a mix that perfectly captures your unique taste, our application is your ultimate musical companion.
+// But that is not all! PlaylistGenie does not stop at generating your custom playlists. Our intuitive interface lets you easily add, remove, and rearrange songs as you please. Feel free to explore different genres, experiment with eclectic combinations, and create playlists that are as diverse and dynamic as you are.
+// So, are you ready to take control of your musical journey? Say goodbye to generic playlists and hello to a world of tailored tracks with PlaylistGenie. Let the music flow and let your creativity shine!
+// Start creating your personalized playlists today and unlock a whole new level of musical discovery. Get ready to dance, sing, and immerse yourself in the soundscapes that truly resonate with you. PlaylistGenie is here to make your Spotify experience one-of-a-kind.
+// Welcome to the future of playlist creation. Welcome to PlaylistGenie!
+
+const LOGIN_PAGE_TEXT = [
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+  },
+  {
+    variant: "h2",
+    text: "Create & customize",
+    textAlign: "center",
+    color: "#6db4fc",
+    fontWeight: 700
+  },
+  {
+    variant: "h2",
+    text: "your own playlists",
+    textAlign: "center",
+    fontWeight: 700
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
+    text: "No more scrolling through countless Spotify playlists!",
+    textAlign: "justify",
+  },
+  {
+    variant: "p",
+    text: "PlaylistsCreator gives you the power to tailor made your own custom playlists that cater to your unique taste and mood, without relying on pre-existing collections.",
+    textAlign: "justify",
+  },
+]
+
+// const LOGIN_PAGE_TEXT = [
+//   {
+//     variant: "p",
+//     text: "",
+//     textAlign: "justify",
+//   },
+//   {
+//     variant: "h4",
+//     text: "Welcome to Playlists Creator!",
+//     textAlign: "center",
+//   },
+//   {
+//     variant: "p",
+//     text: "Are you tired of scrolling through countless Spotify playlists, hoping to stumble upon the perfect mix of songs that truly resonates with you?",
+//     textAlign: "justify",
+//   },
+//   {
+//     variant: "p",
+//     text: "Look no further! With PlaylistsCreator, you have the power to create your own custom playlists that cater to your unique taste and mood, without relying on pre-existing collections.",
+//     textAlign: "justify",
+//   },
+//   {
+//     variant: "p",
+//     text: "To experience this feature, simply visit your playlist page on Spotify, click on the Share button, select \"Copy link to playlist\" and paste it into the text box provided below.",
+//     textAlign: "justify",
+//   },
+//   {
+//     variant: "p",
+//     text: "Please be aware that if you submit a playlist containing more than 50 songs, only a random selection of 50 songs will be chosen to represent the playlist.",
+//     textAlign: "justify",
+//   },
+//   {
+//     variant: "p",
+//     text: "Sit back and enjoy!",
+//     textAlign: "justify",
+//   },
+//   {
+//     variant: "p",
+//     text: "",
+//     textAlign: "justify",
+//   },
+// ];
+
 const ENDPOINTS_DESCRIPTIONS = {
   [CONFIGURATION]: CONFIGURATION_DESCRIPTION,
   [PROMPT]: PROMPT_DESCRIPTION,
@@ -293,5 +388,6 @@ export {
   ENDPOINTS_DESCRIPTIONS,
   CREATE_PLAYLIST,
   FEATURED_PLAYLISTS,
-  ABOUT
+  ABOUT,
+  LOGIN_PAGE_TEXT
 };
