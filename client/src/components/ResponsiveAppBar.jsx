@@ -17,7 +17,7 @@ function ResponsiveAppBar(props) {
   }
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Container
         maxWidth="justify"
         sx={{ backgroundColor: "#7cff8f" }}
