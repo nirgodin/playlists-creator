@@ -46,4 +46,11 @@ EXPLICIT = 'explicit'
 COVER_IMAGE_URL = 'cover_image_url'
 SERIES = 'series'
 Z_SCORE = 'z_score'
-OUTLIER_THRESHOLD = 2
+DEFAULT_OUTLIER_THRESHOLD = 2
+DURATION_MINUTES = 'duration_minutes'
+ISRAELI_RADIO_PLAY_COUNT = 'israeli_radio_play_count'
+REMOVE_OUTLIERS_COLUMNS = [
+    DURATION_MINUTES,
+    ISRAELI_RADIO_PLAY_COUNT,
+    RELEASE_YEAR
+]

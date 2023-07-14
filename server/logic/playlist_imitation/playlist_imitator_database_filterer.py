@@ -1,17 +1,17 @@
 from collections import Counter
 from itertools import chain
-from typing import List, Tuple
+from typing import List
 
 import pandas as pd
-from pandas import DataFrame, Series
+from pandas import DataFrame
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer
 
-from server.consts.data_consts import GENRES, SERIES, Z_SCORE, OUTLIER_THRESHOLD
+from server.consts.data_consts import GENRES
 from server.consts.path_consts import PLAYLIST_IMITATOR_DATABASE_PATH
 from server.logic.playlist_imitation.playlist_imitator_consts import N_MOST_COMMON_GENRES, NUMERIC_RANGE_FILTER_COLUMNS, \
     HAS_RELEVANT_GENRES
-from server.utils.statistics_utils import calculate_z_score
+from server.utils.data_utils import get_series_non_outlier_min_max_values
 
 
 class PlaylistImitatorDatabaseFilterer:
@@ -55,23 +55,14 @@ class PlaylistImitatorDatabaseFilterer:
     def _has_any_relevant_genre(genres: List[str], most_common_genres: List[str]) -> bool:
         return any(genre in most_common_genres for genre in genres)
 
-    def _filter_out_of_range_values(self, data: DataFrame, playlist_data: DataFrame, columns: List[str]) -> DataFrame:
+    @staticmethod
+    def _filter_out_of_range_values(data: DataFrame, playlist_data: DataFrame, columns: List[str]) -> DataFrame:
         for column in columns:
-            min_value, max_value = self._get_series_non_outlier_min_max_values(playlist_data[column])
+            min_value, max_value = get_series_non_outlier_min_max_values(playlist_data[column])
             query = f"`{column}` >= {min_value} and `{column}` <= {max_value}"
             data = data.query(query)
 
         return data
-
-    @staticmethod
-    def _get_series_non_outlier_min_max_values(series: Series) -> Tuple[float, float]:
-        data = series.to_frame(SERIES)
-        mean = data[SERIES].mean()
-        std = data[SERIES].std()
-        data[Z_SCORE] = data[SERIES].apply(lambda x: abs(calculate_z_score(x, mean, std)))
-        non_outlier_data = data[data[Z_SCORE] < OUTLIER_THRESHOLD][SERIES]
-
-        return float(non_outlier_data.min()), float(non_outlier_data.max())
 
     @staticmethod
     def _serialize_track_genres(genres: str) -> List[str]:

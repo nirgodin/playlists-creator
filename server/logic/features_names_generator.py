@@ -5,7 +5,7 @@ from server.consts.openai_consts import NUMERIC_OPERATORS, IN_OPERATOR
 from server.logic.openai.column_details import ColumnDetails
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
 from server.utils.data_utils import load_data
-from server.utils.general_utils import titleize_feature_name
+from server.utils.string_utils import titleize_feature_name
 
 
 class FeaturesNamesGenerator:

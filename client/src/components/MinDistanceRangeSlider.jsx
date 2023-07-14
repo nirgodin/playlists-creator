@@ -34,13 +34,13 @@ function MinDistanceRangeSlider(props) {
     if (activeThumb === 0) {
       const minActualValue = Math.min(
         newValue[0],
-        actualValues[1] - minDistance
+        Math.floor(actualValues[1] - minDistance)
       );
       setActualValues([minActualValue, actualValues[1]]);
     } else {
       const maxActualValue = Math.max(
         newValue[1],
-        actualValues[0] + minDistance
+        Math.ceil(actualValues[0] + minDistance)
       );
       setActualValues([actualValues[0], maxActualValue]);
     }

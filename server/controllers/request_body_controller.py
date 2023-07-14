@@ -7,10 +7,12 @@ from flask_restful import Resource
 from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
     IS_PUBLIC, PROMPT, REQUEST_BODY, FEATURES_NAMES, FEATURES_VALUES, MIN_MAX_VALUES, POSSIBLE_VALUES, \
     FEATURES_DESCRIPTIONS, EXISTING_PLAYLIST
+from server.consts.data_consts import REMOVE_OUTLIERS_COLUMNS
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.features_descriptions_manager import FeaturesDescriptionsManager
 from server.logic.features_names_generator import FeaturesNamesGenerator
-from server.utils.general_utils import get_column_min_max_values, get_column_possible_values, format_column_name
+from server.utils.string_utils import format_column_name
+from server.utils.data_utils import get_column_min_max_values, get_column_possible_values
 
 
 class RequestBodyController(Resource):
@@ -62,7 +64,8 @@ class RequestBodyController(Resource):
 
         for feature in min_max_features:
             formatted_feature_name = format_column_name(feature)
-            min_value, max_value = get_column_min_max_values(formatted_feature_name)
+            remove_outliers = formatted_feature_name in REMOVE_OUTLIERS_COLUMNS
+            min_value, max_value = get_column_min_max_values(formatted_feature_name, remove_outliers=remove_outliers)
             min_max_values[feature] = [ceil(min_value), floor(max_value)]
 
         return min_max_values

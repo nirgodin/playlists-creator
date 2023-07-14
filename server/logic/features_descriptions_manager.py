@@ -3,7 +3,7 @@ from functools import lru_cache
 from typing import Dict
 
 from server.consts.path_consts import COLUMNS_DESCRIPTIONS_PATH
-from server.utils.general_utils import titleize_feature_name
+from server.utils.string_utils import titleize_feature_name
 
 
 class FeaturesDescriptionsManager:
