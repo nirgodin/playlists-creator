@@ -19,7 +19,9 @@ function AppNavigator(props) {
       ></CreatePlaylistNavigator>
     );
   } else if (props.currentPage === FEATURED_PLAYLISTS) {
-    return <FeaturedPlaylists></FeaturedPlaylists>;
+    return (
+        <FeaturedPlaylists></FeaturedPlaylists>
+    );
   } else {
     return <p>ABOUT US!</p>;
   }
