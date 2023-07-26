@@ -6,6 +6,7 @@ import { CREATE_PLAYLIST } from "../consts";
 import FeaturedPlaylists from "../components/FeaturedPlaylists";
 import PropTypes from "prop-types";
 import { FEATURED_PLAYLISTS } from "../consts";
+import About from "../components/About";
 
 function AppNavigator(props) {
   if (_.isEqual(props.body, [])) {
@@ -23,7 +24,7 @@ function AppNavigator(props) {
         <FeaturedPlaylists></FeaturedPlaylists>
     );
   } else {
-    return <p>ABOUT US!</p>;
+    return <About></About>
   }
 }
 
