@@ -1,24 +1,25 @@
 from base64 import b64encode
 from typing import Optional
 
-import requests
+from aiohttp import ClientSession
 
 from server.consts.api_consts import PLAYLIST_COVER_URL_FORMAT
 from server.utils.image_utils import save_image_as_jpeg
 
 
 class PlaylistCoverPhotoCreator:
-    def put_playlist_cover(self, headers: dict, playlist_id: str, image_path: Optional[str]) -> None:
+    def __init__(self, session: ClientSession):
+        self._session = session
+
+    async def put_playlist_cover(self, headers: dict, playlist_id: str, image_path: Optional[str]) -> None:
         if image_path is None:
             return
 
         url = PLAYLIST_COVER_URL_FORMAT.format(playlist_id)
         image = self._encode_image_to_base64(image_path)
-        requests.put(
-            url=url,
-            data=image,
-            headers=headers
-        )
+
+        async with self._session.put(url=url, data=image, headers=headers) as raw_response:
+            raw_response.raise_for_status()
 
     @staticmethod
     def _encode_image_to_base64(image_path: str) -> str:

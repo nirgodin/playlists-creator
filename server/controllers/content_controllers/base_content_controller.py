@@ -17,8 +17,8 @@ from server.tools.response_factory import ResponseFactory
 
 class BaseContentController(ABC):
     def __init__(self, session: ClientSession):
-        self._playlists_creator = PlaylistsCreator()
-        self._playlist_cover_photo_creator = PlaylistCoverPhotoCreator()
+        self._playlists_creator = PlaylistsCreator(session)
+        self._playlist_cover_photo_creator = PlaylistCoverPhotoCreator(session)
         self._openai_client = OpenAIClient(session)
 
     async def post(self) -> Response:
@@ -60,7 +60,7 @@ class BaseContentController(ABC):
         if config.headers is None:
             return
 
-        playlist_id = self._playlists_creator.create(config, retries_left=1)
+        playlist_id = await self._playlists_creator.create(config, retries_left=1)
         if playlist_id is None:
             return
 
@@ -74,7 +74,7 @@ class BaseContentController(ABC):
             if created_image_path is None:
                 return
 
-            self._playlist_cover_photo_creator.put_playlist_cover(
+            await self._playlist_cover_photo_creator.put_playlist_cover(
                 headers=headers,
                 playlist_id=playlist_id,
                 image_path=created_image_path

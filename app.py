@@ -28,8 +28,7 @@ def serve():
 
 @app.route('/api/requestBody', methods=['GET'])
 async def request_body():
-    body = await request_body_controller.get()
-    return body
+    return await request_body_controller.get()
 
 
 @app.route('/api/configuration', methods=['POST'])
