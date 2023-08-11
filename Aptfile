@@ -1,7 +1,3 @@
-libsm6
-libxrender1
-libfontconfig1
-libice6
 ffmpeg
 libxext6
 tesseract-ocr
