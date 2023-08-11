@@ -1,11 +1,7 @@
-import os
-
 from aiohttp import ClientSession
 from flask import Flask, send_from_directory
 from flask_cors import CORS, cross_origin
-from flask_restful import Api
 
-from server.consts.env_consts import SPOTIPY_CLIENT_SECRET
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.photo_controller import PhotoController
@@ -15,9 +11,7 @@ from server.utils.general_utils import download_database
 
 download_database()
 app = Flask(__name__, static_folder='client/build', static_url_path='')
-app.secret_key = os.environ[SPOTIPY_CLIENT_SECRET]
 CORS(app)
-api = Api(app, decorators=[cross_origin()])
 session = ClientSession()
 request_body_controller = RequestBodyController()
 configuration_controller = ConfigurationController()

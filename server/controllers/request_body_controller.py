@@ -2,7 +2,6 @@ from math import floor, ceil
 from typing import List, Dict
 
 from flask import Response, jsonify
-from flask_restful import Resource
 
 from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
     IS_PUBLIC, PROMPT, REQUEST_BODY, FEATURES_NAMES, FEATURES_VALUES, MIN_MAX_VALUES, POSSIBLE_VALUES, \
@@ -11,11 +10,11 @@ from server.consts.data_consts import REMOVE_OUTLIERS_COLUMNS
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.features_descriptions_manager import FeaturesDescriptionsManager
 from server.logic.features_names_generator import FeaturesNamesGenerator
-from server.utils.string_utils import format_column_name
 from server.utils.data_utils import get_column_min_max_values, get_column_possible_values
+from server.utils.string_utils import format_column_name
 
 
-class RequestBodyController(Resource):
+class RequestBodyController:
     def __init__(self):
         self._default_filter_params_generator = DefaultFilterParamsGenerator()
         self._features_names_generator = FeaturesNamesGenerator()
