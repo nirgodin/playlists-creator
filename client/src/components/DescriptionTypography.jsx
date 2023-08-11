@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { ENDPOINTS_DESCRIPTIONS, PROMPT } from "../consts";
+import { toTypographies } from "../utils/TypographiesUtils";
 
 function DescriptionTypography(props) {
   const [descriptionMapping, setDescriptionMapping] = useState(
@@ -13,21 +14,9 @@ function DescriptionTypography(props) {
     setDescriptionMapping(mapping);
   }, [props.alignment]);
 
-  function toTypographies() {
-    return descriptionMapping.map((typographyDetails) => (
-      <Typography
-        key={""}
-        variant={typographyDetails["variant"]}
-        sx={{ p: 2, width: "500px", paddingBottom: "0px", paddingTop: "5px", textAlign:typographyDetails['textAlign']}}
-      >
-        {typographyDetails["text"]}
-      </Typography>
-    ));
-  }
-
   return (
     <div className="description-typographies">
-      <Box sx={{ width: 550, display: "flex", flexDirection:"column", textAlign:"justify"}}>{toTypographies()}</Box>
+      <Box sx={{ width: 550, display: "flex", flexDirection:"column", textAlign:"justify"}}>{toTypographies(descriptionMapping)}</Box>
     </div>
   );
 }

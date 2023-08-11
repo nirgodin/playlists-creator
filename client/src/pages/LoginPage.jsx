@@ -2,29 +2,10 @@ import LoginButton from ".././components/LoginButton";
 import React from "react";
 import PropTypes from "prop-types";
 import { LOGIN_PAGE_TEXT } from "../consts";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import { toTypographies } from "../utils/TypographiesUtils";
 
 function LoginPage(props) {
-  function toTypographies(descriptionMapping) {
-    return descriptionMapping.map((typographyDetails) => (
-      <Typography
-        key={""}
-        variant={typographyDetails["variant"]}
-        sx={{
-          p: 2,
-          paddingBottom: "0px",
-          paddingTop: "5px",
-          textAlign: typographyDetails["textAlign"],
-          color: typographyDetails["color"],
-          fontWeight: typographyDetails["fontWeight"],
-          fontFamily: "Gill Sans",
-        }}
-      >
-        {typographyDetails["text"]}
-      </Typography>
-    ));
-  }
-
   return (
     <div className="login-page">
       <Box

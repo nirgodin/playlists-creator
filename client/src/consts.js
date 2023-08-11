@@ -25,7 +25,7 @@ const FEATURES_VALUES = "featuresValues";
 // Pages
 const CREATE_PLAYLIST = "Create Playlist";
 const FEATURED_PLAYLISTS = "Featured Playlists";
-const ABOUT = 'About'
+const ABOUT = "About";
 
 // Style
 const ITEM_HEIGHT = 48;
@@ -110,41 +110,49 @@ const PROMPT_DESCRIPTION = [
     variant: "h6",
     text: "Using Prompts",
     textAlign: "center",
+    width: "500px",
   },
   {
     variant: "p",
     text: "A prompt is a short statement that is provided as input to a language model in order to generate a response. Your prompt may include anything, but will work best if you follow these rules:",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: '1. Your prompt should include the terminology the model is familiar with. The more you use the terminology used on the "Configuration" page, the more likely the model is to understand you.',
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "2. Your prompt should not be too short or long. Details, explanations, and examples help the model understand you better, but a prompt that is too lengthy will be rejected as it exceeds the maximum number of words allowed.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "3. Your prompt will also be used to generate a custom playlist cover. You may include figurative descriptions in it, but ensure they do not replace the descriptions of the songs themselves; otherwise, we will not be able to create your playlist.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    width: "500px",
   },
 ];
 
@@ -153,41 +161,49 @@ const PHOTO_DESCRIPTION = [
     variant: "h6",
     text: "Using Photos",
     textAlign: "center",
+    width: "500px",
   },
   {
     variant: "p",
     text: "Simply drag and drop a festival lineup or any other picture into the designated area. Our algorithm will identify the artists' names from the photo and curate a playlist featuring their most popular tracks.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "Here are some guidelines to maximize the utility of this tool:",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "1. Currently, only English is supported as the language. In the event that you provide photos containing languages other than English, it may have a negative impact on the performance, potentially resulting in the inability to generate your playlist successfully.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "2. For optimal results, the model performs best when provided with images featuring dark backgrounds and light text. If you provide photos with light backgrounds, the model may struggle to detect the artists' names accurately, resulting in a failure to create your playlist.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "3. The model's training focused on identifying artists' names, rather than songs or albums. Therefore, it is essential to ensure that your photo includes the names of the artists. Without this information, the model will be unable to generate a playlist for you.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    width: "500px",
   },
 ];
 
@@ -196,21 +212,25 @@ const CONFIGURATION_DESCRIPTION = [
     variant: "h6",
     text: "Using Configuration",
     textAlign: "center",
+    width: "500px",
   },
   {
     variant: "p",
     text: "Configuration provides the optimal means to finely control every aspect of your playlist, while also being the quickest method. By dragging each slider and selecting options from the dropdown menus, you can precisely define the desired characteristics of your playlist. If you're unsure about the meaning of a particular field, simply hover over the tooltip located to its left for clarification.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "However, please be aware that selecting overly specific criteria may lead to the algorithm's inability to identify any relevant songs, resulting in a failure to generate your playlist.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    width: "500px",
   },
 ];
 
@@ -219,133 +239,150 @@ const EXISTING_PLAYLIST_DESCRIPTION = [
     variant: "h6",
     text: "Using Existing Playlist",
     textAlign: "center",
+    width: "500px",
   },
   {
     variant: "p",
     text: "Are you finding your current playlist enjoyable but starting to feel like you've heard it all? Then this is just what you need.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "The `Existing Playlist` feature allows you to input the URL of a playlist you already have and receive a fresh new playlist that captures the essence of the one you provided.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
-    text: "To experience this feature, simply visit your playlist page on Spotify, click on the Share button, select \"Copy link to playlist\" and paste it into the text box provided below.",
+    text: 'To experience this feature, simply visit your playlist page on Spotify, click on the Share button, select "Copy link to playlist" and paste it into the text box provided below.',
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "Please be aware that if you submit a playlist containing more than 50 songs, only a random selection of 50 songs will be chosen to represent the playlist.",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "Sit back and enjoy!",
     textAlign: "justify",
+    width: "500px",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    width: "500px",
   },
 ];
-
-// Look no further! With PlaylistGenie, you have the power to create your own custom playlists that cater to your unique taste and mood, without relying on pre-existing collections. Gone are the days of settling for playlists that only partially satisfy your musical cravings. With PlaylistGenie, you become the master of your musical destiny. Our innovative application empowers you to handpick every song that goes into your playlist, ensuring that each track perfectly aligns with your mood, preferences, and the vibe you are seeking.Creating your personalized playlist is a breeze. Simply input your desired genre, mood, or even specific artists, and watch as PlaylistGenie works its magic, curating a seamless blend of songs that captures your individual style. You are not limited to popular hits or predictable tracks; our extensive music library gives you access to a vast world of undiscovered gems, enabling you to truly expand your musical horizons. With PlaylistGenie, the possibilities are endless. Whether you are looking for upbeat tunes to kickstart your morning, soothing melodies to unwind after a long day, or a mix that perfectly captures your unique taste, our application is your ultimate musical companion.
-// But that is not all! PlaylistGenie does not stop at generating your custom playlists. Our intuitive interface lets you easily add, remove, and rearrange songs as you please. Feel free to explore different genres, experiment with eclectic combinations, and create playlists that are as diverse and dynamic as you are.
-// So, are you ready to take control of your musical journey? Say goodbye to generic playlists and hello to a world of tailored tracks with PlaylistGenie. Let the music flow and let your creativity shine!
-// Start creating your personalized playlists today and unlock a whole new level of musical discovery. Get ready to dance, sing, and immerse yourself in the soundscapes that truly resonate with you. PlaylistGenie is here to make your Spotify experience one-of-a-kind.
-// Welcome to the future of playlist creation. Welcome to PlaylistGenie!
 
 const LOGIN_PAGE_TEXT = [
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    fontFamily: "Gill Sans",
   },
   {
     variant: "h2",
     text: "Create & customize",
     textAlign: "center",
     color: "#6db4fc",
-    fontWeight: 700
+    fontWeight: 700,
+    fontFamily: "Gill Sans",
   },
   {
     variant: "h2",
     text: "your own playlists",
     textAlign: "center",
-    fontWeight: 700
+    fontWeight: 700,
+    fontFamily: "Gill Sans",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    fontFamily: "Gill Sans",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    fontFamily: "Gill Sans",
   },
   {
     variant: "p",
     text: "",
     textAlign: "justify",
+    fontFamily: "Gill Sans",
   },
   {
     variant: "p",
     text: "No more scrolling through countless Spotify playlists!",
     textAlign: "justify",
+    fontFamily: "Gill Sans",
   },
   {
     variant: "p",
     text: "PlaylistsCreator gives you the power to tailor made your own custom playlists that cater to your unique taste and mood, without relying on pre-existing collections.",
     textAlign: "justify",
+    fontFamily: "Gill Sans",
   },
-]
+];
 
-// const LOGIN_PAGE_TEXT = [
-//   {
-//     variant: "p",
-//     text: "",
-//     textAlign: "justify",
-//   },
-//   {
-//     variant: "h4",
-//     text: "Welcome to Playlists Creator!",
-//     textAlign: "center",
-//   },
-//   {
-//     variant: "p",
-//     text: "Are you tired of scrolling through countless Spotify playlists, hoping to stumble upon the perfect mix of songs that truly resonates with you?",
-//     textAlign: "justify",
-//   },
-//   {
-//     variant: "p",
-//     text: "Look no further! With PlaylistsCreator, you have the power to create your own custom playlists that cater to your unique taste and mood, without relying on pre-existing collections.",
-//     textAlign: "justify",
-//   },
-//   {
-//     variant: "p",
-//     text: "To experience this feature, simply visit your playlist page on Spotify, click on the Share button, select \"Copy link to playlist\" and paste it into the text box provided below.",
-//     textAlign: "justify",
-//   },
-//   {
-//     variant: "p",
-//     text: "Please be aware that if you submit a playlist containing more than 50 songs, only a random selection of 50 songs will be chosen to represent the playlist.",
-//     textAlign: "justify",
-//   },
-//   {
-//     variant: "p",
-//     text: "Sit back and enjoy!",
-//     textAlign: "justify",
-//   },
-//   {
-//     variant: "p",
-//     text: "",
-//     textAlign: "justify",
-//   },
-// ];
+const ABOUT_PAGE_TEXT = [
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+    fontFamily: "Gill Sans",
+  },
+  {
+    variant: "p",
+    text: "PlaylistsCreator is a freely available, open-source application designed to assist you in crafting playlists that are customized according to your preferences",
+    textAlign: "justify",
+    fontFamily: "Gill Sans",
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+    fontFamily: "Gill Sans",
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+    fontFamily: "Gill Sans",
+  },
+  {
+    variant: "p",
+    text: "Created with a keen desire to make playlist creation easier and more enjoyable, this app is designed to simplify and improve how you put together your playlists.",
+    textAlign: "justify",
+    fontFamily: "Gill Sans",
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+    fontFamily: "Gill Sans",
+  },
+  {
+    variant: "p",
+    text: "",
+    textAlign: "justify",
+    fontFamily: "Gill Sans",
+  },
+  {
+    variant: "p",
+    text: "Check out our Linkedin and GitHub pages for more information about the project",
+    textAlign: "justify",
+    fontFamily: "Gill Sans",
+  },
+];
 
 const ENDPOINTS_DESCRIPTIONS = {
   [CONFIGURATION]: CONFIGURATION_DESCRIPTION,
@@ -389,5 +426,6 @@ export {
   CREATE_PLAYLIST,
   FEATURED_PLAYLISTS,
   ABOUT,
-  LOGIN_PAGE_TEXT
+  LOGIN_PAGE_TEXT,
+  ABOUT_PAGE_TEXT,
 };

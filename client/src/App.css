@@ -184,3 +184,9 @@
 .login-button {
   padding-top: 30px;
 }
+
+.about-page-icon-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
