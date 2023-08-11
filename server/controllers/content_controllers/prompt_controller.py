@@ -35,12 +35,12 @@ class PromptController(BaseContentController):
 
     async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         user_text = self._extract_prompt_from_request_body(request_body)
-        query_conditions_uris = self._generate_uris_from_query_conditions(user_text)
+        query_conditions_uris = await self._generate_uris_from_query_conditions(user_text)
 
         if query_conditions_uris is not None:
             tracks_uris = query_conditions_uris
         else:
-            tracks_uris = self._generate_uris_from_tracks_details(user_text)
+            tracks_uris = await self._generate_uris_from_tracks_details(user_text)
 
         return PlaylistResources(
             uris=tracks_uris,
@@ -53,9 +53,9 @@ class PromptController(BaseContentController):
 
         return self._dalle_adapter.create_image(playlist_cover_prompt, image_path)
 
-    def _generate_uris_from_query_conditions(self, user_text: str) -> Optional[List[str]]:
+    async def _generate_uris_from_query_conditions(self, user_text: str) -> Optional[List[str]]:
         prompt = self._build_query_conditions_prompt(user_text)
-        json_serialized_response = self._openai_adapter.fetch_openai(prompt, retries_left=1)
+        json_serialized_response = await self._openai_adapter.chat_completions(prompt, retries_left=1)
         query_conditions = self._serialize_openai_response(json_serialized_response, klazz=QueryCondition)
 
         if query_conditions is not None:
@@ -78,9 +78,9 @@ class PromptController(BaseContentController):
         except:
             return
 
-    def _generate_uris_from_tracks_details(self, user_text: str) -> Optional[List[str]]:
+    async def _generate_uris_from_tracks_details(self, user_text: str) -> Optional[List[str]]:
         prompt = TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT.format(user_text=user_text)
-        json_serialized_response = self._openai_adapter.fetch_openai(prompt, retries_left=2)
+        json_serialized_response = await self._openai_adapter.chat_completions(prompt, retries_left=2)
         tracks_details = self._serialize_openai_response(json_serialized_response, klazz=TrackDetails)
 
         if tracks_details is None:

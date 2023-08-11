@@ -13,10 +13,10 @@ class OpenAIAdapter:
         openai.api_key = os.environ[OPENAI_API_KEY]
         self._openai_model = openai.ChatCompletion()
 
-    def fetch_openai(self,
-                     prompt: str,
-                     chat_history: Optional[List[dict]] = None,
-                     retries_left: int = 3) -> Optional[Union[list, dict]]:
+    async def chat_completions(self,
+                         prompt: str,
+                         chat_history: Optional[List[dict]] = None,
+                         retries_left: int = 3) -> Optional[Union[list, dict]]:
         if retries_left == 0:
             return
 
@@ -42,7 +42,7 @@ class OpenAIAdapter:
                 }
             ]
             chat_history.extend(new_history)
-            return self.fetch_openai(prompt, chat_history, retries_left - 1)
+            return await self.chat_completions(prompt, chat_history, retries_left - 1)
 
     @staticmethod
     def _build_request_messages(prompt: str, chat_history: Optional[List[dict]]) -> List[dict]:
@@ -62,8 +62,3 @@ class OpenAIAdapter:
             return json.loads(response_content)
         except Exception as e:
             return e.__str__()
-
-
-if __name__ == '__main__':
-    text = 'playlist of songs in english in high tempo, but not very popular songs'
-    OpenAIAdapter().fetch_openai(text)

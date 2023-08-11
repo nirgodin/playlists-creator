@@ -19,7 +19,7 @@ class TracksURIsImageExtractor:
         self._top_tracks_collector = ArtistsTopTracksCollector()
 
     async def extract_tracks_uris(self, image_path: str, language: str = 'eng', country: str = 'US') -> Optional[List[str]]:
-        artists_names = self._extract_artists_names(image_path, language)
+        artists_names = await self._extract_artists_names(image_path, language)
         if not artists_names:
             return
 
@@ -30,12 +30,12 @@ class TracksURIsImageExtractor:
 
         return self._extract_tracks_uris(top_tracks)
 
-    def _extract_artists_names(self, image_path: str, language: str = 'eng') -> Optional[List[str]]:
+    async def _extract_artists_names(self, image_path: str, language: str = 'eng') -> Optional[List[str]]:
         image_text = self._image_text_extractor.extract_text(image_path, language)
         prompt_suffix = f'```\n{image_text}```'
         prompt = build_prompt(PHOTO_ARTISTS_PROMPT_PREFIX, prompt_suffix)
 
-        return self._openai_adapter.fetch_openai(prompt)
+        return await self._openai_adapter.chat_completions(prompt)
 
     @staticmethod
     def _extract_tracks_uris(tracks: List[List[dict]]) -> List[str]:
