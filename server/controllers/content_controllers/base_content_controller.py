@@ -2,23 +2,24 @@ from abc import ABC, abstractmethod
 from tempfile import TemporaryDirectory
 from typing import Optional
 
+from aiohttp import ClientSession
 from flask import request, Request, Response
 
 from server.consts.app_consts import ACCESS_CODE, PLAYLIST_DETAILS
 from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.data.playlist_resources import PlaylistResources
 from server.data.spotify_grant_type import SpotifyGrantType
-from server.logic.openai.dalle_adapter import DallEAdapter
+from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.response_factory import ResponseFactory
 
 
 class BaseContentController(ABC):
-    def __init__(self):
+    def __init__(self, session: ClientSession):
         self._playlists_creator = PlaylistsCreator()
         self._playlist_cover_photo_creator = PlaylistCoverPhotoCreator()
-        self._dalle_adapter = DallEAdapter()
+        self._openai_client = OpenAIClient(session)
 
     async def post(self) -> Response:
         request_body = self._get_request_body(request)

@@ -25,8 +25,8 @@ DataClass = TypeVar('DataClass')
 
 class PromptController(BaseContentController):
     def __init__(self, session: ClientSession):
-        super().__init__()
-        self._openai_adapter = OpenAIAdapter(session)
+        super().__init__(session)
+        self._openai_adapter = OpenAIAdapter(self._openai_client)
         self._data_filterer = DataFilterer()
         self._columns_details_creator = ColumnsDetailsCreator()
         self._tracks_collector = SpotifyTracksCollector()
@@ -52,7 +52,7 @@ class PromptController(BaseContentController):
         user_text = self._extract_prompt_from_request_body(request_body)
         playlist_cover_prompt = f'{user_text}, digital art'
 
-        return self._dalle_adapter.create_image(playlist_cover_prompt, image_path)
+        return self._openai_client.create_image(playlist_cover_prompt, image_path)
 
     async def _generate_uris_from_query_conditions(self, user_text: str) -> Optional[List[str]]:
         prompt = self._build_query_conditions_prompt(user_text)

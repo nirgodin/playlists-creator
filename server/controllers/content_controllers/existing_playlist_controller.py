@@ -1,5 +1,6 @@
 from typing import Optional
 
+from aiohttp import ClientSession
 from flask import Request
 
 from server.consts.app_consts import PLAYLIST_DETAILS, EXISTING_PLAYLIST
@@ -9,8 +10,8 @@ from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 
 
 class ExistingPlaylistController(BaseContentController):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, session: ClientSession):
+        super().__init__(session)
         self._playlist_imitator = PlaylistImitator()
 
     def _get_request_body(self, client_request: Request) -> dict:
@@ -21,4 +22,4 @@ class ExistingPlaylistController(BaseContentController):
         return await self._playlist_imitator.imitate_playlist(existing_playlist_url, dir_path)
 
     def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
-        return self._dalle_adapter.variate_image(image_path, image_path)
+        return self._openai_client.variate_image(image_path, image_path)

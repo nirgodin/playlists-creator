@@ -66,6 +66,3 @@ EXCLUDED_COLUMNS = [
 ]
 IN_OPERATOR = 'in'
 NUMERIC_OPERATORS = '<= or >='
-DATA = 'data'
-URL = 'url'
-CREATED = 'created'

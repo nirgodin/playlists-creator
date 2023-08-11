@@ -14,10 +14,10 @@ app = Flask(__name__, static_folder='client/build', static_url_path='')
 CORS(app)
 session = ClientSession()
 request_body_controller = RequestBodyController()
-configuration_controller = ConfigurationController()
+configuration_controller = ConfigurationController(session)
 prompt_controller = PromptController(session)
 photo_controller = PhotoController(session)
-existing_playlist_controller = ExistingPlaylistController()
+existing_playlist_controller = ExistingPlaylistController(session)
 
 
 @app.route('/')

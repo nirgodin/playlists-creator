@@ -8,8 +8,8 @@ from server.logic.openai.openai_client import OpenAIClient
 
 
 class OpenAIAdapter:
-    def __init__(self, session: ClientSession):
-        self._openai_client = OpenAIClient(session)
+    def __init__(self, openai_client: OpenAIClient):
+        self._openai_client = openai_client
 
     async def chat_completions(self,
                                prompt: str,

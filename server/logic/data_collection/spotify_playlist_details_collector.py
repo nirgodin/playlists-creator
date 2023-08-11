@@ -4,7 +4,8 @@ from aiohttp import ClientSession
 
 from server.consts.api_consts import PLAYLIST_URL_FORMAT, ID, AUDIO_FEATURES_URL_FORMAT, \
     ARTIST_URL_FORMAT, MAX_TRACKS_NUMBER_PER_REQUEST
-from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES, COVER_IMAGE_URL, URL
+from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES, COVER_IMAGE_URL
+from server.consts.openai_consts import URL
 from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.utils.general_utils import build_spotify_client_credentials_headers, sample_list

@@ -1,5 +1,6 @@
 from typing import Optional
 
+from aiohttp import ClientSession
 from flask import Request
 
 from server.consts.app_consts import FILTER_PARAMS
@@ -12,8 +13,8 @@ from server.utils.image_utils import current_timestamp_image_path
 
 
 class ConfigurationController(BaseContentController):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, session: ClientSession):
+        super().__init__(session)
         self._data_filterer = DataFilterer()
         self._parameters_transformer = ParametersTransformer()
         self._photo_prompt_creator = ConfigurationPhotoPromptCreator()
@@ -34,4 +35,4 @@ class ConfigurationController(BaseContentController):
         filter_params = request_body[FILTER_PARAMS]
         playlist_cover_prompt = self._photo_prompt_creator.create_prompt(filter_params)
 
-        return self._dalle_adapter.create_image(playlist_cover_prompt, image_path)
+        return self._openai_client.create_image(playlist_cover_prompt, image_path)
