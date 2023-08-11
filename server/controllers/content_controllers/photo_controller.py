@@ -1,6 +1,7 @@
 import json
 from typing import Optional
 
+from aiohttp import ClientSession
 from flask import Request
 from werkzeug.datastructures import FileStorage
 
@@ -14,9 +15,9 @@ from server.utils.image_utils import current_timestamp_image_path
 
 
 class PhotoController(BaseContentController):
-    def __init__(self):
+    def __init__(self, session: ClientSession):
         super().__init__()
-        self._tracks_uris_extractor = TracksURIsImageExtractor()
+        self._tracks_uris_extractor = TracksURIsImageExtractor(session)
 
     def _get_request_body(self, client_request: Request) -> dict:
         body = client_request.files[REQUEST_BODY]

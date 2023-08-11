@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 from dataclasses_json import dataclass_json, LetterCase
 
-from server.consts.openai_consts import IN_OPERATOR
+from server.consts.data_consts import IN_OPERATOR
 from server.utils.general_utils import string_to_boolean
 from server.consts.general_consts import BOOL_VALUES
 

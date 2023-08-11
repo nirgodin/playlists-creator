@@ -1,7 +1,7 @@
 from dataclasses_json.stringcase import camelcase
 
 from server.consts.app_consts import OPERATOR, VALUE, INCLUDE_NAN, GREATER_THAN_OPERATOR, LESS_THAN_OPERATOR
-from server.consts.openai_consts import IN_OPERATOR
+from server.consts.data_consts import IN_OPERATOR
 from server.logic.openai.column_details import ColumnDetails
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
 from server.utils.data_utils import load_data

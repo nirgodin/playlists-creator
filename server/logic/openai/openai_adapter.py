@@ -1,31 +1,25 @@
 import json
-import os
 from typing import List, Union, Optional
 
-import openai
+from aiohttp import ClientSession
 
-from server.consts.env_consts import OPENAI_API_KEY
-from server.consts.openai_consts import SERIALIZATION_ERROR_PROMPT_FORMAT
+from server.consts.prompt_consts import SERIALIZATION_ERROR_PROMPT_FORMAT
+from server.logic.openai.openai_client import OpenAIClient
 
 
 class OpenAIAdapter:
-    def __init__(self):
-        openai.api_key = os.environ[OPENAI_API_KEY]
-        self._openai_model = openai.ChatCompletion()
+    def __init__(self, session: ClientSession):
+        self._openai_client = OpenAIClient(session)
 
     async def chat_completions(self,
-                         prompt: str,
-                         chat_history: Optional[List[dict]] = None,
-                         retries_left: int = 3) -> Optional[Union[list, dict]]:
+                               prompt: str,
+                               chat_history: Optional[List[dict]] = None,
+                               retries_left: int = 3) -> Optional[Union[list, dict]]:
         if retries_left == 0:
             return
 
         chat_history = self._build_request_messages(prompt, chat_history)
-        response = self._openai_model.create(
-            model="gpt-3.5-turbo",
-            messages=chat_history
-        )
-        response_content = response.choices[0].message.content
+        response_content = await self._openai_client.chat_completions(chat_history)
         serialized_response = self._serialize_response(response_content)
 
         if not isinstance(serialized_response, str):

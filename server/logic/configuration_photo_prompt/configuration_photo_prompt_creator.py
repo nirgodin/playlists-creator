@@ -1,7 +1,7 @@
 from typing import Union, Dict, List, Optional
 
 from server.consts.app_consts import VALUE, GREATER_THAN_OPERATOR, LESS_THAN_OPERATOR
-from server.consts.openai_consts import IN_OPERATOR
+from server.consts.data_consts import IN_OPERATOR
 from server.data.z_score_description import ZScoreDescription
 from server.logic.configuration_photo_prompt.prompt_component import PromptComponent
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator

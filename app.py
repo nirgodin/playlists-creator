@@ -1,5 +1,6 @@
 import os
 
+from aiohttp import ClientSession
 from flask import Flask, send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_restful import Api
@@ -17,10 +18,11 @@ app = Flask(__name__, static_folder='client/build', static_url_path='')
 app.secret_key = os.environ[SPOTIPY_CLIENT_SECRET]
 CORS(app)
 api = Api(app, decorators=[cross_origin()])
+session = ClientSession()
 request_body_controller = RequestBodyController()
 configuration_controller = ConfigurationController()
-prompt_controller = PromptController()
-photo_controller = PhotoController()
+prompt_controller = PromptController(session)
+photo_controller = PhotoController(session)
 existing_playlist_controller = ExistingPlaylistController()
 
 

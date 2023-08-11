@@ -1,12 +1,13 @@
 from typing import List, Optional
 from typing import TypeVar
 
+from aiohttp import ClientSession
 from flask import Request
 
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import PLAYLIST_DETAILS, PROMPT
 from server.consts.data_consts import URI
-from server.consts.openai_consts import QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT, QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT, \
+from server.consts.prompt_consts import QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT, QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT, \
     TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
@@ -23,9 +24,9 @@ DataClass = TypeVar('DataClass')
 
 
 class PromptController(BaseContentController):
-    def __init__(self):
+    def __init__(self, session: ClientSession):
         super().__init__()
-        self._openai_adapter = OpenAIAdapter()
+        self._openai_adapter = OpenAIAdapter(session)
         self._data_filterer = DataFilterer()
         self._columns_details_creator = ColumnsDetailsCreator()
         self._tracks_collector = SpotifyTracksCollector()

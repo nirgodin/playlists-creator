@@ -1,7 +1,9 @@
 from typing import Optional, List
 
+from aiohttp import ClientSession
+
 from server.consts.api_consts import ID
-from server.consts.openai_consts import PHOTO_ARTISTS_PROMPT_PREFIX
+from server.consts.prompt_consts import PHOTO_ARTISTS_PROMPT_PREFIX
 from server.logic.ocr.artists_collector import ArtistsCollector
 from server.logic.ocr.artists_filterer import ArtistsFilterer
 from server.logic.ocr.artists_top_tracks_collector import ArtistsTopTracksCollector
@@ -11,9 +13,9 @@ from server.utils.general_utils import build_prompt
 
 
 class TracksURIsImageExtractor:
-    def __init__(self):
+    def __init__(self, session: ClientSession):
         self._image_text_extractor = ImageTextExtractor()
-        self._openai_adapter = OpenAIAdapter()
+        self._openai_adapter = OpenAIAdapter(session)
         self._artists_collector = ArtistsCollector()
         self._artists_filterer = ArtistsFilterer()
         self._top_tracks_collector = ArtistsTopTracksCollector()

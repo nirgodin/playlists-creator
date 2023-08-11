@@ -4,7 +4,7 @@ from typing import Optional
 
 import openai
 
-from server.consts.openai_consts import DATA, URL, CREATED
+from server.consts.data_consts import DATA, URL, CREATED
 from server.consts.env_consts import OPENAI_API_KEY
 from server.utils.image_utils import save_image_from_url
 

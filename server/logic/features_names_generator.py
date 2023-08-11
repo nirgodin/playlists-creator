@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 from server.consts.app_consts import MIN_MAX_VALUES, POSSIBLE_VALUES
-from server.consts.openai_consts import NUMERIC_OPERATORS, IN_OPERATOR
+from server.consts.data_consts import IN_OPERATOR, NUMERIC_OPERATORS
 from server.logic.openai.column_details import ColumnDetails
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
 from server.utils.data_utils import load_data
