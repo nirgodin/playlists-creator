@@ -14,5 +14,4 @@ tqdm==4.65.0
 Werkzeug==2.2.3
 asyncio-pool==0.6.0
 google-api-python-client==2.87.0
-nltk==3.8.1
 scikit-learn==1.2.2
