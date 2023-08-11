@@ -21,7 +21,7 @@ class RequestBodyController(Resource):
         self._features_names_generator = FeaturesNamesGenerator()
         self._features_descriptions_manager = FeaturesDescriptionsManager()
 
-    def get(self) -> Response:
+    async def get(self) -> Response:
         features_names = self._features_names_generator.generate_features_names()
         body = {
             FILTER_PARAMS: self._default_filter_params_generator.get_filter_params_defaults(),

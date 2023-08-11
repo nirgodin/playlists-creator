@@ -17,6 +17,11 @@ app = Flask(__name__, static_folder='client/build', static_url_path='')
 app.secret_key = os.environ[SPOTIPY_CLIENT_SECRET]
 CORS(app)
 api = Api(app, decorators=[cross_origin()])
+request_body_controller = RequestBodyController()
+configuration_controller = ConfigurationController()
+prompt_controller = PromptController()
+photo_controller = PhotoController()
+existing_playlist_controller = ExistingPlaylistController()
 
 
 @app.route('/')
@@ -25,11 +30,30 @@ def serve():
     return send_from_directory(app.static_folder, 'index.html')
 
 
-api.add_resource(ConfigurationController, '/api/configuration')
-api.add_resource(PromptController, '/api/prompt')
-api.add_resource(PhotoController, '/api/photo')
-api.add_resource(RequestBodyController, '/api/requestBody')
-api.add_resource(ExistingPlaylistController, '/api/existingPlaylist')
+@app.route('/api/requestBody', methods=['GET'])
+async def request_body():
+    body = await request_body_controller.get()
+    return body
+
+
+@app.route('/api/configuration', methods=['POST'])
+async def configuration():
+    return await configuration_controller.post()
+
+
+@app.route('/api/prompt', methods=['POST'])
+async def prompt():
+    return await prompt_controller.post()
+
+
+@app.route('/api/photo', methods=['POST'])
+async def photo():
+    return await photo_controller.post()
+
+
+@app.route('/api/existingPlaylist', methods=['POST'])
+async def existing_playlist():
+    return await existing_playlist_controller.post()
 
 
 if __name__ == '__main__':

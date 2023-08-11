@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from flask import Request
 
@@ -7,7 +7,6 @@ from server.controllers.content_controllers.base_content_controller import BaseC
 from server.data.playlist_resources import PlaylistResources
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
 from server.logic.data_filterer import DataFilterer
-from server.logic.openai.dalle_adapter import DallEAdapter
 from server.logic.parameters_transformer import ParametersTransformer
 from server.utils.image_utils import current_timestamp_image_path
 

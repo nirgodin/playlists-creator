@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from tempfile import TemporaryDirectory
-from typing import Optional, List
+from typing import Optional
 
 from flask import request, Request, Response
-from flask_restful import Resource
 
 from server.consts.app_consts import ACCESS_CODE, PLAYLIST_DETAILS
 from server.data.playlist_creation_config import PlaylistCreationConfig
@@ -15,13 +14,13 @@ from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.response_factory import ResponseFactory
 
 
-class BaseContentController(Resource, ABC):
+class BaseContentController(ABC):
     def __init__(self):
         self._playlists_creator = PlaylistsCreator()
         self._playlist_cover_photo_creator = PlaylistCoverPhotoCreator()
         self._dalle_adapter = DallEAdapter()
 
-    def post(self) -> Response:
+    async def post(self) -> Response:
         request_body = self._get_request_body(request)
 
         with TemporaryDirectory() as dir_path:
