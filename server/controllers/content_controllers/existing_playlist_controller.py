@@ -1,5 +1,4 @@
-import asyncio
-from typing import List, Optional
+from typing import Optional
 
 from flask import Request
 
@@ -17,11 +16,9 @@ class ExistingPlaylistController(BaseContentController):
     def _get_request_body(self, client_request: Request) -> dict:
         return client_request.get_json()
 
-    def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
+    async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         existing_playlist_url = request_body[PLAYLIST_DETAILS][EXISTING_PLAYLIST]
-        future = self._playlist_imitator.imitate_playlist(existing_playlist_url, dir_path)
-
-        return asyncio.run(future)
+        return await self._playlist_imitator.imitate_playlist(existing_playlist_url, dir_path)
 
     def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         return self._dalle_adapter.variate_image(image_path, image_path)

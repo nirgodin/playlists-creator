@@ -1,4 +1,3 @@
-import asyncio
 from typing import Optional, List
 
 from server.consts.api_consts import ID
@@ -47,9 +46,3 @@ class TracksURIsImageExtractor:
                 uris.append(track['uri'])
 
         return uris
-
-
-if __name__ == '__main__':
-    IMAGE_PATH = '/Users/nirgodin/Downloads/coa_2023_4x5_v2.jpg'
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(TracksURIsImageExtractor().extract_tracks_uris(IMAGE_PATH))

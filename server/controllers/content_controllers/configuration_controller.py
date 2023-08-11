@@ -21,7 +21,7 @@ class ConfigurationController(BaseContentController):
     def _get_request_body(self, client_request: Request) -> dict:
         return client_request.get_json()
 
-    def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
+    async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         query_conditions = self._parameters_transformer.transform(request_body)
         tracks_uris = self._data_filterer.filter(query_conditions)
 

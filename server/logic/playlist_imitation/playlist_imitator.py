@@ -1,6 +1,3 @@
-import os.path
-from typing import List, Optional
-
 from pandas import DataFrame
 
 from server.consts.data_consts import SONG, ARTIST_NAME, NAME
@@ -10,7 +7,6 @@ from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_details_pipeline import PlaylistDetailsPipeline
 from server.logic.playlist_imitation.playlist_details_serializer import PlaylistDetailsSerializer
 from server.logic.playlist_imitation.playlist_imitator_tracks_selector import PlaylistImitatorTracksSelector
-from server.utils.datetime_utils import get_current_timestamp
 from server.utils.image_utils import save_image_from_url, current_timestamp_image_path
 
 

@@ -24,10 +24,10 @@ class BaseContentController(ABC):
         request_body = self._get_request_body(request)
 
         with TemporaryDirectory() as dir_path:
-            return self._execute_playlist_creation_process(request_body, dir_path)
+            return await self._execute_playlist_creation_process(request_body, dir_path)
 
-    def _execute_playlist_creation_process(self, request_body: dict, dir_path: str) -> Response:
-        playlist_resources = self._generate_playlist_resources(request_body, dir_path)
+    async def _execute_playlist_creation_process(self, request_body: dict, dir_path: str) -> Response:
+        playlist_resources = await self._generate_playlist_resources(request_body, dir_path)
         if not playlist_resources.uris:
             return ResponseFactory.build_no_content_response()
 
@@ -42,7 +42,7 @@ class BaseContentController(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
+    async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         raise NotImplementedError
 
     @abstractmethod

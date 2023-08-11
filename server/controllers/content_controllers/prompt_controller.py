@@ -1,4 +1,3 @@
-import asyncio
 from typing import List, Optional
 from typing import TypeVar
 
@@ -34,7 +33,7 @@ class PromptController(BaseContentController):
     def _get_request_body(self, client_request: Request) -> dict:
         return client_request.get_json()
 
-    def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
+    async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         user_text = self._extract_prompt_from_request_body(request_body)
         query_conditions_uris = self._generate_uris_from_query_conditions(user_text)
 
@@ -87,7 +86,7 @@ class PromptController(BaseContentController):
         if tracks_details is None:
             return
 
-        tracks = asyncio.run(self._tracks_collector.collect(tracks_details))
+        tracks = await self._tracks_collector.collect(tracks_details)
         return [track[URI] for track in tracks][:MAX_SPOTIFY_PLAYLIST_SIZE]
 
     def _build_uris_prompt(self, user_text: str) -> str:

@@ -1,8 +1,5 @@
-import asyncio
 import json
-import os.path
-from tempfile import TemporaryDirectory
-from typing import List, Optional
+from typing import Optional
 
 from flask import Request
 from werkzeug.datastructures import FileStorage
@@ -29,9 +26,9 @@ class PhotoController(BaseContentController):
 
         return request_body
 
-    def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
+    async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         cover_image_path = self._save_photo(request_body[PHOTO], dir_path)
-        uris = asyncio.run(self._tracks_uris_extractor.extract_tracks_uris(cover_image_path))
+        uris = await self._tracks_uris_extractor.extract_tracks_uris(cover_image_path)
 
         if uris is None:
             return PlaylistResources(None, None)
