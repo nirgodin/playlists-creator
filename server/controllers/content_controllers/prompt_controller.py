@@ -29,7 +29,7 @@ class PromptController(BaseContentController):
         self._openai_adapter = OpenAIAdapter(self._openai_client)
         self._data_filterer = DataFilterer()
         self._columns_details_creator = ColumnsDetailsCreator()
-        self._tracks_collector = SpotifyTracksCollector()
+        self._tracks_collector = SpotifyTracksCollector(session)
 
     def _get_request_body(self, client_request: Request) -> dict:
         return client_request.get_json()

@@ -15,7 +15,7 @@ from server.utils.spotify_utils import extract_tracks_from_response
 
 class PlaylistDetailsCollector:
     def __init__(self, session: ClientSession):
-        self._tracks_collector = SpotifyTracksCollector()
+        self._tracks_collector = SpotifyTracksCollector(session)
         self._session = session
         self._access_token_generator = AccessTokenGenerator(session)
 
