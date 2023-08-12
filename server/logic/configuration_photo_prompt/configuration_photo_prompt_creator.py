@@ -14,11 +14,11 @@ class ConfigurationPhotoPromptCreator:
         self._params_default_values = DefaultFilterParamsGenerator().get_filter_params_defaults()
         self._z_score_calculator = ZScoreCalculator()
 
-    def create_prompt(self, filter_params: dict) -> Optional[str]:
+    def create_prompt(self, filter_params: dict) -> str:
         relevant_params = self._get_relevant_params_values(filter_params)
 
         if not relevant_params:
-            return
+            return 'Cool music related image with high contrast and vivid colors, digital art'
 
         params_components = self._build_prompt_components(relevant_params)
         params_components.append(', digital art')

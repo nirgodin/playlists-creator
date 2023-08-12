@@ -15,7 +15,7 @@ class AccessTokenGenerator:
         self._session = session
 
     @alru_cache
-    async def generate(self, grant_type: SpotifyGrantType, access_code: Optional[str] = None) -> Optional[Dict[str, str]]:
+    async def generate(self, grant_type: SpotifyGrantType, access_code: Optional[str] = None) -> Dict[str, str]:
         encoded_header = self._get_encoded_header()
         headers = {'Authorization': f"Basic {encoded_header}"}
         data = self._build_request_payload(access_code, grant_type)
@@ -23,6 +23,8 @@ class AccessTokenGenerator:
         async with self._session.post(url=TOKEN_REQUEST_URL, headers=headers, data=data) as raw_response:
             if raw_response.status == 200:
                 return await raw_response.json()
+            else:
+                return {}
 
     @staticmethod
     def _get_encoded_header() -> str:
@@ -34,7 +36,7 @@ class AccessTokenGenerator:
         return b64_auth.decode('ascii')
 
     @staticmethod
-    def _build_request_payload(access_code: str, grant_type: SpotifyGrantType) -> Dict[str, str]:
+    def _build_request_payload(access_code: str, grant_type: SpotifyGrantType) -> dict:
         if grant_type == SpotifyGrantType.AUTHORIZATION_CODE:
             return {
                 GRANT_TYPE: grant_type.value,

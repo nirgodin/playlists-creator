@@ -65,7 +65,7 @@ class OpenAIClient:
         created_image_path = os.path.join(original_image_dir_path, file_name)
         await save_image_from_url(self._session, image_url, created_image_path)
 
-        if os.path.exists(image_path):
+        if os.path.exists(created_image_path):
             return created_image_path
 
 

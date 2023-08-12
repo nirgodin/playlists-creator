@@ -3,10 +3,7 @@ from typing import List, Optional, Dict
 
 from dataclasses_json import dataclass_json
 
-from server.consts.api_consts import ACCESS_TOKEN
 from server.data.spotify_grant_type import SpotifyGrantType
-from server.logic.access_token_generator import AccessTokenGenerator
-from server.utils.general_utils import build_spotify_headers
 
 
 @dataclass_json

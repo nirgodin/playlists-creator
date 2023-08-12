@@ -90,5 +90,5 @@ class BaseContentController(ABC):
                     image_path=created_image_path
                 )
 
-        except:
+        except Exception as e:
             print('Failed to create playlist cover')
