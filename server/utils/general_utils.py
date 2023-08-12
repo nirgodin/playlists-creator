@@ -17,8 +17,8 @@ def build_prompt(prompt_prefix: str, prompt_suffix: str) -> str:
     return f'{prompt_prefix}\n{prompt_suffix}'
 
 
-def build_spotify_client_credentials_headers() -> Dict[str, str]:
-    response = AccessTokenGenerator.generate(SpotifyGrantType.CLIENT_CREDENTIALS)
+async def build_spotify_client_credentials_headers(access_token_generator: AccessTokenGenerator) -> Dict[str, str]:
+    response = await access_token_generator.generate(SpotifyGrantType.CLIENT_CREDENTIALS)
     access_token = response[ACCESS_TOKEN]
 
     return build_spotify_headers(access_token)

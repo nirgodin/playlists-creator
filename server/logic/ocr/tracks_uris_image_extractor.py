@@ -9,16 +9,17 @@ from server.logic.ocr.artists_filterer import ArtistsFilterer
 from server.logic.ocr.artists_top_tracks_collector import ArtistsTopTracksCollector
 from server.logic.ocr.image_text_extractor import ImageTextExtractor
 from server.logic.openai.openai_adapter import OpenAIAdapter
+from server.logic.openai.openai_client import OpenAIClient
 from server.utils.general_utils import build_prompt
 
 
 class TracksURIsImageExtractor:
     def __init__(self, session: ClientSession):
         self._image_text_extractor = ImageTextExtractor()
-        self._openai_adapter = OpenAIAdapter(session)
-        self._artists_collector = ArtistsCollector()
+        self._openai_adapter = OpenAIAdapter(OpenAIClient(session))
+        self._artists_collector = ArtistsCollector(session)
         self._artists_filterer = ArtistsFilterer()
-        self._top_tracks_collector = ArtistsTopTracksCollector()
+        self._top_tracks_collector = ArtistsTopTracksCollector(session)
 
     async def extract_tracks_uris(self, image_path: str, language: str = 'eng', country: str = 'US') -> Optional[List[str]]:
         artists_names = await self._extract_artists_names(image_path, language)

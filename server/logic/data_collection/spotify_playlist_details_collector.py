@@ -6,6 +6,7 @@ from server.consts.api_consts import PLAYLIST_URL_FORMAT, ID, AUDIO_FEATURES_URL
     ARTIST_URL_FORMAT, MAX_TRACKS_NUMBER_PER_REQUEST
 from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES, COVER_IMAGE_URL
 from server.consts.openai_consts import URL
+from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.utils.general_utils import build_spotify_client_credentials_headers, sample_list
@@ -13,9 +14,10 @@ from server.utils.spotify_utils import extract_tracks_from_response
 
 
 class PlaylistDetailsCollector:
-    def __init__(self, session: Optional[ClientSession] = None):
+    def __init__(self, session: ClientSession):
         self._tracks_collector = SpotifyTracksCollector()
         self._session = session
+        self._access_token_generator = AccessTokenGenerator(session)
 
     async def collect_playlist(self, playlist_id: str) -> Optional[PlaylistDetails]:
         playlist = await self._collect(url_format=PLAYLIST_URL_FORMAT, spotify_id=playlist_id)
@@ -33,8 +35,9 @@ class PlaylistDetailsCollector:
 
     async def _collect(self, url_format: str, spotify_id: str) -> Union[dict, list]:
         url = url_format.format(spotify_id)
+        headers = await build_spotify_client_credentials_headers(self._access_token_generator)
 
-        async with self._session.get(url) as raw_response:
+        async with self._session.get(url=url, headers=headers) as raw_response:
             if raw_response.ok:
                 return await raw_response.json()
 
@@ -96,12 +99,3 @@ class PlaylistDetailsCollector:
             ARTISTS: self._fetch_tracks_artists,
             AUDIO_FEATURES: self._fetch_audio_features
         }
-
-    async def __aenter__(self) -> "PlaylistDetailsCollector":
-        headers = build_spotify_client_credentials_headers()
-        self._session = await ClientSession(headers=headers).__aenter__()
-
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
-        await self._session.__aexit__(exc_type, exc_val, exc_tb)

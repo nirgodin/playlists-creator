@@ -1,3 +1,5 @@
+from typing import Optional
+
 from aiohttp import ClientSession
 from pandas import DataFrame
 
@@ -14,6 +16,7 @@ from server.utils.image_utils import save_image_from_url, current_timestamp_imag
 class PlaylistImitator:
     def __init__(self, session: ClientSession):
         self._session = session
+        self._playlist_details_collector = PlaylistDetailsCollector(session)
         self._playlist_details_serializer = PlaylistDetailsSerializer()
         self._tracks_selector = PlaylistImitatorTracksSelector()
         self._transformation_pipeline = PlaylistDetailsPipeline(is_training=False)
@@ -32,11 +35,9 @@ class PlaylistImitator:
             cover_image_path=cover_image_path
         )
 
-    async def _extract_raw_playlist_details(self, playlist_url: str) -> PlaylistDetails:
+    async def _extract_raw_playlist_details(self, playlist_url: str) -> Optional[PlaylistDetails]:
         playlist_id = self._extract_playlist_id_from_url(playlist_url)
-
-        async with PlaylistDetailsCollector() as playlist_details_collector:
-            return await playlist_details_collector.collect_playlist(playlist_id)
+        return await self._playlist_details_collector.collect_playlist(playlist_id)
 
     @staticmethod
     def _extract_playlist_id_from_url(playlist_url: str) -> str:
