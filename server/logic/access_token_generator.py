@@ -3,7 +3,7 @@ import os
 from functools import lru_cache
 from typing import Dict, Optional
 
-import requests
+from aiohttp import ClientSession
 
 from server.consts.api_consts import TOKEN_REQUEST_URL, REDIRECT_URI, CODE, GRANT_TYPE, JSON, REFRESH_TOKEN, CLIENT_ID
 from server.consts.env_consts import SPOTIPY_CLIENT_SECRET, SPOTIPY_CLIENT_ID, SPOTIPY_REDIRECT_URI
@@ -11,20 +11,18 @@ from server.data.spotify_grant_type import SpotifyGrantType
 
 
 class AccessTokenGenerator:
-    @staticmethod
+    def __init__(self, session: ClientSession):
+        self._session = session
+
     @lru_cache
-    def generate(grant_type: SpotifyGrantType, access_code: Optional[str] = None) -> Optional[Dict[str, str]]:
+    async def generate(self, grant_type: SpotifyGrantType, access_code: Optional[str] = None) -> Optional[Dict[str, str]]:
         encoded_header = AccessTokenGenerator._get_encoded_header()
         headers = {'Authorization': f"Basic {encoded_header}"}
-        data = AccessTokenGenerator._build_request_payload(access_code, grant_type)
-        response = requests.post(
-            url=TOKEN_REQUEST_URL,
-            headers=headers,
-            data=data
-        )
+        data = self._build_request_payload(access_code, grant_type)
 
-        if response.status_code == 200:
-            return response.json()
+        async with self._session.post(url=TOKEN_REQUEST_URL, headers=headers, data=data) as raw_response:
+            if raw_response.status == 200:
+                return await raw_response.json()
 
     @staticmethod
     def _get_encoded_header() -> str:

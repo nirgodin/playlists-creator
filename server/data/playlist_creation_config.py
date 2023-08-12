@@ -16,18 +16,5 @@ class PlaylistCreationConfig:
     playlist_details: dict
     grant_type: SpotifyGrantType
     uris: List[str]
-
-    def __post_init__(self):
-        self.access_token_generator_response = AccessTokenGenerator.generate(
-            grant_type=self.grant_type,
-            access_code=self.access_code
-        )
-        self.headers = self._build_request_headers()
-
-    def _build_request_headers(self) -> Optional[Dict[str, str]]:
-        bearer_token = self.access_token_generator_response.get(ACCESS_TOKEN)
-
-        if bearer_token is None:
-            return
-
-        return build_spotify_headers(bearer_token)
+    access_token_generator_response: Optional[Dict[str, str]]
+    headers: Optional[Dict[str, str]]

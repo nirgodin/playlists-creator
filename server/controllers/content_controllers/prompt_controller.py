@@ -48,11 +48,11 @@ class PromptController(BaseContentController):
             cover_image_path=current_timestamp_image_path(dir_path)
         )
 
-    def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
+    async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         user_text = self._extract_prompt_from_request_body(request_body)
         playlist_cover_prompt = f'{user_text}, digital art'
 
-        return self._openai_client.create_image(playlist_cover_prompt, image_path)
+        return await self._openai_client.create_image(playlist_cover_prompt, image_path)
 
     async def _generate_uris_from_query_conditions(self, user_text: str) -> Optional[List[str]]:
         prompt = self._build_query_conditions_prompt(user_text)

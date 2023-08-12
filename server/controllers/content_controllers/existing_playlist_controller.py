@@ -12,7 +12,7 @@ from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 class ExistingPlaylistController(BaseContentController):
     def __init__(self, session: ClientSession):
         super().__init__(session)
-        self._playlist_imitator = PlaylistImitator()
+        self._playlist_imitator = PlaylistImitator(session)
 
     def _get_request_body(self, client_request: Request) -> dict:
         return client_request.get_json()
@@ -21,5 +21,5 @@ class ExistingPlaylistController(BaseContentController):
         existing_playlist_url = request_body[PLAYLIST_DETAILS][EXISTING_PLAYLIST]
         return await self._playlist_imitator.imitate_playlist(existing_playlist_url, dir_path)
 
-    def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
-        return self._openai_client.variate_image(image_path, image_path)
+    async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
+        return await self._openai_client.variate_image(image_path, image_path)

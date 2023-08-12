@@ -1,21 +1,21 @@
+import io
 import os
 
-import requests
-import io
 from PIL import Image
+from aiohttp import ClientSession
 
 from server.consts.image_consts import JPG_FILE_SUFFIX, RGB
 from server.utils.datetime_utils import get_current_timestamp
 
 
-def save_image_from_url(image_url: str, output_path: str) -> None:
-    response = requests.get(image_url)
+async def save_image_from_url(session: ClientSession, image_url: str, output_path: str) -> None:
+    async with session.get(image_url) as raw_response:
+        if raw_response.status != 200:
+            print("Failed to download the image.")
+            return
 
-    if response.status_code != 200:
-        print("Failed to download the image.")
-        return
+        image_bytes = await raw_response.read()
 
-    image_bytes = response.content
     file = io.BytesIO(image_bytes)
     image = Image.open(file)
     image.save(output_path)

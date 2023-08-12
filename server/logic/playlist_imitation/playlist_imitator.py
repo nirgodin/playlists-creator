@@ -1,3 +1,4 @@
+from aiohttp import ClientSession
 from pandas import DataFrame
 
 from server.consts.data_consts import SONG, ARTIST_NAME, NAME
@@ -11,7 +12,8 @@ from server.utils.image_utils import save_image_from_url, current_timestamp_imag
 
 
 class PlaylistImitator:
-    def __init__(self):
+    def __init__(self, session: ClientSession):
+        self._session = session
         self._playlist_details_serializer = PlaylistDetailsSerializer()
         self._tracks_selector = PlaylistImitatorTracksSelector()
         self._transformation_pipeline = PlaylistDetailsPipeline(is_training=False)
@@ -23,7 +25,7 @@ class PlaylistImitator:
 
         transformed_playlist_data = self._transform_playlist_data(raw_playlist_details)
         tracks_uris = self._tracks_selector.select_tracks(transformed_playlist_data)
-        cover_image_path = self._save_original_cover_image(dir_path, raw_playlist_details.cover_image_url)
+        cover_image_path = await self._save_original_cover_image(dir_path, raw_playlist_details.cover_image_url)
 
         return PlaylistResources(
             uris=tracks_uris,
@@ -50,9 +52,8 @@ class PlaylistImitator:
 
         return self._transformation_pipeline.transform(serialized_playlist_data)
 
-    @staticmethod
-    def _save_original_cover_image(dir_path: str, cover_image_url: str) -> str:
+    async def _save_original_cover_image(self, dir_path: str, cover_image_url: str) -> str:
         image_path = current_timestamp_image_path(dir_path)
-        save_image_from_url(cover_image_url, image_path)
+        await save_image_from_url(self._session, cover_image_url, image_path)
 
         return image_path
