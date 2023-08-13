@@ -35,7 +35,10 @@ class PlaylistsCreator:
             return await self._create_playlist_wrapper(config, retries_left=retries_left - 1)
 
     async def _create_playlist(self, config: PlaylistCreationConfig) -> str:
-        user_id = await self._fetch_user_id(config.headers)
+        try:
+            user_id = await self._fetch_user_id(config.headers)
+        except Exception as e:
+            print('b')
         url = CREATE_PLAYLIST_URL_FORMAT.format(user_id)
         body = {
             NAME: config.playlist_details[PLAYLIST_NAME],
@@ -44,14 +47,14 @@ class PlaylistsCreator:
         }
 
         async with self._session.post(url=url, json=body, headers=config.headers) as raw_response:
-            raw_response.raise_for_status()
+            # raw_response.raise_for_status()
             response = await raw_response.json()
 
         return response[ID]
 
     async def _fetch_user_id(self, headers: dict) -> str:
         async with self._session.get(url=USER_PROFILE_URL, headers=headers) as raw_response:
-            raw_response.raise_for_status()
+            # raw_response.raise_for_status()
             response = await raw_response.json()
 
         return response[ID]

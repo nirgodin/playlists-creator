@@ -2,6 +2,7 @@ from math import floor, ceil
 from typing import List, Dict
 
 from flask import Response, jsonify
+from starlette.responses import JSONResponse
 
 from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
     IS_PUBLIC, PROMPT, REQUEST_BODY, FEATURES_NAMES, FEATURES_VALUES, MIN_MAX_VALUES, POSSIBLE_VALUES, \
@@ -20,7 +21,7 @@ class RequestBodyController:
         self._features_names_generator = FeaturesNamesGenerator()
         self._features_descriptions_manager = FeaturesDescriptionsManager()
 
-    async def get(self) -> Response:
+    async def get(self) -> JSONResponse:
         features_names = self._features_names_generator.generate_features_names()
         body = {
             FILTER_PARAMS: self._default_filter_params_generator.get_filter_params_defaults(),
@@ -30,11 +31,11 @@ class RequestBodyController:
             FEATURES_VALUES: self._get_features_values(features_names),
             FEATURES_DESCRIPTIONS: self._features_descriptions_manager.get_features_descriptions(),
         }
-        response = {
+        content = {
             REQUEST_BODY: [body]
         }
 
-        return jsonify(response)
+        return JSONResponse(content=content, status_code=200)
 
     @staticmethod
     def _generate_default_playlist_details() -> dict:

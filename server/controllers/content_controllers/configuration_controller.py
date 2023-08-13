@@ -32,6 +32,7 @@ class ConfigurationController(BaseContentController):
         )
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
+        raise
         filter_params = request_body[FILTER_PARAMS]
         playlist_cover_prompt = self._photo_prompt_creator.create_prompt(filter_params)
 
