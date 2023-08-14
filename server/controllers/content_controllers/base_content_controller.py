@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from tempfile import TemporaryDirectory
-from typing import Optional, Dict
+from typing import Optional
 
 from aiohttp import ClientSession
-from flask import request, Request, Response
+from starlette.responses import JSONResponse
 
 from server.consts.api_consts import ACCESS_TOKEN
 from server.consts.app_consts import ACCESS_CODE, PLAYLIST_DETAILS
@@ -19,19 +19,23 @@ from server.utils.general_utils import build_spotify_headers
 
 
 class BaseContentController(ABC):
-    def __init__(self, session: ClientSession):
-        self._playlists_creator = PlaylistsCreator(session)
-        self._playlist_cover_photo_creator = PlaylistCoverPhotoCreator(session)
-        self._openai_client = OpenAIClient(session)
-        self._access_token_generator = AccessTokenGenerator(session)
+    def __init__(self,
+                 playlists_creator: PlaylistsCreator,
+                 playlists_cover_photo_creator: PlaylistCoverPhotoCreator,
+                 openai_client: OpenAIClient,
+                 access_token_generator: AccessTokenGenerator):
+        self._playlists_creator = playlists_creator
+        self._playlist_cover_photo_creator = playlists_cover_photo_creator
+        self._openai_client = openai_client
+        self._access_token_generator = access_token_generator
 
-    async def post(self) -> Response:
+    async def post(self, request) -> JSONResponse:
         request_body = self._get_request_body(request)
 
         with TemporaryDirectory() as dir_path:
             return await self._execute_playlist_creation_process(request_body, dir_path)
 
-    async def _execute_playlist_creation_process(self, request_body: dict, dir_path: str) -> Response:
+    async def _execute_playlist_creation_process(self, request_body: dict, dir_path: str) -> JSONResponse:
         playlist_resources = await self._generate_playlist_resources(request_body, dir_path)
         if not playlist_resources.uris:
             return ResponseFactory.build_no_content_response()
@@ -43,7 +47,7 @@ class BaseContentController(ABC):
         return ResponseFactory.build_success_response(playlist_id)
 
     @abstractmethod
-    def _get_request_body(self, client_request: Request) -> dict:
+    def _get_request_body(self, request: dict) -> dict:
         raise NotImplementedError
 
     @abstractmethod

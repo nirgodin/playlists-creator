@@ -2,6 +2,7 @@ from typing import Annotated
 
 import uvicorn as uvicorn
 from fastapi import FastAPI, Depends
+from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
 from server.component_factory import get_configuration_controller, get_prompt_controller, get_photo_controller, \
@@ -15,6 +16,17 @@ from server.utils.general_utils import download_database
 
 download_database()
 app = FastAPI()
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get('/api/requestBody')
@@ -23,28 +35,28 @@ async def request_body(request_body_controller: Annotated[RequestBodyController,
 
 
 @app.post('/api/configuration')
-async def configuration(config_controller: Annotated[ConfigurationController, Depends(get_configuration_controller)]):
-    return await config_controller.post()
+async def configuration(request: dict,
+                        config_controller: Annotated[ConfigurationController, Depends(get_configuration_controller)]):
+    return await config_controller.post(request)
 
 
 @app.post('/api/prompt')
-async def prompt(prompt_controller: Annotated[PromptController, Depends(get_prompt_controller)]):
-    return await prompt_controller.post()
+async def prompt(request: dict, prompt_controller: Annotated[PromptController, Depends(get_prompt_controller)]):
+    return await prompt_controller.post(request)
 
 
 @app.post('/api/photo')
-async def photo(photo_controller: Annotated[PhotoController, Depends(get_photo_controller)]):
-    return await photo_controller.post()
+async def photo(request: dict, photo_controller: Annotated[PhotoController, Depends(get_photo_controller)]):
+    return await photo_controller.post(request)
 
 
 @app.post('/api/existingPlaylist')
-async def existing_playlist(existing_playlist_controller: Annotated[ExistingPlaylistController,
-                                                                    Depends(get_existing_playlist_controller)]):
-    return await existing_playlist_controller.post()
+async def existing_playlist(request: dict,
+                            existing_playlist_controller: Annotated[ExistingPlaylistController, Depends(get_existing_playlist_controller)]):
+    return await existing_playlist_controller.post(request)
 
 
 app.mount("/", StaticFiles(directory="client/build", html=True), name="static")
 
-
 if __name__ == '__main__':
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("app:app", host="127.0.0.1", port=5000, reload=True)
