@@ -24,7 +24,7 @@ class ArtistsCollector:
             func = partial(self._get_single_artist, headers, progress_bar)
             results = await pool.map(fn=func, iterable=artists_names)
 
-        return [result for result in results if result is not None]
+        return [result for result in results if isinstance(result, dict)]
 
     async def _get_single_artist(self,
                                  headers: dict,
