@@ -24,9 +24,6 @@ class ConfigurationController(BaseContentController):
         self._parameters_transformer = ParametersTransformer()
         self._photo_prompt_creator = ConfigurationPhotoPromptCreator()
 
-    def _get_request_body(self, request: dict) -> dict:
-        return request
-
     async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         query_conditions = self._parameters_transformer.transform(request_body)
         tracks_uris = self._data_filterer.filter(query_conditions)

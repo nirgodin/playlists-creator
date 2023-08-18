@@ -1,12 +1,14 @@
-from typing import Annotated
+import json
+from typing import Annotated, List, Tuple
 
 import uvicorn as uvicorn
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Form, File, UploadFile
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
 from server.component_factory import get_configuration_controller, get_prompt_controller, get_photo_controller, \
     get_existing_playlist_controller, get_request_body_controller
+from server.consts.app_consts import PHOTO
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.photo_controller import PhotoController
@@ -46,13 +48,19 @@ async def prompt(request: dict, prompt_controller: Annotated[PromptController, D
 
 
 @app.post('/api/photo')
-async def photo(request: dict, photo_controller: Annotated[PhotoController, Depends(get_photo_controller)]):
+async def photos(photo: Annotated[UploadFile, File()],
+                 body: Annotated[str, Form()],
+                 photo_controller: Annotated[PhotoController, Depends(get_photo_controller)]):
+    request = json.loads(body)
+    request[PHOTO] = await photo.read()
+
     return await photo_controller.post(request)
 
 
 @app.post('/api/existingPlaylist')
 async def existing_playlist(request: dict,
-                            existing_playlist_controller: Annotated[ExistingPlaylistController, Depends(get_existing_playlist_controller)]):
+                            existing_playlist_controller: Annotated[
+                                ExistingPlaylistController, Depends(get_existing_playlist_controller)]):
     return await existing_playlist_controller.post(request)
 
 

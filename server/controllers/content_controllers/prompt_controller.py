@@ -37,9 +37,6 @@ class PromptController(BaseContentController):
         self._data_filterer = DataFilterer()
         self._columns_details_creator = ColumnsDetailsCreator()
 
-    def _get_request_body(self, request: dict) -> dict:
-        return request
-
     async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         user_text = self._extract_prompt_from_request_body(request_body)
         query_conditions_uris = await self._generate_uris_from_query_conditions(user_text)

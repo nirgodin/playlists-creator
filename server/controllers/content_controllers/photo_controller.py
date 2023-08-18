@@ -13,7 +13,7 @@ from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.utils.general_utils import sample_list
-from server.utils.image_utils import current_timestamp_image_path
+from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
 
 
 class PhotoController(BaseContentController):
@@ -25,14 +25,6 @@ class PhotoController(BaseContentController):
                  tracks_uris_extractor: TracksURIsImageExtractor):
         super().__init__(playlists_creator, playlists_cover_photo_creator, openai_client, access_token_generator)
         self._tracks_uris_extractor = tracks_uris_extractor
-
-    def _get_request_body(self, request: dict) -> dict:
-        body = request.files[REQUEST_BODY]
-        data = body.read()
-        request_body = json.loads(data)
-        request_body[PHOTO] = request.files[PHOTO]
-
-        return request_body
 
     async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         cover_image_path = self._save_photo(request_body[PHOTO], dir_path)
@@ -51,9 +43,9 @@ class PhotoController(BaseContentController):
         )
 
     @staticmethod
-    def _save_photo(photo: FileStorage, dir_path: str) -> str:
+    def _save_photo(photo: bytes, dir_path: str) -> str:
         image_path = current_timestamp_image_path(dir_path)
-        photo.save(image_path)
+        save_image_from_bytes(photo, image_path)
 
         return image_path
 

@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from tempfile import TemporaryDirectory
 from typing import Optional
 
-from aiohttp import ClientSession
 from starlette.responses import JSONResponse
 
 from server.consts.api_consts import ACCESS_TOKEN
@@ -29,9 +28,7 @@ class BaseContentController(ABC):
         self._openai_client = openai_client
         self._access_token_generator = access_token_generator
 
-    async def post(self, request) -> JSONResponse:
-        request_body = self._get_request_body(request)
-
+    async def post(self, request_body: dict) -> JSONResponse:
         with TemporaryDirectory() as dir_path:
             return await self._execute_playlist_creation_process(request_body, dir_path)
 
@@ -45,10 +42,6 @@ class BaseContentController(ABC):
             return ResponseFactory.build_authentication_failure_response()
 
         return ResponseFactory.build_success_response(playlist_id)
-
-    @abstractmethod
-    def _get_request_body(self, request: dict) -> dict:
-        raise NotImplementedError
 
     @abstractmethod
     async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:

@@ -20,9 +20,6 @@ class ExistingPlaylistController(BaseContentController):
         super().__init__(playlists_creator, playlists_cover_photo_creator, openai_client, access_token_generator)
         self._playlist_imitator = playlists_imitator
 
-    def _get_request_body(self, request: dict) -> dict:
-        return request
-
     async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
         existing_playlist_url = request_body[PLAYLIST_DETAILS][EXISTING_PLAYLIST]
         return await self._playlist_imitator.imitate_playlist(existing_playlist_url, dir_path)

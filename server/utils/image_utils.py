@@ -16,10 +16,14 @@ async def save_image_from_url(session: ClientSession, image_url: str, output_pat
 
         image_bytes = await raw_response.read()
 
-    file = io.BytesIO(image_bytes)
+    save_image_from_bytes(image_bytes, output_path)
+    print("Successfully saved image")
+
+
+def save_image_from_bytes(image: bytes, output_path: str) -> None:
+    file = io.BytesIO(image)
     image = Image.open(file)
     image.save(output_path)
-    print("Successfully saved image")
 
 
 def save_image_as_jpeg(image_path: str) -> str:

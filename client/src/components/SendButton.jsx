@@ -8,7 +8,6 @@ import {
   MESSAGE,
   PHOTO,
   PLAYLIST_LINK,
-  REQUEST_BODY,
 } from "../consts";
 import PropTypes from "prop-types";
 import ClickButton from "./ClickButton";
@@ -34,9 +33,8 @@ function SendButton(props) {
   async function sendPhotoRequest() {
     let bodyFormData = new FormData();
     bodyFormData.append(PHOTO, props.files[0]);
-    const json = JSON.stringify(props.body[0]);
-    const blob = new Blob([json], { type: "application/json" });
-    bodyFormData.append(REQUEST_BODY, blob);
+    const body = JSON.stringify(props.body[0]);
+    bodyFormData.append('body', body);
 
     await axios({
       method: "post",
