@@ -19,7 +19,7 @@ class PlaylistCoverPhotoCreator:
         image = self._encode_image_to_base64(image_path)
 
         async with self._session.put(url=url, data=image, headers=headers) as raw_response:
-            raw_response.raise_for_status()
+            raw_response.raise_for_status()  # TODO: Handle cases where 413 status: response entity is too large
 
     @staticmethod
     def _encode_image_to_base64(image_path: str) -> str:

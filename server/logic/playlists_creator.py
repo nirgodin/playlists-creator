@@ -35,10 +35,7 @@ class PlaylistsCreator:
             return await self._create_playlist_wrapper(config, retries_left=retries_left - 1)
 
     async def _create_playlist(self, config: PlaylistCreationConfig) -> str:
-        try:
-            user_id = await self._fetch_user_id(config.headers)
-        except Exception as e:
-            print('b')
+        user_id = await self._fetch_user_id(config.headers)
         url = CREATE_PLAYLIST_URL_FORMAT.format(user_id)
         body = {
             NAME: config.playlist_details[PLAYLIST_NAME],

@@ -59,8 +59,7 @@ async def photos(photo: Annotated[UploadFile, File()],
 
 @app.post('/api/existingPlaylist')
 async def existing_playlist(request: dict,
-                            existing_playlist_controller: Annotated[
-                                ExistingPlaylistController, Depends(get_existing_playlist_controller)]):
+                            existing_playlist_controller: Annotated[ExistingPlaylistController, Depends(get_existing_playlist_controller)]):
     return await existing_playlist_controller.post(request)
 
 
