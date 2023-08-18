@@ -1,7 +1,6 @@
 from math import floor, ceil
 from typing import List, Dict
 
-from flask import Response, jsonify
 from starlette.responses import JSONResponse
 
 from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
