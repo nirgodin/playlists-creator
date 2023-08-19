@@ -34,10 +34,14 @@ function SendButton(props) {
     let bodyFormData = new FormData();
     bodyFormData.append(PHOTO, props.files[0]);
     const body = JSON.stringify(props.body[0]);
-    bodyFormData.append('body', body);
+    bodyFormData.append("body", body);
 
     await axios({
       method: "post",
+      auth: {
+        username: process.env.REACT_APP_USERNAME,
+        password: process.env.REACT_APP_PASSWORD,
+      },
       url: url,
       data: bodyFormData,
       headers: { "Content-Type": "multipart/form-data" },
@@ -50,7 +54,12 @@ function SendButton(props) {
 
   async function sendPlaylistConfigurationRequest() {
     await axios
-      .post(url, props.body[0])
+      .post(url, props.body[0], {
+        auth: {
+          username: process.env.REACT_APP_USERNAME,
+          password: process.env.REACT_APP_PASSWORD,
+        },
+      })
       .then((resp) => JSON.stringify(resp.data))
       .then((data) => JSON.parse(data))
       .then((jsonfiedData) => handleResponse(jsonfiedData))
@@ -95,7 +104,7 @@ function SendButton(props) {
     } else {
       props.setWasRequestSent(true);
       setIsClicked(true);
-      sendPlaylistCreationRequest();  
+      sendPlaylistCreationRequest();
     }
   }
 

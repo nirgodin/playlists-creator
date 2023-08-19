@@ -1,6 +1,10 @@
+import os
+from functools import lru_cache
+
 from aiohttp import ClientSession
 from async_lru import alru_cache
 
+from server.consts.env_consts import USERNAME, PASSWORD
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.photo_controller import PhotoController
@@ -13,6 +17,7 @@ from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
+from server.tools.authenticator import Authenticator
 
 
 @alru_cache(maxsize=1)
@@ -125,4 +130,12 @@ async def get_existing_playlist_controller() -> ExistingPlaylistController:
         openai_client=openai_client,
         access_token_generator=access_token_generator,
         playlists_imitator=playlists_imitator
+    )
+
+
+@lru_cache(maxsize=1)
+def get_authenticator() -> Authenticator:
+    return Authenticator(
+        username=os.environ[USERNAME],
+        password=os.environ[PASSWORD]
     )
