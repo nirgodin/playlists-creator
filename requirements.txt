@@ -1,7 +1,6 @@
 aiohttp==3.8.4
 dataclasses-json==0.5.7
 pandas==1.5.3
-openai==0.27.5
 gunicorn==20.1.0
 numpy==1.24.3
 opencv-python==4.7.0.72
@@ -14,3 +13,4 @@ scikit-learn==1.2.2
 fastapi==0.101.0
 starlette==0.27.0
 python-multipart==0.0.6
+uvicorn==0.20.0

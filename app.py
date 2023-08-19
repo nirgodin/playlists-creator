@@ -1,5 +1,5 @@
 import json
-from typing import Annotated, List, Tuple
+from typing import Annotated
 
 import uvicorn as uvicorn
 from fastapi import FastAPI, Depends, Form, File, UploadFile
