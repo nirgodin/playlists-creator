@@ -4,8 +4,8 @@ from functools import reduce
 from typing import List, Dict, Optional
 
 from server.consts.api_consts import ACCESS_TOKEN
-from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID
-from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH
+from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID, TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID
+from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH, TRACK_NAMES_EMBEDDINGS_PATH
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.configuration_photo_prompt.z_scores_metadata_creator import ZScoresMetadataCreator
@@ -43,13 +43,20 @@ def string_to_boolean(s: str) -> bool:
 
 
 def download_database() -> None:
-    if os.path.exists(DATA_PATH):
-        return
+    drive_adapter = GoogleDriveAdapter()
 
-    GoogleDriveAdapter().download_all_dir_files(
-        folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
-        local_dir=RESOURCES_DIR_PATH
-    )
+    if not os.path.exists(DATA_PATH):
+        drive_adapter.download_all_dir_files(
+            folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
+            local_dir=RESOURCES_DIR_PATH
+        )
+
+    if not os.path.exists(TRACK_NAMES_EMBEDDINGS_PATH):
+        drive_adapter.download_all_dir_files(
+            folder_id=os.environ[TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID],
+            local_dir=RESOURCES_DIR_PATH
+        )
+
     ZScoresMetadataCreator().create()
     PlaylistImitatorDatabaseCreator().create()
 

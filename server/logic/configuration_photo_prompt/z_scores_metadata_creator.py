@@ -1,4 +1,5 @@
 import json
+import os.path
 from typing import Dict
 
 from pandas import DataFrame
@@ -11,6 +12,9 @@ from server.utils.data_utils import load_data
 
 class ZScoresMetadataCreator:
     def create(self) -> None:
+        if os.path.exists(COLUMNS_Z_SCORES_METADATA_PATH):
+            return
+
         data = load_data()
         columns_metadata = self._get_relevant_columns_metadata(data)
 

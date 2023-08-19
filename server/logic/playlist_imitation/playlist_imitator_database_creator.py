@@ -1,3 +1,5 @@
+import os.path
+
 from pandas import DataFrame
 
 from server.consts.audio_features_consts import NUMERIC_AUDIO_FEATURES, NON_MULTIPLIED_AUDIO_FEATURES
@@ -11,6 +13,9 @@ class PlaylistImitatorDatabaseCreator:
         self._playlist_details_pipeline = PlaylistDetailsPipeline(is_training=True)
 
     def create(self) -> None:
+        if os.path.exists(PLAYLIST_IMITATOR_DATABASE_PATH):
+            return
+
         data = load_data().copy(deep=True)
         normalized_audio_features_data = self._normalize_audio_features(data)
         transformed_data = self._playlist_details_pipeline.transform(normalized_audio_features_data)
