@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 import pandas as pd
 from numpy import ndarray
-from pandas import DataFrame, Series
+from pandas import DataFrame
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 
