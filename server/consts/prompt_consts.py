@@ -7,14 +7,13 @@ tempo, language, key, etc. The value of this entry should be an array of diction
 2. `textual_parameters` - presents a short summary of any non-musical element included in the free text. The value of \
 this entry should should consist of one simple string.
 
-Let's look at each of them separately, starting with the musical_parameters.
 The `musical_parameters` value should be an array of dictionaries, each comprised by the following fields: \
-`column`, `opearator`, `value`. There are three operators that can be used: `<=` (less than or equal to), `>=` \
+`column`, `operator`, `value`. There are three operators that can be used: `<=` (less than or equal to), `>=` \
 (greater than or equal to) and `in` (included). You should not use any other operator!
 
 For example:
-the following text "I want a playlist of songs that are not very popular" should result in the following JSON string, \
-denoted in triple brackets:
+the following text "I want a playlist of songs that are not very popular about the USA" should result in the following \
+JSON string, denoted in triple brackets:
 ```
 {{
     "musical_parameters": [
@@ -24,13 +23,15 @@ denoted in triple brackets:
             "value": 70
         }}
     ],
-    "textual_parameters": null
+    "textual_parameters": "USA"
 }}
 ``` 
-Pay attention: because no textual parameter is mentioned in the request, you should set the value of the \
-`textual_parameters` field as `null`.
-In case the text also requests "Please do not include songs that are very unpopular", you should add to the following \
-dictionary to the `musical_parameters` values array, ending with a response like this: 
+Pay attention: The musical parameters (popularity) were included in the `musical_parameters` entry, where as the \
+textual parameters (USA) are in the `textual_parameters` entry. No textual parameters should be included in the \
+`musical_parameters` entry!
+
+In case the text also requests "I want a playlist of songs that are not very popular, but please do not include songs \
+that are very unpopular", your response should look like this: 
 ```
 {{
     "musical_parameters": [
@@ -48,11 +49,13 @@ dictionary to the `musical_parameters` values array, ending with a response like
     "textual_parameters": null
 }}
 ```
-Here again: no textual parameter is mentioned in the request, so the value of the `textual_parameters` field is `null`.
+Pay attention: here the request to focus on USA related songs was omitted, thus no textual parameter was request. \
+Because no textual parameter is mentioned in the request, you should set the value of the `textual_parameters` field \
+as `null`.
 
-Moving on to the `textual_parameters` section. Imagine the text was changed to also include a request to focus on songs about big \
-cities. Now, it should look something like this: "songs about big cities that are not very popular nor unpopular". \
-This request does not regard the musical elements of the playlist but to it's textual ones, meaning it \
+Moving on to the `textual_parameters` section. Imagine the text was changed to also include a request to focus on \
+songs about big cities. Now, it should look something like this: "songs about big cities that are not very popular \
+nor unpopular". This request does not regard the musical elements of the playlist but to it's textual ones, meaning it \
 should fall under the `textual_parameters` value. Meaning the expected response is now:
 ```
 {{
@@ -102,31 +105,16 @@ The possible column names for the JSON array are:
 """
 
 QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT = """\
-Include in the `musical_parameters` value array only relevant column names. For example, if you are asked for "a \
-playlist of instrumental songs", your response should include an array with only one dictionary:
-```
-{{
-    "musical_parameters": [
-        {{
-            "column": "instrumentalness",
-            "operator": ">=",
-            "value": 80
-        }}
-    ],
-    "textual_parameters": null
-}}
-```
-Include in the `textual_parameters` value string any non-musical information, but make sure to summarize it to the \
-shortest text possible.
-IMPORTANT, please notice:
-1. Your response should include the JSON dictionary and ONLY it. It should be serializable by a single Python \
-`json.loads` command.
-2. The columns names, operators and values in the `musical_parameters` array should be derived ONLY by the list of \
-columns names mentioned above. Please rethink before including any column in this array, and do not include it in case \
-it does not appear on this list.  
-3. No `textual_parameters` field should appear in the `musical_parameters` values array, and no `musical_parameters \
-should be included in the `textual_parameters` string value. They should remain COMPLETELY SEPARATED, and the \
-`textual_parameters` string include no reference for the values that appear on the `musical_parameters` array.
+Before returning the response, take time to think step by step how to generate the correct result. In this process, \
+you should follow these steps:
+1. Figure out what musical parameters are requested, and organize them to one array with the characteristics mentioned \
+above. Remember! The columns names, operators and values in the `musical_parameters` array should be derived ONLY by \
+the list of columns names mentioned above, and SHOULD NOT include textual column names. Please rethink before \
+including any column in this array, and do not include it in case it does not appear on this list.
+2. Figure out what textual parameters are requested, and summarize them to a short string. This string will be stored \
+under the `musical_parameters` entry, which SHOULD NOT include any musical information.
+3. Formalize these result to a single JSON dictionary. Your response should include this JSON and ONLY it. It should \
+be serializable by a single Python `json.loads` command.
 
 Please generate a JSON configuration based on the following text:
 {user_text}\

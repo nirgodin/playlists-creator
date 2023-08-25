@@ -12,10 +12,12 @@ from server.controllers.content_controllers.prompt_controller import PromptContr
 from server.controllers.request_body_controller import RequestBodyController
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
+from server.logic.openai.embeddings_tracks_selector import EmbeddingsTracksSelector
 from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
+from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.tools.authenticator import Authenticator
 
@@ -62,6 +64,18 @@ async def get_tracks_collector() -> SpotifyTracksCollector:
 
 
 @alru_cache(maxsize=1)
+async def get_embeddings_tracks_selector() -> EmbeddingsTracksSelector:
+    openai_client = await get_openai_client()
+    return EmbeddingsTracksSelector(openai_client)
+
+
+@alru_cache(maxsize=1)
+async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
+    embeddings_tracks_selector = await get_embeddings_tracks_selector()
+    return PromptDetailsTracksSelector(embeddings_tracks_selector)
+
+
+@alru_cache(maxsize=1)
 async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
     session = await get_session()
     return TracksURIsImageExtractor(session)
@@ -91,13 +105,15 @@ async def get_prompt_controller() -> PromptController:
     openai_client = await get_openai_client()
     access_token_generator = await get_access_token_generator()
     tracks_collector = await get_tracks_collector()
+    prompt_details_tracks_selector = await get_prompt_details_tracks_selector()
 
     return PromptController(
         playlists_creator=playlists_creator,
         playlists_cover_photo_creator=playlists_cover_photo_creator,
         openai_client=openai_client,
         access_token_generator=access_token_generator,
-        tracks_collector=tracks_collector
+        tracks_collector=tracks_collector,
+        prompt_details_tracks_selector=prompt_details_tracks_selector
     )
 
 
