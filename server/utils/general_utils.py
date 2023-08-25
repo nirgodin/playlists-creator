@@ -1,11 +1,12 @@
 import os.path
 import random
 from functools import reduce
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union, Type
 
 from server.consts.api_consts import ACCESS_TOKEN
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID, TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID
 from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH, TRACK_NAMES_EMBEDDINGS_PATH
+from server.consts.typing_consts import DataClass
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.configuration_photo_prompt.z_scores_metadata_creator import ZScoresMetadataCreator
@@ -63,3 +64,13 @@ def download_database() -> None:
 
 def chain_dicts(dicts: List[dict]) -> dict:
     return reduce(lambda dict1, dict2: {**dict1, **dict2}, dicts)
+
+
+def to_dataclass(serializable: Union[list, dict], dataclass: Type[DataClass]) -> Union[DataClass, List[DataClass]]:
+    if isinstance(serializable, dict):
+        return dataclass.from_dict(serializable)
+
+    if isinstance(serializable, list):
+        return [dataclass.from_dict(elem) for elem in serializable]
+
+    raise ValueError("Cannot serialize values to dataclass that are neither dict or list")
