@@ -11,6 +11,7 @@ from server.logic.parameters_transformer import ParametersTransformer
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.utils.image_utils import current_timestamp_image_path
+from server.utils.spotify_utils import sample_uris
 
 
 class ConfigurationController(BaseContentController):
@@ -29,7 +30,7 @@ class ConfigurationController(BaseContentController):
         tracks_uris = self._data_filterer.filter(query_conditions)
 
         return PlaylistResources(
-            uris=tracks_uris,
+            uris=sample_uris(tracks_uris),
             cover_image_path=current_timestamp_image_path(dir_path)
         )
 

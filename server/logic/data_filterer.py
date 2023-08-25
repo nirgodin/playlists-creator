@@ -5,7 +5,6 @@ import pandas as pd
 from server.consts.data_consts import URI
 from server.consts.path_consts import DATA_PATH
 from server.data.query_condition import QueryCondition
-from server.utils.spotify_utils import sample_uris
 
 
 class DataFilterer:
@@ -15,9 +14,8 @@ class DataFilterer:
     def filter(self, query_conditions: List[QueryCondition]) -> List[str]:
         query = self._build_query(query_conditions)
         filtered_data = self._data.query(query).reset_index(drop=True)
-        uris = filtered_data[URI].tolist()
 
-        return sample_uris(uris)
+        return filtered_data[URI].tolist()
 
     @staticmethod
     def _build_query(query_conditions: List[QueryCondition]) -> str:
