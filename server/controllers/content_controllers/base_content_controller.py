@@ -13,6 +13,7 @@ from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
+from server.tools.logging import logger
 from server.tools.response_factory import ResponseFactory
 from server.utils.general_utils import build_spotify_headers
 
@@ -29,10 +30,13 @@ class BaseContentController(ABC):
         self._access_token_generator = access_token_generator
 
     async def post(self, request_body: dict) -> JSONResponse:
+        logger.info("Received request", extra={"controller": self.__class__.__name__})
+
         with TemporaryDirectory() as dir_path:
             return await self._execute_playlist_creation_process(request_body, dir_path)
 
     async def _execute_playlist_creation_process(self, request_body: dict, dir_path: str) -> JSONResponse:
+        logger.info("Starting to execute playlists creation process")
         playlist_resources = await self._generate_playlist_resources(request_body, dir_path)
         if not playlist_resources.uris:
             return ResponseFactory.build_no_content_response()
