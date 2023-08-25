@@ -2,14 +2,13 @@ from typing import List
 
 from pandas import DataFrame
 
-from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.data_consts import URI
 from server.logic.playlist_imitation.playlist_imitator_consts import DATABASE_COLUMNS, \
     SIMILARITY_SCORE, NON_NUMERIC_COLUMNS, SIMILARITY_SCORE_THRESHOLD, \
     PLAYLIST_IRRELEVANT_COLUMNS, NUMERIC_RANGE_FILTER_COLUMNS
 from server.logic.playlist_imitation.playlist_imitator_database_filterer import PlaylistImitatorDatabaseFilterer
 from server.logic.similarity_scores_computer import SimilarityScoresComputer
-from server.utils.general_utils import sample_list
+from server.utils.spotify_utils import sample_uris
 
 
 class PlaylistImitatorTracksSelector:
@@ -38,10 +37,7 @@ class PlaylistImitatorTracksSelector:
 
     def _select_tracks_uris(self, filtered_database: DataFrame, existing_uris: List[str]) -> List[str]:
         uris = self._filter_relevant_uris(filtered_database, existing_uris)
-        n_candidates = len(uris)
-        uris_indexes = sample_list(n_candidates, MAX_SPOTIFY_PLAYLIST_SIZE)
-
-        return [uris[i] for i in uris_indexes]
+        return sample_uris(uris)
 
     @staticmethod
     def _filter_relevant_uris(filtered_database: DataFrame, existing_uris: List[str]) -> List[str]:

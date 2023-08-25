@@ -9,8 +9,8 @@ from server.consts.openai_consts import URL
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
-from server.utils.general_utils import build_spotify_client_credentials_headers, sample_list
-from server.utils.spotify_utils import extract_tracks_from_response
+from server.utils.general_utils import build_spotify_client_credentials_headers
+from server.utils.spotify_utils import extract_tracks_from_response, sample_uris
 
 
 class PlaylistDetailsCollector:
@@ -26,8 +26,7 @@ class PlaylistDetailsCollector:
             return
 
         tracks = extract_tracks_from_response(playlist)
-        tracks_sample_indexes = sample_list(len(tracks), MAX_TRACKS_NUMBER_PER_REQUEST)
-        tracks_sample = [tracks[i] for i in tracks_sample_indexes]
+        tracks_sample = sample_uris(tracks, MAX_TRACKS_NUMBER_PER_REQUEST)
         tracks_data = await self._collect_tracks_data(tracks_sample)
         tracks_data[COVER_IMAGE_URL] = self._extract_playlist_image_url(playlist)
 

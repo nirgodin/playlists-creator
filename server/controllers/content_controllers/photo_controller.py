@@ -1,10 +1,6 @@
-import json
 from typing import Optional
 
-from werkzeug.datastructures import FileStorage
-
-from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
-from server.consts.app_consts import REQUEST_BODY, PHOTO
+from server.consts.app_consts import PHOTO
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
 from server.logic.access_token_generator import AccessTokenGenerator
@@ -12,8 +8,8 @@ from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtracto
 from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
-from server.utils.general_utils import sample_list
 from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
+from server.utils.spotify_utils import sample_uris
 
 
 class PhotoController(BaseContentController):
@@ -33,12 +29,8 @@ class PhotoController(BaseContentController):
         if uris is None:
             return PlaylistResources(None, None)
 
-        n_candidates = len(uris)
-        selected_uris_indexes = sample_list(n_candidates, MAX_SPOTIFY_PLAYLIST_SIZE)
-        tracks_uris = [uris[i] for i in selected_uris_indexes]
-
         return PlaylistResources(
-            uris=tracks_uris,
+            uris=sample_uris(uris),
             cover_image_path=cover_image_path
         )
 
