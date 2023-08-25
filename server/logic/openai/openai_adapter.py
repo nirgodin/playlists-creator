@@ -1,10 +1,11 @@
 import json
 from typing import List, Union, Optional
 
-from aiohttp import ClientSession
-
+from server.consts.app_consts import PROMPT
+from server.consts.openai_consts import CONTENT
 from server.consts.prompt_consts import SERIALIZATION_ERROR_PROMPT_FORMAT
 from server.logic.openai.openai_client import OpenAIClient
+from server.tools.logging import logger
 
 
 class OpenAIAdapter:
@@ -16,8 +17,10 @@ class OpenAIAdapter:
                                chat_history: Optional[List[dict]] = None,
                                retries_left: int = 3) -> Optional[Union[list, dict]]:
         if retries_left == 0:
+            logger.info("No retries left from chat_completions request. Returning None instead", extra={PROMPT: prompt})
             return
 
+        logger.info("Received chat_completions request", extra={PROMPT: prompt, "retries_left": retries_left})
         chat_history = self._build_request_messages(prompt, chat_history)
         response_content = await self._openai_client.chat_completions(chat_history)
         serialized_response = self._serialize_response(response_content)
@@ -54,5 +57,7 @@ class OpenAIAdapter:
     def _serialize_response(response_content: str) -> Union[list, dict, str]:
         try:
             return json.loads(response_content)
+
         except Exception as e:
+            logger.exception("Could not serialize OpenAI response to JSON. Retrying", extra={CONTENT: response_content})
             return e.__str__()

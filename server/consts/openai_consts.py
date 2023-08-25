@@ -8,7 +8,6 @@ EMBEDDINGS_URL = f'{BASE_OPENAI_API_URL}/embeddings'
 # Body params
 MODEL = 'model'
 MESSAGES = 'messages'
-GPT_3_5_TURBO = 'gpt-3.5-turbo'
 CHOICES = 'choices'
 CONTENT = 'content'
 IMAGE_SIZE_512 = "512x512"

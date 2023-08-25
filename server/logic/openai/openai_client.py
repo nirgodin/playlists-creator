@@ -1,4 +1,3 @@
-import asyncio
 import os
 from typing import List, Dict, Optional
 
@@ -6,9 +5,10 @@ from aiohttp import ClientSession
 
 from server.consts.app_consts import MESSAGE, PROMPT
 from server.consts.env_consts import OPENAI_API_KEY
-from server.consts.openai_consts import CHAT_COMPLETIONS_URL, MODEL, MESSAGES, GPT_3_5_TURBO, CHOICES, CONTENT, \
+from server.consts.openai_consts import CHAT_COMPLETIONS_URL, MODEL, MESSAGES, CHOICES, CONTENT, \
     IMAGE_SIZE_512, DATA, URL, CREATED, N, SIZE, IMAGES_GENERATION_URL, IMAGE, IMAGES_VARIATIONS_URL, \
     ADA_EMBEDDINGS_MODEL, INPUT, EMBEDDINGS_URL, EMBEDDING
+from server.data.openai.chat_completions_model import ChatCompletionsModel
 from server.tools.logging import logger
 from server.utils.image_utils import save_image_from_url
 
@@ -21,9 +21,11 @@ class OpenAIClient:
             'Authorization': f'Bearer {os.environ[OPENAI_API_KEY]}'
         }
 
-    async def chat_completions(self, messages: List[Dict[str, str]]) -> str:
+    async def chat_completions(self,
+                               messages: List[Dict[str, str]],
+                               model: ChatCompletionsModel = ChatCompletionsModel.GPT_4) -> str:
         body = {
-            MODEL: GPT_3_5_TURBO,
+            MODEL: model.value,
             MESSAGES: messages
         }
 
@@ -93,10 +95,3 @@ class OpenAIClient:
 
         if os.path.exists(created_image_path):
             return created_image_path
-
-
-if __name__ == '__main__':
-    messages = [{'role': 'user', 'content': 'Are you working?'}]
-    client = OpenAIClient(ClientSession())
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(client.chat_completions(messages))
