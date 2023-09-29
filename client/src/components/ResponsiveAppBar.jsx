@@ -7,13 +7,23 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { ReactComponent as Logo } from "../static/logo.svg";
 import PropTypes from "prop-types";
-import { ABOUT, CREATE_PLAYLIST, FEATURED_PLAYLISTS } from "../consts";
+import { ABOUT, CREATE_PLAYLIST, FEATURED_PLAYLISTS, SPOTIFY_LOGOUT_URL } from "../consts";
+import { isLoggedIn } from "../utils/UrlUtils";
 
 const pages = [CREATE_PLAYLIST, FEATURED_PLAYLISTS, ABOUT];
 
 function ResponsiveAppBar(props) {
   function handleClick(e) {
     props.setCurrentPage(e.currentTarget.textContent);
+  }
+
+  function logout() {
+    if (isLoggedIn()) {
+      window.open(SPOTIFY_LOGOUT_URL);
+      window.location = process.env.REACT_APP_SPOTIFY_REDIRECT_URI;
+    } else {
+      props.setCurrentPage(CREATE_PLAYLIST)
+    }
   }
 
   return (
@@ -74,12 +84,28 @@ function ResponsiveAppBar(props) {
                   color: "black",
                   fontSize: 17,
                   fontWeight: 500,
-                  margin: "15px"
+                  margin: "15px",
                 }}
               >
                 {page}
               </Button>
             ))}
+          </Box>
+          <Box>
+            <Button
+              key={"logout"}
+              onClick={logout}
+              sx={{
+                ":hover": { bgcolor: "#b4fabe" },
+                my: 2,
+                color: "black",
+                fontSize: 17,
+                fontWeight: 500,
+                margin: "15px",
+              }}
+            >
+              {"Logout"}
+            </Button>
           </Box>
         </Toolbar>
       </Container>

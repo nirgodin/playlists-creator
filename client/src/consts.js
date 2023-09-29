@@ -15,6 +15,9 @@ const MESSAGE = "message";
 const ACCESS_CODE = "accessCode";
 const REQUEST_BODY = "requestBody";
 
+// Spotify
+const SPOTIFY_LOGOUT_URL = "https://www.spotify.com/logout/";
+
 // Endpoints
 const MIN_MAX_VALUES = "minMaxValues";
 const POSSIBLE_VALUES = "possibleValues";
@@ -428,4 +431,5 @@ export {
   ABOUT,
   LOGIN_PAGE_TEXT,
   ABOUT_PAGE_TEXT,
+  SPOTIFY_LOGOUT_URL,
 };
