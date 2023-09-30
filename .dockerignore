@@ -1,0 +1,17 @@
+Dockerfile
+README.md
+*.pyo
+*.pyd
+__pycache__
+.pytest_cache
+
+# Data
+/server/resources/playlists_creator_database.csv
+/server/resources/z_scores_metadata.json
+/server/resources/playlist_imitator_database.csv
+/server/resources/pipeline.pkl
+/server/resources/track_names_embeddings.csv
+
+# Client
+/client/
+!/build/
