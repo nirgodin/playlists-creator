@@ -14,4 +14,4 @@ __pycache__
 
 # Client
 /client/
-!/build/
+!/client/build/
