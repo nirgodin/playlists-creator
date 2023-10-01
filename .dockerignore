@@ -13,5 +13,5 @@ __pycache__
 /server/resources/track_names_embeddings.csv
 
 # Client
-/client/
-!/client/build/
+/client/node_modules
+/client/build
