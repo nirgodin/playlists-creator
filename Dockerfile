@@ -3,7 +3,7 @@ FROM node:19.5.0-alpine as react-build
 WORKDIR /tmp
 COPY ./client/ /tmp/
 RUN npm ci
-RUN npm run build
+RUN npm run build --mode production
 COPY ./client/ /tmp/
 
 # Stage 2 - Python requirements
@@ -33,5 +33,5 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=requirements-stage /tmp/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-COPY --from=react-build /tmp/build/ /client/build
+COPY --from=react-build /tmp/build/ /app/client/build
 CMD exec gunicorn -k uvicorn.workers.UvicornWorker main:app

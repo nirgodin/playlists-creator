@@ -33,6 +33,7 @@
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+/.DS_Store
 
 # Data
 /server/resources/playlists_creator_database.csv
