@@ -18,11 +18,14 @@ function LoginPage(props) {
       >
         {toTypographies(LOGIN_PAGE_TEXT)}
       </Box>
-      <LoginButton
-        text={"Login to get started"}
-        body={props.body}
-        setBody={props.setBody}
-      ></LoginButton>
+      <div className="login-button">
+        <LoginButton
+          text={"Login to get started"}
+          body={props.body}
+          setBody={props.setBody}
+          fontSize={20}
+        ></LoginButton>
+      </div>
     </div>
   );
 }

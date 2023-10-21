@@ -7,11 +7,13 @@ import cloneJSON from "./utils/JsonUtils";
 import { CREATE_PLAYLIST, REQUEST_BODY } from "./consts";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import AppNavigator from "./navigators/AppNavigator";
+import { isLoggedIn } from "./utils/UrlUtils";
 
 function App() {
   const [body, setBody] = useState([]);
   const [defaultRequestBody, setDefaultRequestBody] = useState([]);
   const [currentPage, setCurrentPage] = useState(CREATE_PLAYLIST);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(isLoggedIn());
 
   async function setRequestBody() {
     const requestBody = await sendGetRequest(REQUEST_BODY, REQUEST_BODY);
@@ -32,6 +34,8 @@ function App() {
       <ResponsiveAppBar
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
+        isUserLoggedIn={isUserLoggedIn}
+        setIsUserLoggedIn={setIsUserLoggedIn}
       ></ResponsiveAppBar>
       <header className="App-header">
         <AppNavigator
@@ -39,6 +43,7 @@ function App() {
           setBody={setBody}
           defaultRequestBody={defaultRequestBody}
           currentPage={currentPage}
+          isUserLoggedIn={isUserLoggedIn}
         ></AppNavigator>
       </header>
     </div>

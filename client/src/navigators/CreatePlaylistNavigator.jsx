@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import LandingPage from "../pages/LandingPage";
 import PostSendPage from "../pages/PostSendPage";
-import { isLoggedIn, extractCode } from "../utils/UrlUtils";
+import { extractCode } from "../utils/UrlUtils";
 import LoginPage from "../pages/LoginPage";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { ACCESS_CODE } from "../consts";
@@ -15,7 +15,7 @@ function CreatePlaylistNavigator(props) {
   const [playlistLink, setPlaylistLink] = useState("");
 
   useEffect(() => {
-    if (isLoggedIn() && props.body[0][ACCESS_CODE] === "") {
+    if (props.isUserLoggedIn && props.body[0][ACCESS_CODE] === "") {
       let newBody = props.body[0];
       const extractedAccessCode = extractCode(window.location.href);
       newBody[ACCESS_CODE] = extractedAccessCode;
@@ -23,7 +23,7 @@ function CreatePlaylistNavigator(props) {
     }
   }, [props]);
 
-  if (!isLoggedIn()) {
+  if (!props.isUserLoggedIn) {
     return (
       <div>
         <LoginPage
@@ -66,6 +66,7 @@ CreatePlaylistNavigator.propTypes = {
   body: PropTypes.array,
   defaultRequestBody: PropTypes.array,
   setBody: PropTypes.func,
+  isUserLoggedIn: PropTypes.bool,
 };
 
 export default CreatePlaylistNavigator;

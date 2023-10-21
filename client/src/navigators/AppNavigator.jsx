@@ -17,6 +17,7 @@ function AppNavigator(props) {
         body={props.body}
         setBody={props.setBody}
         defaultRequestBody={props.defaultRequestBody}
+        isUserLoggedIn={props.isUserLoggedIn}
       ></CreatePlaylistNavigator>
     );
   } else if (props.currentPage === FEATURED_PLAYLISTS) {
@@ -33,6 +34,7 @@ AppNavigator.propTypes = {
   defaultRequestBody: PropTypes.array,
   setBody: PropTypes.func,
   currentPage: PropTypes.string,
+  isUserLoggedIn: PropTypes.bool
 };
 
 export default AppNavigator;

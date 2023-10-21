@@ -7,23 +7,14 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { ReactComponent as Logo } from "../static/logo.svg";
 import PropTypes from "prop-types";
-import { ABOUT, CREATE_PLAYLIST, FEATURED_PLAYLISTS, SPOTIFY_LOGOUT_URL } from "../consts";
-import { isLoggedIn } from "../utils/UrlUtils";
+import { ABOUT, CREATE_PLAYLIST, FEATURED_PLAYLISTS } from "../consts";
+import LoginButton from "./LoginButton";
 
 const pages = [CREATE_PLAYLIST, FEATURED_PLAYLISTS, ABOUT];
 
 function ResponsiveAppBar(props) {
   function handleClick(e) {
     props.setCurrentPage(e.currentTarget.textContent);
-  }
-
-  function logout() {
-    if (isLoggedIn()) {
-      window.open(SPOTIFY_LOGOUT_URL);
-      window.location = process.env.REACT_APP_SPOTIFY_REDIRECT_URI;
-    } else {
-      props.setCurrentPage(CREATE_PLAYLIST)
-    }
   }
 
   return (
@@ -91,21 +82,22 @@ function ResponsiveAppBar(props) {
               </Button>
             ))}
           </Box>
-          <Box>
-            <Button
-              key={"logout"}
-              onClick={logout}
-              sx={{
-                ":hover": { bgcolor: "#b4fabe" },
-                my: 2,
-                color: "black",
-                fontSize: 17,
-                fontWeight: 500,
-                margin: "15px",
-              }}
-            >
-              {"Logout"}
-            </Button>
+          <Box
+            sx={{ paddingRight: "12px" }}
+          >
+            {
+              <LoginButton
+                isUserLoggedIn={props.isUserLoggedIn}
+                text={"Login"}
+                color={"#7cff8f"}
+                backgroundColor={"#14181c"}
+                onHoverColor={"#2c2f33"}
+                iconFontSize={24}
+                fontSize={16}
+                height={"auto"}
+                width={"auto"}
+              ></LoginButton>
+            }
           </Box>
         </Toolbar>
       </Container>
@@ -116,6 +108,8 @@ function ResponsiveAppBar(props) {
 ResponsiveAppBar.propTypes = {
   currentPage: PropTypes.string,
   setCurrentPage: PropTypes.func,
+  isUserLoggedIn: PropTypes.bool,
+  setIsUserLoggedIn: PropTypes.func,
 };
 
 export default ResponsiveAppBar;
