@@ -3,6 +3,7 @@ from functools import lru_cache
 
 from aiohttp import ClientSession
 from async_lru import alru_cache
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from server.consts.env_consts import USERNAME, PASSWORD
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
@@ -155,3 +156,8 @@ def get_authenticator() -> Authenticator:
         username=os.environ[USERNAME],
         password=os.environ[PASSWORD]
     )
+
+
+@lru_cache(maxsize=1)
+def get_database_engine() -> AsyncEngine:  # TODO: Move to postgres-client
+    return create_async_engine(os.environ["DATABASE_URL"])
