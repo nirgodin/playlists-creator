@@ -156,8 +156,3 @@ def get_authenticator() -> Authenticator:
         username=os.environ[USERNAME],
         password=os.environ[PASSWORD]
     )
-
-
-@lru_cache(maxsize=1)
-def get_database_engine() -> AsyncEngine:  # TODO: Move to postgres-client
-    return create_async_engine(os.environ["DATABASE_URL"])
