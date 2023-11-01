@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 from dataclasses_json import dataclass_json, LetterCase
+from sqlalchemy import text, TextClause
 
 from server.consts.data_consts import IN_OPERATOR
 from server.utils.general_utils import string_to_boolean
@@ -19,7 +20,7 @@ class QueryCondition:
     def __post_init__(self):
         self.condition = self._create_condition()
 
-    def _create_condition(self) -> Optional[str]:
+    def _create_condition(self) -> Optional[TextClause]:
         if not self.value:
             return
 
@@ -29,7 +30,7 @@ class QueryCondition:
         if self.include_nan:
             condition += f' | {self.column}.isnull()'
 
-        return condition
+        return text(condition)
 
     def _format_value(self) -> None:
         if not self.operator == IN_OPERATOR:
