@@ -1,8 +1,10 @@
 import os
 from functools import lru_cache
+from ssl import create_default_context
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, TCPConnector, CookieJar
 from async_lru import alru_cache
+from certifi import where
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from server.consts.env_consts import USERNAME, PASSWORD
@@ -10,8 +12,10 @@ from server.controllers.content_controllers.configuration_controller import Conf
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
+from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.controllers.request_body_controller import RequestBodyController
 from server.logic.access_token_generator import AccessTokenGenerator
+from server.logic.data_collection.wrapped_tracks_collector import WrappedTracksCollector
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.openai.embeddings_tracks_selector import EmbeddingsTracksSelector
 from server.logic.openai.openai_client import OpenAIClient
@@ -25,13 +29,25 @@ from server.tools.authenticator import Authenticator
 
 @alru_cache(maxsize=1)
 async def get_session() -> ClientSession:
-    return await ClientSession().__aenter__()
+    ssl_context = create_default_context(cafile=where())
+    session = ClientSession(
+        connector=TCPConnector(ssl=ssl_context),
+        cookie_jar=CookieJar(quote_cookie=False),
+    )
+    return await session.__aenter__()
 
 
 @alru_cache(maxsize=1)
 async def get_playlists_creator() -> PlaylistsCreator:
     session = await get_session()
     return PlaylistsCreator(session)
+
+
+@alru_cache(maxsize=1)
+async def get_wrapped_tracks_collector() -> WrappedTracksCollector:
+    session = await get_session()
+    access_token_generator = await get_access_token_generator()
+    return WrappedTracksCollector(session, access_token_generator)
 
 
 @alru_cache(maxsize=1)
@@ -147,6 +163,22 @@ async def get_existing_playlist_controller() -> ExistingPlaylistController:
         openai_client=openai_client,
         access_token_generator=access_token_generator,
         playlists_imitator=playlists_imitator
+    )
+
+
+async def get_wrapped_controller() -> WrappedController:
+    playlists_creator = await get_playlists_creator()
+    playlists_cover_photo_creator = await get_playlist_cover_photo_creator()
+    openai_client = await get_openai_client()
+    access_token_generator = await get_access_token_generator()
+    wrapped_tracks_collector = await get_wrapped_tracks_collector()
+
+    return WrappedController(
+        playlists_creator=playlists_creator,
+        playlists_cover_photo_creator=playlists_cover_photo_creator,
+        openai_client=openai_client,
+        access_token_generator=access_token_generator,
+        wrapped_tracks_collector=wrapped_tracks_collector
     )
 
 

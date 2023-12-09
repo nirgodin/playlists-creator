@@ -1,4 +1,5 @@
 const PROMPT = "prompt";
+const WRAPPED = "wrapped";
 const EXISTING_PLAYLIST = "existingPlaylist";
 const CONFIGURATION = "configuration";
 const PHOTO = "photo";
@@ -432,4 +433,5 @@ export {
   LOGIN_PAGE_TEXT,
   ABOUT_PAGE_TEXT,
   SPOTIFY_LOGOUT_URL,
+  WRAPPED
 };

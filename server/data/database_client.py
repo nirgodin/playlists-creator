@@ -2,13 +2,8 @@ import asyncio
 from functools import lru_cache
 from typing import List, Tuple
 
-from postgres_client.models.orm.audio_features import AudioFeatures as AudioFeaturesDB
-from postgres_client.models.orm.radio_track import RadioTrack
-from postgres_client.models.orm.spotify_artist import SpotifyArtist
-from postgres_client.models.orm.spotify_track import SpotifyTrack
-from postgres_client.models.orm.track_lyrics import TrackLyrics
-from postgres_client.postgres_operations import execute_query, get_database_engine
-from postgres_client.postgres_utils import get_orm_columns
+from postgres_client import execute_query, get_orm_columns, RadioTrack, SpotifyTrack, AudioFeatures, TrackLyrics, \
+    SpotifyArtist, get_database_engine
 from sqlalchemy import select, Subquery, TextClause
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -49,7 +44,7 @@ class DatabaseClient:
         conditions = self._serialize_conditions(spotify_conditions)
         spotify_subquery = (
             select(SpotifyTrack.id)
-            .where(SpotifyTrack.id == AudioFeaturesDB.id)
+            .where(SpotifyTrack.id == AudioFeatures.id)
             .where(SpotifyTrack.id == TrackLyrics.id)
             .where(SpotifyTrack.artist_id == SpotifyArtist.id)
             .where(*conditions)

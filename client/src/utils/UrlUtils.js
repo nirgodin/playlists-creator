@@ -3,6 +3,7 @@ const SPOTIFY_SCOPES = [
   "playlist-modify-public",
   "playlist-modify-private",
   "user-read-private",
+  "user-top-read",
   "ugc-image-upload",
 ];
 

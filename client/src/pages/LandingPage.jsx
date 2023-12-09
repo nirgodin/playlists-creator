@@ -5,7 +5,7 @@ import FormTextField from ".././components/FormTextField";
 import SendButton from ".././components/SendButton";
 import { useState, useEffect } from "react";
 import RequestBody from ".././components/RequestBody";
-import { PROMPT, CONFIGURATION, PHOTO, EXISTING_PLAYLIST } from "../consts";
+import { PROMPT, CONFIGURATION, PHOTO, EXISTING_PLAYLIST, WRAPPED } from "../consts";
 import PhotoDropzone from "../components/PhotoDropzone";
 import _ from "underscore";
 import PropTypes from "prop-types";
@@ -66,6 +66,10 @@ function LandingPage(props) {
     },
     {
       value: PROMPT,
+      icon: <EditNoteIcon sx={{ paddingRight: "10px" }} />,
+    },
+    {
+      value: WRAPPED,
       icon: <EditNoteIcon sx={{ paddingRight: "10px" }} />,
     },
   ];
@@ -146,7 +150,7 @@ function LandingPage(props) {
         {buttons}
       </div>
     );
-  } else {
+  } else if (alignment === EXISTING_PLAYLIST) {
     return (
       <div>
         {playlistDetails}
@@ -156,6 +160,25 @@ function LandingPage(props) {
             isRequired={true}
             id={"Existing Playlist"}
             label={'Playlist URL'}
+            defaultValue={""}
+            body={props.body}
+            setBody={props.setBody}
+            isValidInput={isValidExistingPlaylist}
+            setIsValidInput={setIsValidExistingPlaylist}
+          ></FormTextField>
+        </div>
+        {buttons}
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        {playlistDetails}
+        {toggleButton}
+        <div className="text-field">
+          <FormTextField
+            isRequired={true}
+            id={"Wrapped"}
             defaultValue={""}
             body={props.body}
             setBody={props.setBody}
