@@ -3,6 +3,8 @@ import random
 from functools import reduce
 from typing import List, Dict, Optional, Union, Type
 
+from genie_common.google import GoogleDriveAdapter
+
 from server.consts.api_consts import ACCESS_TOKEN
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID, TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID
 from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH, TRACK_NAMES_EMBEDDINGS_PATH
@@ -11,7 +13,6 @@ from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.configuration_photo_prompt.z_scores_metadata_creator import ZScoresMetadataCreator
 from server.logic.playlist_imitation.playlist_imitator_database_creator import PlaylistImitatorDatabaseCreator
-from server.tools.google_drive.google_drive_adapter import GoogleDriveAdapter
 
 
 def build_prompt(prompt_prefix: str, prompt_suffix: str) -> str:
@@ -44,7 +45,7 @@ def string_to_boolean(s: str) -> bool:
 
 
 def download_database() -> None:
-    drive_adapter = GoogleDriveAdapter()
+    drive_adapter = GoogleDriveAdapter.create()
 
     if not os.path.exists(DATA_PATH):
         drive_adapter.download_all_dir_files(
