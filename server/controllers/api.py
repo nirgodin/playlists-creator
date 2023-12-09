@@ -14,6 +14,7 @@ from server.controllers.content_controllers.prompt_controller import PromptContr
 from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.controllers.request_body_controller import RequestBodyController
 from server.tools.authenticator import Authenticator
+from server.utils.spotify_utils import build_spotify_client
 
 api_router = APIRouter(prefix='/api')
 security = HTTPBasic()
@@ -33,7 +34,9 @@ async def configuration(request: dict,
                         authenticator: Annotated[Authenticator, Depends(get_authenticator)],
                         config_controller: Annotated[ConfigurationController, Depends(get_configuration_controller)]):
     authenticator.authenticate(credentials)
-    return await config_controller.post(request)
+
+    async with build_spotify_client(request) as client:
+        return await config_controller.post(request_body=request, spotify_client=client)
 
 
 @api_router.post('/prompt')
@@ -42,7 +45,9 @@ async def prompt(request: dict,
                  authenticator: Annotated[Authenticator, Depends(get_authenticator)],
                  prompt_controller: Annotated[PromptController, Depends(get_prompt_controller)]):
     authenticator.authenticate(credentials)
-    return await prompt_controller.post(request)
+
+    async with build_spotify_client(request) as client:
+        return await prompt_controller.post(request_body=request, spotify_client=client)
 
 
 @api_router.post('/photo')
@@ -55,7 +60,8 @@ async def photos(photo: Annotated[UploadFile, File()],
     request = json.loads(body)
     request[PHOTO] = await photo.read()
 
-    return await photo_controller.post(request)
+    async with build_spotify_client(request) as client:
+        return await photo_controller.post(request_body=request, spotify_client=client)
 
 
 @api_router.post('/existingPlaylist')
@@ -64,7 +70,9 @@ async def existing_playlist(request: dict,
                             authenticator: Annotated[Authenticator, Depends(get_authenticator)],
                             existing_playlist_controller: Annotated[ExistingPlaylistController, Depends(get_existing_playlist_controller)]):
     authenticator.authenticate(credentials)
-    return await existing_playlist_controller.post(request)
+
+    async with build_spotify_client(request) as client:
+        return await existing_playlist_controller.post(request_body=request, spotify_client=client)
 
 
 @api_router.post('/wrapped')
@@ -73,4 +81,6 @@ async def wrapped(request: dict,
                   authenticator: Annotated[Authenticator, Depends(get_authenticator)],
                   wrapped_controller: Annotated[WrappedController, Depends(get_wrapped_controller)]):
     authenticator.authenticate(credentials)
-    return await wrapped_controller.post(request)
+
+    async with build_spotify_client(request) as client:
+        return await wrapped_controller.post(request_body=request, spotify_client=client)
