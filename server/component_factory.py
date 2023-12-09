@@ -14,7 +14,6 @@ from server.controllers.content_controllers.prompt_controller import PromptContr
 from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.controllers.request_body_controller import RequestBodyController
 from server.logic.access_token_generator import AccessTokenGenerator
-from server.logic.data_collection.wrapped_tracks_collector import WrappedTracksCollector
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.openai.embeddings_tracks_selector import EmbeddingsTracksSelector
 from server.logic.openai.openai_client import OpenAIClient
@@ -39,13 +38,6 @@ async def get_session() -> ClientSession:
 async def get_playlists_creator() -> PlaylistsCreator:
     session = await get_session()
     return PlaylistsCreator(session)
-
-
-@alru_cache(maxsize=1)
-async def get_wrapped_tracks_collector() -> WrappedTracksCollector:
-    session = await get_session()
-    access_token_generator = await get_access_token_generator()
-    return WrappedTracksCollector(session, access_token_generator)
 
 
 @alru_cache(maxsize=1)
@@ -145,12 +137,10 @@ async def get_existing_playlist_controller() -> ExistingPlaylistController:
 async def get_wrapped_controller() -> WrappedController:
     playlists_creator = await get_playlists_creator()
     openai_client = await get_openai_client()
-    wrapped_tracks_collector = await get_wrapped_tracks_collector()
 
     return WrappedController(
         playlists_creator=playlists_creator,
         openai_client=openai_client,
-        wrapped_tracks_collector=wrapped_tracks_collector
     )
 
 
