@@ -1,5 +1,7 @@
 from typing import Optional
 
+from spotipyio import SpotifyClient
+
 from server.consts.app_consts import PHOTO
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
@@ -21,9 +23,9 @@ class PhotoController(BaseContentController):
     async def _generate_playlist_resources(self,
                                            request_body: dict,
                                            dir_path: str,
-                                           spotify_client: str) -> PlaylistResources:
+                                           spotify_client: SpotifyClient) -> PlaylistResources:
         cover_image_path = self._save_photo(request_body[PHOTO], dir_path)
-        uris = await self._tracks_uris_extractor.extract_tracks_uris(cover_image_path)
+        uris = await self._tracks_uris_extractor.extract_tracks_uris(cover_image_path, spotify_client)
 
         if uris is None:
             return PlaylistResources(None, None)

@@ -19,7 +19,6 @@ from server.logic.openai.openai_client import OpenAIClient
 from server.logic.openai.track_details import TrackDetails
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
-from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.utils.general_utils import build_prompt, to_dataclass
 from server.utils.image_utils import current_timestamp_image_path
 
@@ -28,11 +27,9 @@ class PromptController(BaseContentController):
     def __init__(self,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
-                 tracks_collector: SpotifyTracksCollector,
                  prompt_details_tracks_selector: PromptDetailsTracksSelector):
         super().__init__(playlists_creator, openai_client)
         self._openai_adapter = OpenAIAdapter(self._openai_client)
-        self._tracks_collector = tracks_collector
         self._data_filterer = DataFilterer()
         self._columns_details_creator = ColumnsDetailsCreator()
         self._prompt_details_tracks_selector = prompt_details_tracks_selector
@@ -47,7 +44,7 @@ class PromptController(BaseContentController):
         if query_conditions_uris is not None:
             tracks_uris = query_conditions_uris
         else:
-            tracks_uris = await self._generate_uris_from_tracks_details(user_text)
+            tracks_uris = await self._generate_uris_from_tracks_details(user_text, spotify_client)
 
         return PlaylistResources(
             uris=tracks_uris,
@@ -85,16 +82,18 @@ class PromptController(BaseContentController):
         except:
             logger.exception("Could not serialize OpenAI response to dataclass. Returning None instead")
 
-    async def _generate_uris_from_tracks_details(self, user_text: str) -> Optional[List[str]]:
+    async def _generate_uris_from_tracks_details(self,
+                                                 user_text: str,
+                                                 spotify_client: SpotifyClient) -> Optional[List[str]]:
         prompt = TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT.format(user_text=user_text)
         json_serialized_response = await self._openai_adapter.chat_completions(prompt, retries_left=2)
         tracks_details = self._serialize_openai_response(json_serialized_response, dataclass=TrackDetails)
 
-        if tracks_details is None:
-            return
+        if tracks_details is not None:
+            search_items = [details.to_search_item() for details in tracks_details]
+            tracks = await spotify_client.search.run(search_items)
 
-        tracks = await self._tracks_collector.collect(tracks_details)
-        return [track[URI] for track in tracks][:MAX_SPOTIFY_PLAYLIST_SIZE]
+            return [track[URI] for track in tracks][:MAX_SPOTIFY_PLAYLIST_SIZE]
 
     def _build_uris_prompt(self, user_text: str) -> str:
         columns_details = self._columns_details_creator.create()

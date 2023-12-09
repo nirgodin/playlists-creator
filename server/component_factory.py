@@ -18,7 +18,6 @@ from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
-from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.tools.authenticator import Authenticator
 
 
@@ -44,12 +43,6 @@ async def get_openai_client() -> OpenAIClient:
 async def get_playlist_imitator() -> PlaylistImitator:
     session = await get_session()
     return PlaylistImitator(session)
-
-
-@alru_cache(maxsize=1)
-async def get_tracks_collector() -> SpotifyTracksCollector:
-    session = await get_session()
-    return SpotifyTracksCollector(session)
 
 
 @alru_cache(maxsize=1)
@@ -87,13 +80,11 @@ async def get_configuration_controller() -> ConfigurationController:
 async def get_prompt_controller() -> PromptController:
     playlists_creator = await get_playlists_creator()
     openai_client = await get_openai_client()
-    tracks_collector = await get_tracks_collector()
     prompt_details_tracks_selector = await get_prompt_details_tracks_selector()
 
     return PromptController(
         playlists_creator=playlists_creator,
         openai_client=openai_client,
-        tracks_collector=tracks_collector,
         prompt_details_tracks_selector=prompt_details_tracks_selector
     )
 

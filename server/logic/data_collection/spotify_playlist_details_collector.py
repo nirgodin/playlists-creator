@@ -1,6 +1,5 @@
 from typing import List, Optional, Callable, Dict
 
-from aiohttp import ClientSession
 from genie_common.utils import safe_nested_get
 from spotipyio import SpotifyClient
 
@@ -8,15 +7,10 @@ from server.consts.api_consts import ID, MAX_TRACKS_NUMBER_PER_REQUEST
 from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES, COVER_IMAGE_URL
 from server.consts.openai_consts import URL
 from server.logic.playlist_imitation.playlist_details import PlaylistDetails
-from server.logic.spotify_tracks_collector import SpotifyTracksCollector
 from server.utils.spotify_utils import extract_tracks_from_response, sample_uris
 
 
 class PlaylistDetailsCollector:
-    def __init__(self, session: ClientSession):
-        self._tracks_collector = SpotifyTracksCollector(session)
-        self._session = session
-
     async def collect_playlist(self, playlist_id: str, spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
         playlist = await spotify_client.playlists.info.collect_single(playlist_id)
         tracks = extract_tracks_from_response(playlist)

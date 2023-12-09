@@ -164,7 +164,7 @@ structure, denoted in triple brackets:
 ```
 Pay attention: the example I provided to you includes only three tracks. However, in your response you should include \
 as many tracks the user requests. In case the user asks for 20 tracks, you should provide a JSON serializable list \
-with 20 entries. Pay attention: No matter how many tracks the user asks, the list length should not exceed 100 entries!
+with 20 entries. But be careful: No matter how many tracks the user asks, the list length should not exceed 100 entries!
 Your response should include the JSON array and ONLY it. It should be serializable by a single Python `json.loads` \
 command.
 Please generate 50 tracks JSON list based on the following text:

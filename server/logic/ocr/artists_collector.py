@@ -1,43 +1,32 @@
 from functools import partial
 from typing import List, Dict, Optional
 
-from aiohttp import ClientSession
-from asyncio_pool import AioPool
-from tqdm import tqdm
+from genie_common.utils import safe_nested_get
+from spotipyio import SpotifyClient
+from spotipyio.logic.collectors.search_collectors.search_item import SearchItem
+from spotipyio.logic.collectors.search_collectors.spotify_search_type import SpotifySearchType
+from spotipyio.tools.pool_executor import PoolExecutor
 
-from server.consts.api_consts import SEARCH_URL
-from server.consts.data_consts import ARTIST, TYPE, QUERY, ARTISTS, ITEMS, ORIGINAL_INPUT
-from server.logic.access_token_generator import AccessTokenGenerator
-from server.utils.general_utils import build_spotify_client_credentials_headers
+from server.consts.data_consts import ARTISTS, ITEMS, ORIGINAL_INPUT
 
 
 class ArtistsCollector:
-    def __init__(self, session: ClientSession):
-        self._session = session
-        self._access_token_generator = AccessTokenGenerator(session)
+    def __init__(self, pool_executor: PoolExecutor):
+        self._pool_executor = pool_executor
 
-    async def collect(self, artists_names: List[str]) -> List[dict]:
-        pool = AioPool(5)
-        headers = await build_spotify_client_credentials_headers(self._access_token_generator)
+    async def collect(self, artists_names: List[str], spotify_client: SpotifyClient) -> List[dict]:
+        return await self._pool_executor.run(
+            iterable=artists_names,
+            func=partial(self._get_single_artist, spotify_client),
+            expected_type=dict
+        )
 
-        with tqdm(total=len(artists_names)) as progress_bar:
-            func = partial(self._get_single_artist, headers, progress_bar)
-            results = await pool.map(fn=func, iterable=artists_names)
-
-        return [result for result in results if isinstance(result, dict)]
-
-    async def _get_single_artist(self,
-                                 headers: dict,
-                                 progress_bar: tqdm,
-                                 artist: str) -> Dict[str, str]:
-        progress_bar.update(1)
-        params = {
-            QUERY: artist,
-            TYPE: [ARTIST]
-        }
-
-        async with self._session.get(url=SEARCH_URL, params=params, headers=headers) as raw_response:
-            response = await raw_response.json()
+    async def _get_single_artist(self, spotify_client: SpotifyClient, artist: str) -> Dict[str, str]:
+        search_item = SearchItem(
+            search_types=[SpotifySearchType.ARTIST],
+            artist=artist
+        )
+        response = await spotify_client.search.collect_single(search_item)
 
         return self._extract_artist_details(original_input=artist, response=response)
 
@@ -46,11 +35,9 @@ class ArtistsCollector:
         if not isinstance(response, dict):
             return
 
-        items = response.get(ARTISTS, {}).get(ITEMS, [])
-        if not items:
-            return
+        items = safe_nested_get(response, [ARTISTS, ITEMS], default=[])
+        if items:
+            first_item = items[0]
+            first_item[ORIGINAL_INPUT] = original_input
 
-        first_item = items[0]
-        first_item[ORIGINAL_INPUT] = original_input
-
-        return first_item
+            return first_item
