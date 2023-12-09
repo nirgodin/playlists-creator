@@ -2,10 +2,11 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 from dataclasses_json import dataclass_json, LetterCase
-from sqlalchemy import text, TextClause
+from sqlalchemy import text
+from sqlalchemy.sql.elements import TextClause
 
 from server.consts.data_consts import IN_OPERATOR
-from server.utils.general_utils import string_to_boolean
+from genie_common.utils import string_to_boolean
 from server.consts.general_consts import BOOL_VALUES
 
 

@@ -4,6 +4,7 @@ from functools import reduce
 from typing import List, Dict, Optional, Union, Type
 
 from genie_common.google import GoogleDriveAdapter
+from genie_common.utils import build_authorization_headers
 
 from server.consts.api_consts import ACCESS_TOKEN
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID, TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID
@@ -23,25 +24,13 @@ async def build_spotify_client_credentials_headers(access_token_generator: Acces
     response = await access_token_generator.generate(SpotifyGrantType.CLIENT_CREDENTIALS)
     access_token = response[ACCESS_TOKEN]
 
-    return build_spotify_headers(access_token)
-
-
-def build_spotify_headers(access_token: str) -> Optional[Dict[str, str]]:
     if access_token is not None:
-        return {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {access_token}"
-        }
+        return build_authorization_headers(access_token)
 
 
 def sample_list(n_candidates: int, n_selected_candidates: int) -> List[int]:
     k = min(n_selected_candidates, n_candidates)
     return random.sample(range(0, n_candidates), k)
-
-
-def string_to_boolean(s: str) -> bool:
-    return s.lower() == 'true'
 
 
 def download_database() -> None:
@@ -61,10 +50,6 @@ def download_database() -> None:
 
     ZScoresMetadataCreator().create()
     PlaylistImitatorDatabaseCreator().create()
-
-
-def chain_dicts(dicts: List[dict]) -> dict:
-    return reduce(lambda dict1, dict2: {**dict1, **dict2}, dicts)
 
 
 def to_dataclass(serializable: Union[list, dict], dataclass: Type[DataClass]) -> Union[DataClass, List[DataClass]]:

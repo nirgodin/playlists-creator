@@ -1,10 +1,10 @@
 from aiohttp import ClientSession
+from genie_common.utils import build_authorization_headers
 
 from server.consts.api_consts import ACCESS_TOKEN
 from server.consts.data_consts import ITEMS, URI
 from server.data.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
-from server.utils.general_utils import build_spotify_client_credentials_headers, build_spotify_headers
 
 TOP_USER_PLAYS_URL_FORMAT = "https://api.spotify.com/v1/me/top/{type}"
 
@@ -20,7 +20,7 @@ class WrappedTracksCollector:
             access_code=access_code
         )
         bearer_token = access_token_generator_response.get(ACCESS_TOKEN)
-        headers = build_spotify_headers(bearer_token)
+        headers = build_authorization_headers(bearer_token)
         url = TOP_USER_PLAYS_URL_FORMAT.format(type="tracks")
         params = {
             "time_range": "long_term",

@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from tempfile import TemporaryDirectory
 from typing import Optional
 
+from genie_common.tools.logs import logger
+from genie_common.utils import build_authorization_headers
 from starlette.responses import JSONResponse
 
 from server.consts.api_consts import ACCESS_TOKEN
@@ -13,9 +15,7 @@ from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
-from genie_common.tools.logs import logger
 from server.tools.response_factory import ResponseFactory
-from server.utils.general_utils import build_spotify_headers
 
 
 class BaseContentController(ABC):
@@ -62,7 +62,7 @@ class BaseContentController(ABC):
             access_code=access_code
         )
         bearer_token = access_token_generator_response.get(ACCESS_TOKEN)
-        headers = build_spotify_headers(bearer_token)
+        headers = build_authorization_headers(bearer_token)
         if headers is None:
             return
 

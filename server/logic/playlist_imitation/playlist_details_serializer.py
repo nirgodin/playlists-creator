@@ -1,15 +1,15 @@
 import json
-from typing import Dict, List, Callable, Optional, Any
+from typing import Dict, Callable, Optional
 
 import pandas as pd
+from genie_common.utils import chain_dicts
 from pandas import DataFrame
 
-from server.consts.data_consts import FOLLOWERS, TOTAL, ALBUM, TRACKS, ARTISTS, AUDIO_FEATURES, TRACK, ARTIST, NAME, \
+from server.consts.data_consts import FOLLOWERS, TOTAL, ALBUM, ARTIST, NAME, \
     POPULARITY
 from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_imitator_consts import AUDIO_FEATURES_IRRELEVANT_KEYS, \
     ARTISTS_FEATURES_IRRELEVANT_KEYS, TRACKS_FEATURES_IRRELEVANT_KEYS, ALBUM_RELEVANT_FEATURES
-from server.utils.general_utils import chain_dicts
 
 ARTIST_REQUIRED_PREFIX_FEATURES = [
     NAME,
