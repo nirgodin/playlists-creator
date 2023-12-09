@@ -23,7 +23,7 @@ class ExistingPlaylistController(BaseContentController):
                                            dir_path: str,
                                            spotify_client: SpotifyClient) -> PlaylistResources:
         existing_playlist_url = request_body[PLAYLIST_DETAILS][EXISTING_PLAYLIST]
-        return await self._playlist_imitator.imitate_playlist(existing_playlist_url, dir_path)
+        return await self._playlist_imitator.imitate_playlist(existing_playlist_url, dir_path, spotify_client)
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         return await self._openai_client.variate_image(image_path, image_path)

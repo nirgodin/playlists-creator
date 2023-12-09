@@ -2,6 +2,7 @@ from typing import Optional
 
 from aiohttp import ClientSession
 from pandas import DataFrame
+from spotipyio import SpotifyClient
 
 from server.consts.data_consts import SONG, ARTIST_NAME, NAME
 from server.data.playlist_resources import PlaylistResources
@@ -21,8 +22,11 @@ class PlaylistImitator:
         self._tracks_selector = PlaylistImitatorTracksSelector()
         self._transformation_pipeline = PlaylistDetailsPipeline(is_training=False)
 
-    async def imitate_playlist(self, playlist_url: str, dir_path: str) -> PlaylistResources:
-        raw_playlist_details = await self._extract_raw_playlist_details(playlist_url)
+    async def imitate_playlist(self,
+                               playlist_url: str,
+                               dir_path: str,
+                               spotify_client: SpotifyClient) -> PlaylistResources:
+        raw_playlist_details = await self._extract_raw_playlist_details(playlist_url, spotify_client)
         if raw_playlist_details is None:
             return PlaylistResources(None, None)
 
@@ -35,9 +39,11 @@ class PlaylistImitator:
             cover_image_path=cover_image_path
         )
 
-    async def _extract_raw_playlist_details(self, playlist_url: str) -> Optional[PlaylistDetails]:
+    async def _extract_raw_playlist_details(self,
+                                            playlist_url: str,
+                                            spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
         playlist_id = self._extract_playlist_id_from_url(playlist_url)
-        return await self._playlist_details_collector.collect_playlist(playlist_id)
+        return await self._playlist_details_collector.collect_playlist(playlist_id, spotify_client)
 
     @staticmethod
     def _extract_playlist_id_from_url(playlist_url: str) -> str:

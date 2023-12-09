@@ -1,6 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 
+from genie_common.utils import safe_nested_get
 from spotipyio import SpotifyClient
 from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
 from spotipyio.logic.authentication.spotify_session import SpotifySession
@@ -13,7 +14,7 @@ from server.utils.general_utils import sample_list
 
 
 def extract_tracks_from_response(playlist: dict) -> list:
-    return playlist.get(TRACKS, {}).get(ITEMS, [])
+    return safe_nested_get(playlist, [TRACKS, ITEMS], default=[])
 
 
 def sample_uris(uris: list, n_selected_candidates: int = MAX_SPOTIFY_PLAYLIST_SIZE) -> list:

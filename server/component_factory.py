@@ -1,10 +1,9 @@
 import os
 from functools import lru_cache
-from ssl import create_default_context
 
-from aiohttp import ClientSession, TCPConnector, CookieJar
+from aiohttp import ClientSession
 from async_lru import alru_cache
-from certifi import where
+from genie_common.utils import create_client_session
 
 from server.consts.env_consts import USERNAME, PASSWORD
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
@@ -13,7 +12,6 @@ from server.controllers.content_controllers.photo_controller import PhotoControl
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.controllers.request_body_controller import RequestBodyController
-from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.openai.embeddings_tracks_selector import EmbeddingsTracksSelector
 from server.logic.openai.openai_client import OpenAIClient
@@ -26,11 +24,7 @@ from server.tools.authenticator import Authenticator
 
 @alru_cache(maxsize=1)
 async def get_session() -> ClientSession:
-    ssl_context = create_default_context(cafile=where())
-    session = ClientSession(
-        connector=TCPConnector(ssl=ssl_context),
-        cookie_jar=CookieJar(quote_cookie=False),
-    )
+    session = create_client_session()
     return await session.__aenter__()
 
 
@@ -44,12 +38,6 @@ async def get_playlists_creator() -> PlaylistsCreator:
 async def get_openai_client() -> OpenAIClient:
     session = await get_session()
     return OpenAIClient(session)
-
-
-@alru_cache(maxsize=1)
-async def get_access_token_generator() -> AccessTokenGenerator:
-    session = await get_session()
-    return AccessTokenGenerator(session)
 
 
 @alru_cache(maxsize=1)
