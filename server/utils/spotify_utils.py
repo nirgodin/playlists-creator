@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 
 from spotipyio import SpotifyClient
@@ -7,6 +8,7 @@ from spotipyio.logic.authentication.spotify_session import SpotifySession
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import ACCESS_CODE
 from server.consts.data_consts import ITEMS, TRACKS
+from server.consts.env_consts import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI
 from server.utils.general_utils import sample_list
 
 
@@ -27,9 +29,16 @@ async def build_spotify_client(request_body: dict) -> SpotifyClient:
 
     try:
         access_code = request_body[ACCESS_CODE]
-        raw_session = SpotifySession(grant_type=SpotifyGrantType.AUTHORIZATION_CODE, access_code=access_code)
+        raw_session = SpotifySession(
+            client_id=os.environ[SPOTIPY_CLIENT_ID],
+            client_secret=os.environ[SPOTIPY_CLIENT_SECRET],
+            redirect_uri=os.environ[SPOTIPY_REDIRECT_URI],
+            grant_type=SpotifyGrantType.AUTHORIZATION_CODE,
+            access_code=access_code
+        )
         session = await raw_session.__aenter__()
-        return SpotifyClient.create(session)
+
+        yield SpotifyClient.create(session)
 
     finally:
         if session is not None:
