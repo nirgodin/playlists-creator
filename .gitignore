@@ -41,3 +41,6 @@
 /server/resources/playlist_imitator_database.csv
 /server/resources/pipeline.pkl
 /server/resources/track_names_embeddings.csv
+
+# Env
+/service_account_secrets.json
