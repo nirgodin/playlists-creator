@@ -19,7 +19,7 @@ from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
-from server.tools.logging import logger
+from genie_common.tools.logs import logger
 from server.utils.general_utils import build_prompt, to_dataclass
 from server.utils.image_utils import current_timestamp_image_path
 

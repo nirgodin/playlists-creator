@@ -5,7 +5,7 @@ from server.consts.app_consts import PROMPT
 from server.consts.openai_consts import CONTENT
 from server.consts.prompt_consts import SERIALIZATION_ERROR_PROMPT_FORMAT
 from server.logic.openai.openai_client import OpenAIClient
-from server.tools.logging import logger
+from genie_common.tools.logs import logger
 
 
 class OpenAIAdapter:

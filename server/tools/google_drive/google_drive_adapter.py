@@ -5,7 +5,7 @@ from server.consts.env_consts import GOOGLE_SERVICE_ACCOUNT_CREDENTIALS
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 
-from server.tools.logging import logger
+from genie_common.tools.logs import logger
 
 
 class GoogleDriveAdapter:

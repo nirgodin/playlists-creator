@@ -13,7 +13,7 @@ from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
-from server.tools.logging import logger
+from genie_common.tools.logs import logger
 from server.tools.response_factory import ResponseFactory
 from server.utils.general_utils import build_spotify_headers
 

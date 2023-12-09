@@ -9,7 +9,7 @@ from server.consts.openai_consts import CHAT_COMPLETIONS_URL, MODEL, MESSAGES, C
     IMAGE_SIZE_512, DATA, URL, CREATED, N, SIZE, IMAGES_GENERATION_URL, IMAGE, IMAGES_VARIATIONS_URL, \
     ADA_EMBEDDINGS_MODEL, INPUT, EMBEDDINGS_URL, EMBEDDING
 from server.data.openai.chat_completions_model import ChatCompletionsModel
-from server.tools.logging import logger
+from genie_common.tools.logs import logger
 from server.utils.image_utils import save_image_from_url
 
 

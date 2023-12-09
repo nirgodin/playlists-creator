@@ -6,7 +6,7 @@ from pandas import DataFrame
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 
-from server.tools.logging import logger
+from genie_common.tools.logs import logger
 
 
 class SimilarityScoresComputer:
