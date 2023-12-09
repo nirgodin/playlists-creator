@@ -1,5 +1,8 @@
 from typing import List, Optional, Union, Type
 
+from genie_common.tools.logs import logger
+from spotipyio import SpotifyClient
+
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import PLAYLIST_DETAILS, PROMPT
 from server.consts.data_consts import URI
@@ -9,17 +12,14 @@ from server.consts.typing_consts import DataClass
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
 from server.data.prompt_details import PromptDetails
-from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.data_filterer import DataFilterer
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.openai.openai_client import OpenAIClient
 from server.logic.openai.track_details import TrackDetails
-from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.logic.spotify_tracks_collector import SpotifyTracksCollector
-from genie_common.tools.logs import logger
 from server.utils.general_utils import build_prompt, to_dataclass
 from server.utils.image_utils import current_timestamp_image_path
 
@@ -27,19 +27,20 @@ from server.utils.image_utils import current_timestamp_image_path
 class PromptController(BaseContentController):
     def __init__(self,
                  playlists_creator: PlaylistsCreator,
-                 playlists_cover_photo_creator: PlaylistCoverPhotoCreator,
                  openai_client: OpenAIClient,
-                 access_token_generator: AccessTokenGenerator,
                  tracks_collector: SpotifyTracksCollector,
                  prompt_details_tracks_selector: PromptDetailsTracksSelector):
-        super().__init__(playlists_creator, playlists_cover_photo_creator, openai_client, access_token_generator)
+        super().__init__(playlists_creator, openai_client)
         self._openai_adapter = OpenAIAdapter(self._openai_client)
         self._tracks_collector = tracks_collector
         self._data_filterer = DataFilterer()
         self._columns_details_creator = ColumnsDetailsCreator()
         self._prompt_details_tracks_selector = prompt_details_tracks_selector
 
-    async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
+    async def _generate_playlist_resources(self,
+                                           request_body: dict,
+                                           dir_path: str,
+                                           spotify_client: SpotifyClient) -> PlaylistResources:
         user_text = self._extract_prompt_from_request_body(request_body)
         query_conditions_uris = await self._generate_uris_from_prompt_details(user_text)
 

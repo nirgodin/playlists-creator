@@ -3,7 +3,7 @@ from genie_common.utils import build_authorization_headers
 
 from server.consts.api_consts import ACCESS_TOKEN
 from server.consts.data_consts import ITEMS, URI
-from server.data.spotify_grant_type import SpotifyGrantType
+from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
 from server.logic.access_token_generator import AccessTokenGenerator
 
 TOP_USER_PLAYS_URL_FORMAT = "https://api.spotify.com/v1/me/top/{type}"

@@ -1,31 +1,30 @@
 from typing import Optional
 
+from spotipyio import SpotifyClient
+
 from server.consts.app_consts import FILTER_PARAMS
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
-from server.logic.access_token_generator import AccessTokenGenerator
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
 from server.logic.data_filterer import DataFilterer
 from server.logic.openai.openai_client import OpenAIClient
 from server.logic.parameters_transformer import ParametersTransformer
-from server.logic.playlist_cover_photo_creator import PlaylistCoverPhotoCreator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.utils.image_utils import current_timestamp_image_path
 from server.utils.spotify_utils import sample_uris
 
 
 class ConfigurationController(BaseContentController):
-    def __init__(self,
-                 playlists_creator: PlaylistsCreator,
-                 playlists_cover_photo_creator: PlaylistCoverPhotoCreator,
-                 openai_client: OpenAIClient,
-                 access_token_generator: AccessTokenGenerator):
-        super().__init__(playlists_creator, playlists_cover_photo_creator, openai_client, access_token_generator)
+    def __init__(self, playlists_creator: PlaylistsCreator, openai_client: OpenAIClient):
+        super().__init__(playlists_creator, openai_client)
         self._data_filterer = DataFilterer()
         self._parameters_transformer = ParametersTransformer()
         self._photo_prompt_creator = ConfigurationPhotoPromptCreator()
 
-    async def _generate_playlist_resources(self, request_body: dict, dir_path: str) -> PlaylistResources:
+    async def _generate_playlist_resources(self,
+                                           request_body: dict,
+                                           dir_path: str,
+                                           spotify_client: SpotifyClient) -> PlaylistResources:
         query_conditions = self._parameters_transformer.transform(request_body)
         tracks_uris = self._data_filterer.filter(query_conditions)
 

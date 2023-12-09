@@ -7,7 +7,7 @@ from async_lru import alru_cache
 
 from server.consts.api_consts import TOKEN_REQUEST_URL, REDIRECT_URI, CODE, GRANT_TYPE, JSON, REFRESH_TOKEN, CLIENT_ID
 from server.consts.env_consts import SPOTIPY_CLIENT_SECRET, SPOTIPY_CLIENT_ID, SPOTIPY_REDIRECT_URI
-from server.data.spotify_grant_type import SpotifyGrantType
+from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
 
 
 class AccessTokenGenerator:
