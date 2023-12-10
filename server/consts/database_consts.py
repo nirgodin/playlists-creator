@@ -1,8 +1,10 @@
-from postgres_client.models.orm.audio_features import AudioFeatures as AudioFeaturesDB
-from postgres_client.models.orm.radio_track import RadioTrack
-from postgres_client.models.orm.spotify_artist import SpotifyArtist
-from postgres_client.models.orm.spotify_track import SpotifyTrack
-from postgres_client.postgres_utils import get_all_columns_except
+from genie_datastores.postgres.models import (
+    AudioFeatures as AudioFeaturesDB,
+    RadioTrack,
+    SpotifyArtist,
+    SpotifyTrack
+)
+from genie_datastores.postgres.utils import get_all_columns_except
 from sqlalchemy import func
 
 from server.consts.data_consts import POPULARITY, ARTIST_POPULARITY, ARTIST_FOLLOWERS
@@ -20,7 +22,6 @@ TRACK_COLUMNS = [
     SpotifyTrack.artist_id,
     SpotifyTrack.explicit,
     SpotifyTrack.release_date,
-    # TODO: Add duration to ORM and database
 ]
 
 AUDIO_FEATURES_COLUMNS = get_all_columns_except(

@@ -5,8 +5,8 @@ from genie_common.models.openai import EmbeddingsModel
 from genie_common.openai import OpenAIClient
 from pandas import DataFrame
 
-from server.consts.api_consts import NAME, ID
-from server.consts.data_consts import URI
+from server.consts.api_consts import ID
+from server.consts.data_consts import URI, NAME
 from server.logic.playlist_imitation.playlist_imitator_consts import SIMILARITY_SCORE
 from server.logic.similarity_scores_computer import SimilarityScoresComputer
 

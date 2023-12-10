@@ -1,6 +1,5 @@
 SONG = 'song'
 URI = 'uri'
-STATION = 'station'
 NAME = 'name'
 ARTIST_NAME = 'artist_name'
 GENRES = 'genres'

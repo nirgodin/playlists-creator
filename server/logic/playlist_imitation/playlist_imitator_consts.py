@@ -1,4 +1,5 @@
-from server.consts.api_consts import ID, NAME
+from server.consts.api_consts import ID
+from server.consts.data_consts import NAME
 from server.consts.audio_features_consts import NUMERIC_AUDIO_FEATURES, KEY
 from server.consts.data_consts import URI, TYPE, TRACK_HREF, ANALYSIS_URL, HREF, EXTERNAL_URLS, IMAGES, DURATION_MS, \
     ARTISTS, AVAILABLE_MARKETS, EPISODE, EXTERNAL_IDS, TRACK, ALBUM, PREVIEW_URL, IS_LOCAL, RELEASE_DATE, TOTAL_TRACKS, \
