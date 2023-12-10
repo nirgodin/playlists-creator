@@ -98,11 +98,13 @@ async def get_configuration_controller() -> ConfigurationController:
 async def get_prompt_controller() -> PromptController:
     playlists_creator = await get_playlists_creator()
     openai_client = await get_openai_client()
+    openai_adapter = await get_openai_adapter()
     prompt_details_tracks_selector = await get_prompt_details_tracks_selector()
 
     return PromptController(
         playlists_creator=playlists_creator,
         openai_client=openai_client,
+        openai_adapter=openai_adapter,
         prompt_details_tracks_selector=prompt_details_tracks_selector
     )
 

@@ -19,9 +19,11 @@ EMBEDDINGS_SIMILARITY_SCORE_THRESHOLD = 0.78
 
 
 class EmbeddingsTracksSelector:
-    def __init__(self, openai_client: OpenAIClient):
+    def __init__(self,
+                 openai_client: OpenAIClient,
+                 similarity_scores_computer: SimilarityScoresComputer = SimilarityScoresComputer()):
         self._openai_client = openai_client
-        self._similarity_scores_computer = SimilarityScoresComputer()
+        self._similarity_scores_computer = similarity_scores_computer
 
     async def select_tracks(self, embeddings_data: DataFrame, text: str) -> List[str]:
         prompt_embeddings = await self._openai_client.embeddings.collect(text=text, model=EmbeddingsModel.ADA)

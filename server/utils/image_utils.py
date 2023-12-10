@@ -3,21 +3,18 @@ import os
 
 from PIL import Image
 from aiohttp import ClientSession
+from genie_common.tools import logger
+from genie_common.utils import fetch_image
 
 from server.consts.image_consts import JPG_FILE_SUFFIX, RGB
 from server.utils.datetime_utils import get_current_timestamp
 
 
 async def save_image_from_url(session: ClientSession, image_url: str, output_path: str) -> None:
-    async with session.get(image_url) as raw_response:
-        if raw_response.status != 200:
-            print("Failed to download the image.")
-            return
-
-        image_bytes = await raw_response.read()
-
+    logger.info(f"Fetching image from `{image_url}`")
+    image_bytes = await fetch_image(session, image_url)
     save_image_from_bytes(image_bytes, output_path)
-    print("Successfully saved image")
+    logger.info(f"Successfully fetched image and saved it on `{output_path}`")
 
 
 def save_image_from_bytes(image: bytes, output_path: str) -> None:

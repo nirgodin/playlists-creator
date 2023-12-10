@@ -15,12 +15,17 @@ from server.utils.image_utils import save_image_from_url, current_timestamp_imag
 
 
 class PlaylistImitator:
-    def __init__(self, session: ClientSession):
+    def __init__(self,
+                 session: ClientSession,
+                 playlist_details_collector: PlaylistDetailsCollector = PlaylistDetailsCollector(),
+                 playlist_details_serializer: PlaylistDetailsSerializer = PlaylistDetailsSerializer(),
+                 tracks_selector: PlaylistImitatorTracksSelector = PlaylistImitatorTracksSelector(),
+                 transformation_pipeline: PlaylistDetailsPipeline = PlaylistDetailsPipeline(is_training=False)):
         self._session = session
-        self._playlist_details_collector = PlaylistDetailsCollector(session)
-        self._playlist_details_serializer = PlaylistDetailsSerializer()
-        self._tracks_selector = PlaylistImitatorTracksSelector()
-        self._transformation_pipeline = PlaylistDetailsPipeline(is_training=False)
+        self._playlist_details_collector = playlist_details_collector
+        self._playlist_details_serializer = playlist_details_serializer
+        self._tracks_selector = tracks_selector
+        self._transformation_pipeline = transformation_pipeline
 
     async def imitate_playlist(self,
                                playlist_url: str,

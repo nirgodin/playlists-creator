@@ -15,10 +15,13 @@ from server.utils.string_utils import format_column_name
 
 
 class RequestBodyController:
-    def __init__(self):
-        self._default_filter_params_generator = DefaultFilterParamsGenerator()
-        self._features_names_generator = FeaturesNamesGenerator()
-        self._features_descriptions_manager = FeaturesDescriptionsManager()
+    def __init__(self,
+                 default_filter_params_generator: DefaultFilterParamsGenerator = DefaultFilterParamsGenerator(),
+                 features_names_generator: FeaturesNamesGenerator = FeaturesNamesGenerator(),
+                 features_descriptions_manager: FeaturesDescriptionsManager = FeaturesDescriptionsManager()):
+        self._default_filter_params_generator = default_filter_params_generator
+        self._features_names_generator = features_names_generator
+        self._features_descriptions_manager = features_descriptions_manager
 
     async def get(self) -> JSONResponse:
         features_names = self._features_names_generator.generate_features_names()

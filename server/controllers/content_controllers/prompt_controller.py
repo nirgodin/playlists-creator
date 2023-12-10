@@ -28,11 +28,14 @@ class PromptController(BaseContentController):
     def __init__(self,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
-                 prompt_details_tracks_selector: PromptDetailsTracksSelector):
+                 openai_adapter: OpenAIAdapter,
+                 prompt_details_tracks_selector: PromptDetailsTracksSelector,
+                 data_filterer: DataFilterer = DataFilterer(),
+                 columns_details_creator: ColumnsDetailsCreator = ColumnsDetailsCreator()):
         super().__init__(playlists_creator, openai_client)
-        self._openai_adapter = OpenAIAdapter(self._openai_client)
-        self._data_filterer = DataFilterer()
-        self._columns_details_creator = ColumnsDetailsCreator()
+        self._openai_adapter = openai_adapter
+        self._data_filterer = data_filterer
+        self._columns_details_creator = columns_details_creator
         self._prompt_details_tracks_selector = prompt_details_tracks_selector
 
     async def _generate_playlist_resources(self,

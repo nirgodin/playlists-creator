@@ -11,10 +11,12 @@ from server.utils.spotify_utils import sample_uris
 
 
 class PromptDetailsTracksSelector:
-    def __init__(self, embeddings_tracks_selector: EmbeddingsTracksSelector):
+    def __init__(self,
+                 embeddings_tracks_selector: EmbeddingsTracksSelector,
+                 data_filterer: DataFilterer = DataFilterer()):
         self._embeddings_tracks_selector = embeddings_tracks_selector
-        self._data_filterer = DataFilterer()
-        self._embeddings_database = pd.read_csv(TRACK_NAMES_EMBEDDINGS_PATH)
+        self._data_filterer = data_filterer
+        self._embeddings_database = pd.read_csv(TRACK_NAMES_EMBEDDINGS_PATH)  # TODO: Remove and use Milvus DB instead
 
     async def select_tracks(self, prompt_details: PromptDetails) -> List[str]:
         uris = []
