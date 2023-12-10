@@ -1,5 +1,6 @@
 from typing import Optional
 
+from genie_common.models.openai import ImageSize
 from genie_common.openai import OpenAIClient
 from spotipyio import SpotifyClient
 
@@ -26,4 +27,8 @@ class ExistingPlaylistController(BaseContentController):
         return await self._playlist_imitator.imitate_playlist(existing_playlist_url, dir_path, spotify_client)
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
-        return await self._openai_client.variate_image(image_path, image_path)
+        return await self._openai_client.images_variation.collect(
+            image=open(image_path, 'rb'),
+            n=1,
+            size=ImageSize.P512
+        )
