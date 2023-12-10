@@ -787,8 +787,8 @@ tqdm = ">=4.65,<5.0"
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-common.git"
-reference = "26383358"
-resolved_reference = "2638335832918b9ec79d7993c770cb4ea2645bc4"
+reference = "e2c651cf"
+resolved_reference = "e2c651cf17bdc6b6e76fe6d9f25cb9ddd95ce87f"
 
 [[package]]
 name = "genie-datastores"
@@ -804,7 +804,7 @@ asyncmy = "0.2.8"
 asyncpg = "0.28.0"
 billboard-py = "^7.0.0"
 dataclasses-json = ">=0.6,<1.0"
-genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "26383358"}
+genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "e2c651cf"}
 greenlet = "2.0.1"
 pymilvus = ">=2.3,<3.0"
 sqlalchemy = "<2.0.0"
@@ -812,8 +812,8 @@ sqlalchemy = "<2.0.0"
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-datastores.git"
-reference = "f120909"
-resolved_reference = "f1209099fdaa0dd2ed522299a0ff486d480969f9"
+reference = "645daa0d"
+resolved_reference = "645daa0df768848e9aefe3e19447bbcf0470344a"
 
 [[package]]
 name = "google-api-core"
@@ -2134,13 +2134,13 @@ telegram = ["requests"]
 
 [[package]]
 name = "typing-extensions"
-version = "4.8.0"
+version = "4.9.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.8.0-py3-none-any.whl", hash = "sha256:8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0"},
-    {file = "typing_extensions-4.8.0.tar.gz", hash = "sha256:df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef"},
+    {file = "typing_extensions-4.9.0-py3-none-any.whl", hash = "sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"},
+    {file = "typing_extensions-4.9.0.tar.gz", hash = "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783"},
 ]
 
 [[package]]
@@ -2379,4 +2379,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "2932ed124948019dd1e4151a14d778806cd57b11462bd4f0efaffd656a2d362a"
+content-hash = "0bbeb5bd23f0da302a2401d8a587deeee4523148b678b7aaef939b95452a3292"
