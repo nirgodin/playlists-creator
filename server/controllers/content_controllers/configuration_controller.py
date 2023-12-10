@@ -1,5 +1,7 @@
 from typing import Optional
 
+from genie_common.models.openai import ImageSize
+from genie_common.openai import OpenAIClient
 from spotipyio import SpotifyClient
 
 from server.consts.app_consts import FILTER_PARAMS
@@ -7,7 +9,6 @@ from server.controllers.content_controllers.base_content_controller import BaseC
 from server.data.playlist_resources import PlaylistResources
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
 from server.logic.data_filterer import DataFilterer
-from server.logic.openai.openai_client import OpenAIClient
 from server.logic.parameters_transformer import ParametersTransformer
 from server.logic.playlists_creator import PlaylistsCreator
 from server.utils.image_utils import current_timestamp_image_path
@@ -15,11 +16,16 @@ from server.utils.spotify_utils import sample_uris
 
 
 class ConfigurationController(BaseContentController):
-    def __init__(self, playlists_creator: PlaylistsCreator, openai_client: OpenAIClient):
+    def __init__(self,
+                 playlists_creator: PlaylistsCreator,
+                 openai_client: OpenAIClient,
+                 data_filterer: DataFilterer = DataFilterer(),
+                 parameters_transformer: ParametersTransformer = ParametersTransformer(),
+                 photo_prompt_creator: ConfigurationPhotoPromptCreator = ConfigurationPhotoPromptCreator()):
         super().__init__(playlists_creator, openai_client)
-        self._data_filterer = DataFilterer()
-        self._parameters_transformer = ParametersTransformer()
-        self._photo_prompt_creator = ConfigurationPhotoPromptCreator()
+        self._data_filterer = data_filterer
+        self._parameters_transformer = parameters_transformer
+        self._photo_prompt_creator = photo_prompt_creator
 
     async def _generate_playlist_resources(self,
                                            request_body: dict,
@@ -37,4 +43,8 @@ class ConfigurationController(BaseContentController):
         filter_params = request_body[FILTER_PARAMS]
         playlist_cover_prompt = self._photo_prompt_creator.create_prompt(filter_params)
 
-        return await self._openai_client.create_image(playlist_cover_prompt, image_path)
+        return await self._openai_client.images_generation.collect(
+            prompt=playlist_cover_prompt,
+            n=1,
+            size=ImageSize.P512
+        )

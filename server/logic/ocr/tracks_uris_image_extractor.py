@@ -1,8 +1,6 @@
 from typing import Optional, List
 
-from aiohttp import ClientSession
 from spotipyio import SpotifyClient
-from spotipyio.tools.pool_executor import PoolExecutor
 
 from server.consts.api_consts import ID
 from server.consts.data_consts import URI
@@ -11,16 +9,19 @@ from server.logic.ocr.artists_collector import ArtistsCollector
 from server.logic.ocr.artists_filterer import ArtistsFilterer
 from server.logic.ocr.image_text_extractor import ImageTextExtractor
 from server.logic.openai.openai_adapter import OpenAIAdapter
-from server.logic.openai.openai_client import OpenAIClient
 from server.utils.general_utils import build_prompt
 
 
 class TracksURIsImageExtractor:
-    def __init__(self, session: ClientSession):  # TODO: Refactor to have dependency injection
-        self._image_text_extractor = ImageTextExtractor()
-        self._openai_adapter = OpenAIAdapter(OpenAIClient(session))
-        self._artists_collector = ArtistsCollector(PoolExecutor())
-        self._artists_filterer = ArtistsFilterer()
+    def __init__(self,
+                 openai_adapter: OpenAIAdapter,
+                 artists_collector: ArtistsCollector,
+                 image_text_extractor: ImageTextExtractor = ImageTextExtractor(),
+                 artists_filterer: ArtistsFilterer = ArtistsFilterer()):
+        self._openai_adapter = openai_adapter
+        self._image_text_extractor = image_text_extractor
+        self._artists_collector = artists_collector
+        self._artists_filterer = artists_filterer
 
     async def extract_tracks_uris(self, image_path: str, spotify_client: SpotifyClient, language: str = 'eng', country: str = 'US') -> Optional[List[str]]:
         artists_names = await self._extract_artists_names(image_path, language)
@@ -34,7 +35,7 @@ class TracksURIsImageExtractor:
 
         return self._extract_tracks_uris(top_tracks)  # TODO: Validate if output typing in spotipyio is wrong
 
-    async def _extract_artists_names(self, image_path: str, language: str = 'eng') -> Optional[List[str]]:
+    async def _extract_artists_names(self, image_path: str, language: str) -> Optional[List[str]]:
         image_text = self._image_text_extractor.extract_text(image_path, language)
         prompt_suffix = f'```\n{image_text}```'
         prompt = build_prompt(PHOTO_ARTISTS_PROMPT_PREFIX, prompt_suffix)

@@ -1,12 +1,12 @@
 from typing import Optional
 
+from genie_common.openai import OpenAIClient
 from spotipyio import SpotifyClient
 
 from server.consts.app_consts import PHOTO
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
-from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlists_creator import PlaylistsCreator
 from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
 from server.utils.spotify_utils import sample_uris

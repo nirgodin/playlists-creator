@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from tempfile import TemporaryDirectory
 from typing import Optional
 
+from genie_common.openai import OpenAIClient
 from genie_common.tools.logs import logger
 from spotipyio import SpotifyClient
 from starlette.responses import JSONResponse
@@ -9,7 +10,6 @@ from starlette.responses import JSONResponse
 from server.consts.app_consts import PLAYLIST_DETAILS
 from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.data.playlist_resources import PlaylistResources
-from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.response_factory import ResponseFactory
 

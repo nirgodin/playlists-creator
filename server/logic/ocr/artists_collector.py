@@ -1,17 +1,17 @@
 from functools import partial
 from typing import List, Dict, Optional
 
+from genie_common.tools import AioPoolExecutor
 from genie_common.utils import safe_nested_get
 from spotipyio import SpotifyClient
 from spotipyio.logic.collectors.search_collectors.search_item import SearchItem
 from spotipyio.logic.collectors.search_collectors.spotify_search_type import SpotifySearchType
-from spotipyio.tools.pool_executor import PoolExecutor
 
 from server.consts.data_consts import ARTISTS, ITEMS, ORIGINAL_INPUT
 
 
 class ArtistsCollector:
-    def __init__(self, pool_executor: PoolExecutor):
+    def __init__(self, pool_executor: AioPoolExecutor):
         self._pool_executor = pool_executor
 
     async def collect(self, artists_names: List[str], spotify_client: SpotifyClient) -> List[dict]:

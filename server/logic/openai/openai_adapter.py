@@ -1,14 +1,16 @@
 import json
 from typing import List, Union, Optional
 
+from genie_common.models.openai import ChatCompletionsModel
+from genie_common.openai import OpenAIClient
+
 from server.consts.app_consts import PROMPT
 from server.consts.openai_consts import CONTENT
 from server.consts.prompt_consts import SERIALIZATION_ERROR_PROMPT_FORMAT
-from server.logic.openai.openai_client import OpenAIClient
 from genie_common.tools.logs import logger
 
 
-class OpenAIAdapter:
+class OpenAIAdapter:  # TODO: Should be refactored
     def __init__(self, openai_client: OpenAIClient):
         self._openai_client = openai_client
 
@@ -22,7 +24,10 @@ class OpenAIAdapter:
 
         logger.info("Received chat_completions request", extra={PROMPT: prompt, "retries_left": retries_left})
         chat_history = self._build_request_messages(prompt, chat_history)
-        response_content = await self._openai_client.chat_completions(chat_history)
+        response_content = await self._openai_client.chat_completions.collect(
+            messages=chat_history,
+            model=ChatCompletionsModel.GPT_4
+        )
         serialized_response = self._serialize_response(response_content)
 
         if not isinstance(serialized_response, str):

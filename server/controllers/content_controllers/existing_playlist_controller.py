@@ -1,11 +1,11 @@
 from typing import Optional
 
+from genie_common.openai import OpenAIClient
 from spotipyio import SpotifyClient
 
 from server.consts.app_consts import PLAYLIST_DETAILS, EXISTING_PLAYLIST
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
-from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 

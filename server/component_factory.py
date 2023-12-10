@@ -3,18 +3,21 @@ from functools import lru_cache
 
 from aiohttp import ClientSession
 from async_lru import alru_cache
-from genie_common.utils import create_client_session
+from genie_common.openai import OpenAIClient
+from genie_common.tools import AioPoolExecutor
+from genie_common.utils import create_client_session, build_authorization_headers
 
-from server.consts.env_consts import USERNAME, PASSWORD
+from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.controllers.request_body_controller import RequestBodyController
+from server.logic.ocr.artists_collector import ArtistsCollector
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.openai.embeddings_tracks_selector import EmbeddingsTracksSelector
-from server.logic.openai.openai_client import OpenAIClient
+from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
@@ -35,8 +38,18 @@ async def get_playlists_creator() -> PlaylistsCreator:
 
 @alru_cache(maxsize=1)
 async def get_openai_client() -> OpenAIClient:
-    session = await get_session()
-    return OpenAIClient(session)
+    api_key = os.environ[OPENAI_API_KEY]
+    headers = build_authorization_headers(api_key)
+    raw_session = create_client_session(headers)
+    session = await raw_session.__aenter__()
+
+    return OpenAIClient.create(session)
+
+
+@alru_cache(maxsize=1)
+async def get_openai_adapter() -> OpenAIAdapter:
+    client = await get_openai_client()
+    return OpenAIAdapter(client)
 
 
 @alru_cache(maxsize=1)
@@ -59,8 +72,13 @@ async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
 
 @alru_cache(maxsize=1)
 async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
-    session = await get_session()
-    return TracksURIsImageExtractor(session)
+    openai_adapter = await get_openai_adapter()
+    pool_executor = AioPoolExecutor()
+
+    return TracksURIsImageExtractor(
+        openai_adapter=openai_adapter,
+        artists_collector=ArtistsCollector(pool_executor)
+    )
 
 
 async def get_request_body_controller() -> RequestBodyController:

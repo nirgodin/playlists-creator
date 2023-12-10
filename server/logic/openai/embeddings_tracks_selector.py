@@ -1,11 +1,12 @@
 from typing import List
 
 import pandas as pd
+from genie_common.models.openai import EmbeddingsModel
+from genie_common.openai import OpenAIClient
 from pandas import DataFrame
 
 from server.consts.api_consts import NAME, ID
 from server.consts.data_consts import URI
-from server.logic.openai.openai_client import OpenAIClient
 from server.logic.playlist_imitation.playlist_imitator_consts import SIMILARITY_SCORE
 from server.logic.similarity_scores_computer import SimilarityScoresComputer
 
@@ -23,7 +24,7 @@ class EmbeddingsTracksSelector:
         self._similarity_scores_computer = SimilarityScoresComputer()
 
     async def select_tracks(self, embeddings_data: DataFrame, text: str) -> List[str]:
-        prompt_embeddings = await self._openai_client.embeddings(text)
+        prompt_embeddings = await self._openai_client.embeddings.collect(text=text, model=EmbeddingsModel.ADA)
         embeddings_dataframe = self._transform_embeddings_to_dataframe(prompt_embeddings)
         similarity_scores = self._similarity_scores_computer.compute_similarity_scores(
             database=embeddings_data.drop(NON_EMBEDDINGS_COLUMNS, axis=1),

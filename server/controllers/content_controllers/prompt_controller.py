@@ -1,5 +1,7 @@
 from typing import List, Optional, Union, Type
 
+from genie_common.models.openai import ImageSize
+from genie_common.openai import OpenAIClient
 from genie_common.tools.logs import logger
 from spotipyio import SpotifyClient
 
@@ -15,7 +17,6 @@ from server.data.prompt_details import PromptDetails
 from server.logic.data_filterer import DataFilterer
 from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
-from server.logic.openai.openai_client import OpenAIClient
 from server.logic.openai.track_details import TrackDetails
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
@@ -55,7 +56,11 @@ class PromptController(BaseContentController):
         user_text = self._extract_prompt_from_request_body(request_body)
         playlist_cover_prompt = f'{user_text}, digital art'
 
-        return await self._openai_client.create_image(playlist_cover_prompt, image_path)
+        return await self._openai_client.images_generation.collect(
+            prompt=playlist_cover_prompt,
+            n=1,
+            size=ImageSize.P512
+        )
 
     async def _generate_uris_from_prompt_details(self, user_text: str) -> Optional[List[str]]:
         prompt = self._build_query_conditions_prompt(user_text)
