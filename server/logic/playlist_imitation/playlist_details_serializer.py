@@ -25,13 +25,13 @@ class PlaylistDetailsSerializer:
     def serialize(self, playlist_details: PlaylistDetails) -> DataFrame:
         serialized_details = []
 
-        for i in range(len(playlist_details.tracks)):
+        for i in range(len(playlist_details.tracks)):  # TODO: Transform to single request per resource to save IO operations
             details = [
                 self._serialize_single_track_audio_features(playlist_details.audio_features[i]),
                 self._serialize_single_track_features(playlist_details.tracks[i]),
                 self._serialize_single_artist_features(playlist_details.artists[i])
             ]
-            serialized_track_details = chain_dicts(details)
+            serialized_track_details = chain_dicts(*details)
             serialized_details.append(serialized_track_details)
 
         return pd.DataFrame.from_records(serialized_details)

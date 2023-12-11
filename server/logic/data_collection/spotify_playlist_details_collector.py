@@ -32,15 +32,11 @@ class PlaylistDetailsCollector:
     @staticmethod
     async def _fetch_audio_features(tracks: List[dict], spotify_client: SpotifyClient) -> List[dict]:
         tracks_ids = [safe_nested_get(track, [TRACK, ID]) for track in tracks]
-        audio_features = await spotify_client.audio_features.run(tracks_ids)
-
-        return audio_features[AUDIO_FEATURES]
+        return await spotify_client.audio_features.run(tracks_ids)
 
     async def _fetch_tracks_artists(self, tracks: List[dict], spotify_client: SpotifyClient) -> List[dict]:
         artists_ids = [self._extract_main_artist_id(track) for track in tracks]
-        artists = await spotify_client.artists.info.run(artists_ids)
-
-        return artists[ARTISTS]
+        return await spotify_client.artists.info.run(artists_ids)
 
     @staticmethod
     async def _fetch_tracks_details(tracks: List[dict], spotify_client: SpotifyClient) -> List[dict]:
