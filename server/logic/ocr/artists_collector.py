@@ -26,7 +26,7 @@ class ArtistsCollector:
             search_types=[SpotifySearchType.ARTIST],
             artist=artist
         )
-        response = await spotify_client.search.collect_single(search_item)
+        response = await spotify_client.search.run_single(search_item)
 
         return self._extract_artist_details(original_input=artist, response=response)
 

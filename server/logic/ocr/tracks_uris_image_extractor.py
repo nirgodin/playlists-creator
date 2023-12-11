@@ -1,9 +1,9 @@
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from spotipyio import SpotifyClient
 
 from server.consts.api_consts import ID
-from server.consts.data_consts import URI
+from server.consts.data_consts import URI, TRACKS
 from server.consts.prompt_consts import PHOTO_ARTISTS_PROMPT_PREFIX
 from server.logic.ocr.artists_collector import ArtistsCollector
 from server.logic.ocr.artists_filterer import ArtistsFilterer
@@ -31,9 +31,9 @@ class TracksURIsImageExtractor:
         artists_details = await self._artists_collector.collect(artists_names, spotify_client)
         relevant_artists = self._artists_filterer.filter_relevant_artists(artists_details)
         artists_ids = [artist[ID] for artist in relevant_artists]
-        top_tracks = await spotify_client.artists.top_tracks.run(artists_ids)
+        top_tracks = await spotify_client.artists.top_tracks.run(artists_ids, market=country)
 
-        return self._extract_tracks_uris(top_tracks)  # TODO: Validate if output typing in spotipyio is wrong
+        return self._extract_tracks_uris(top_tracks)
 
     async def _extract_artists_names(self, image_path: str, language: str) -> Optional[List[str]]:
         image_text = self._image_text_extractor.extract_text(image_path, language)
@@ -43,11 +43,14 @@ class TracksURIsImageExtractor:
         return await self._openai_adapter.chat_completions(prompt)
 
     @staticmethod
-    def _extract_tracks_uris(tracks: List[List[dict]]) -> List[str]:
+    def _extract_tracks_uris(tracks: List[Dict[str, List[dict]]]) -> List[str]:
         uris = []
 
         for artist_tracks in tracks:
-            for track in artist_tracks:
-                uris.append(track[URI])
+            inner_tracks = artist_tracks.get(TRACKS, [])
+
+            if inner_tracks:
+                for track in inner_tracks:
+                    uris.append(track[URI])
 
         return uris

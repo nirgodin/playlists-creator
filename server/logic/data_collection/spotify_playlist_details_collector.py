@@ -12,7 +12,7 @@ from server.utils.spotify_utils import extract_tracks_from_response, sample_uris
 
 class PlaylistDetailsCollector:
     async def collect_playlist(self, playlist_id: str, spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
-        playlist = await spotify_client.playlists.info.collect_single(playlist_id)
+        playlist = await spotify_client.playlists.info.run_single(playlist_id)
         tracks = extract_tracks_from_response(playlist)
         tracks_sample = sample_uris(tracks, MAX_TRACKS_NUMBER_PER_REQUEST)
         tracks_data = await self._collect_tracks_data(tracks_sample, spotify_client)
