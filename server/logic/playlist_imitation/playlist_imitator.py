@@ -1,12 +1,8 @@
-from typing import Optional
-
 from aiohttp import ClientSession
 from pandas import DataFrame
-from spotipyio import SpotifyClient
 
 from server.consts.data_consts import SONG, ARTIST_NAME, NAME
 from server.data.playlist_resources import PlaylistResources
-from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_details_pipeline import PlaylistDetailsPipeline
 from server.logic.playlist_imitation.playlist_details_serializer import PlaylistDetailsSerializer
@@ -17,49 +13,26 @@ from server.utils.image_utils import save_image_from_url, current_timestamp_imag
 class PlaylistImitator:
     def __init__(self,
                  session: ClientSession,
-                 playlist_details_collector: PlaylistDetailsCollector = PlaylistDetailsCollector(),
                  playlist_details_serializer: PlaylistDetailsSerializer = PlaylistDetailsSerializer(),
                  tracks_selector: PlaylistImitatorTracksSelector = PlaylistImitatorTracksSelector(),
                  transformation_pipeline: PlaylistDetailsPipeline = PlaylistDetailsPipeline(is_training=False)):
         self._session = session
-        self._playlist_details_collector = playlist_details_collector
         self._playlist_details_serializer = playlist_details_serializer
         self._tracks_selector = tracks_selector
         self._transformation_pipeline = transformation_pipeline
 
-    async def imitate_playlist(self,
-                               playlist_url: str,
-                               dir_path: str,
-                               spotify_client: SpotifyClient) -> PlaylistResources:
-        raw_playlist_details = await self._extract_raw_playlist_details(playlist_url, spotify_client)
-        if raw_playlist_details is None:
-            return PlaylistResources(None, None)
-
-        transformed_playlist_data = self._transform_playlist_data(raw_playlist_details)
+    async def imitate_playlist(self, playlist_details: PlaylistDetails, dir_path: str) -> PlaylistResources:
+        transformed_playlist_data = self._transform_playlist_data(playlist_details)
         tracks_uris = self._tracks_selector.select_tracks(transformed_playlist_data)
-        cover_image_path = await self._save_original_cover_image(dir_path, raw_playlist_details.cover_image_url)
+        cover_image_path = await self._save_original_cover_image(dir_path, playlist_details.cover_image_url)
 
         return PlaylistResources(
             uris=tracks_uris,
             cover_image_path=cover_image_path
         )
 
-    async def _extract_raw_playlist_details(self,
-                                            playlist_url: str,
-                                            spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
-        playlist_id = self._extract_playlist_id_from_url(playlist_url)
-        return await self._playlist_details_collector.collect_playlist(playlist_id, spotify_client)
-
-    @staticmethod
-    def _extract_playlist_id_from_url(playlist_url: str) -> str:
-        split_url = playlist_url.split('/')
-        last_url_component = split_url[-1]
-        split_url_params = last_url_component.split('?')
-
-        return split_url_params[0]
-
-    def _transform_playlist_data(self, raw_playlist_details: PlaylistDetails) -> DataFrame:
-        serialized_playlist_data = self._playlist_details_serializer.serialize(raw_playlist_details)
+    def _transform_playlist_data(self, playlist_details: PlaylistDetails) -> DataFrame:
+        serialized_playlist_data = self._playlist_details_serializer.serialize(playlist_details)
         serialized_playlist_data[SONG] = serialized_playlist_data[ARTIST_NAME] + ' - ' + serialized_playlist_data[NAME]
 
         return self._transformation_pipeline.transform(serialized_playlist_data)

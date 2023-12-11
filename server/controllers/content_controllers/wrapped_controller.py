@@ -21,5 +21,5 @@ class WrappedController(BaseContentController):
 
         return PlaylistResources(uris=uris, cover_image_path=None)
 
-    async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> None:
+    async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> None:  # TODO: Implement
         raise NotImplementedError

@@ -31,7 +31,7 @@ class QueryCondition:
         if self.include_nan:
             condition += f' | {self.column}.isnull()'
 
-        return text(condition)
+        return condition
 
     def _format_value(self) -> None:
         if not self.operator == IN_OPERATOR:
