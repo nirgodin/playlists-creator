@@ -284,6 +284,60 @@ const EXISTING_PLAYLIST_DESCRIPTION = [
   },
 ];
 
+const WRAPPED_DESCRIPTION = [
+  {
+    variant: "h6",
+    text: "Wrapped",
+    textAlign: "center",
+    width: "500px",
+  },
+  {
+    variant: "p",
+    text: "Recall that splendid season when Spotify wraps up your top tunes in a delightful playlist? Brace yourselves, for the fun doesn't have to end!",
+    textAlign: "justify",
+    width: "500px",
+  },
+  {
+    variant: "p",
+    text: "Behold our Wrapped feature, granting you the power to do it yourself on a weekly basis. Simply select the time range that suits you at the moment, and in few seconds an updated playlist will be created just for you.",
+    textAlign: "justify",
+    width: "500px",
+  },
+  {
+    variant: "p",
+    text: '',
+    textAlign: "justify",
+    width: "500px",
+  },
+];
+
+const FOR_YOU_DESCRIPTION = [
+  {
+    variant: "h6",
+    text: "For You",
+    textAlign: "center",
+    width: "500px",
+  },
+  {
+    variant: "p",
+    text: "Not feeling like struggling to customize the perfect playlist? Let us do the job for you!",
+    textAlign: "justify",
+    width: "500px",
+  },
+  {
+    variant: "p",
+    text: "In few seconds, we will create a playlist just for you, based on you listening history. Zero effort, maximum profit.",
+    textAlign: "justify",
+    width: "500px",
+  },
+  {
+    variant: "p",
+    text: '',
+    textAlign: "justify",
+    width: "500px",
+  },
+]
+
 const LOGIN_PAGE_TEXT = [
   {
     variant: "p",
@@ -394,6 +448,8 @@ const ENDPOINTS_DESCRIPTIONS = {
   [PROMPT]: PROMPT_DESCRIPTION,
   [PHOTO]: PHOTO_DESCRIPTION,
   [EXISTING_PLAYLIST]: EXISTING_PLAYLIST_DESCRIPTION,
+  [WRAPPED]: WRAPPED_DESCRIPTION,
+  [FOR_YOU]: FOR_YOU_DESCRIPTION
 };
 
 export {

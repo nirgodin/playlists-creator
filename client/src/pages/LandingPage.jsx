@@ -5,7 +5,14 @@ import FormTextField from ".././components/FormTextField";
 import SendButton from ".././components/SendButton";
 import { useState, useEffect } from "react";
 import RequestBody from ".././components/RequestBody";
-import { PROMPT, CONFIGURATION, PHOTO, EXISTING_PLAYLIST, WRAPPED, FOR_YOU } from "../consts";
+import {
+  PROMPT,
+  CONFIGURATION,
+  PHOTO,
+  EXISTING_PLAYLIST,
+  WRAPPED,
+  FOR_YOU,
+} from "../consts";
 import PhotoDropzone from "../components/PhotoDropzone";
 import _ from "underscore";
 import PropTypes from "prop-types";
@@ -14,10 +21,9 @@ import PlaylistDetails from "../components/PlaylistDetails";
 import TuneIcon from "@mui/icons-material/Tune";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
-import QueueMusicRoundedIcon from '@mui/icons-material/QueueMusicRounded';
-import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-import ReplayCircleFilledRoundedIcon from '@mui/icons-material/ReplayCircleFilledRounded';
-
+import QueueMusicRoundedIcon from "@mui/icons-material/QueueMusicRounded";
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import ReplayCircleFilledRoundedIcon from "@mui/icons-material/ReplayCircleFilledRounded";
 
 function LandingPage(props) {
   const [alignment, setAlignment] = useState(PROMPT);
@@ -40,7 +46,13 @@ function LandingPage(props) {
       const isValid = isValidExistingPlaylist && isValidPlaylistName;
       setIsValidInput(isValid);
     }
-  }, [alignment, isValidPrompt, isValidPlaylistName, isValidExistingPlaylist, files]);
+  }, [
+    alignment,
+    isValidPrompt,
+    isValidPlaylistName,
+    isValidExistingPlaylist,
+    files,
+  ]);
 
   const playlistDetails = (
     <PlaylistDetails
@@ -86,7 +98,11 @@ function LandingPage(props) {
         alignment={alignment}
         setAlignment={setAlignment}
         config={toggleButtonsConfig}
-        sx={{ borderColor: "white", borderWidth: "1px", justifyContent: "center" }}
+        sx={{
+          borderColor: "white",
+          borderWidth: "1px",
+          justifyContent: "center",
+        }}
       ></MethodToggleButtonGroup>
       {popup}
     </div>
@@ -116,86 +132,51 @@ function LandingPage(props) {
     </div>
   );
 
-  if (alignment === PROMPT) {
-    return (
-      <div>
-        {playlistDetails}
-        <Box>
-          {toggleButton}
-          <div className="text-field">
-            <FormTextField
-              isRequired={true}
-              id={PROMPT}
-              label={"Prompt"}
-              defaultValue={""}
-              body={props.body}
-              setBody={props.setBody}
-              isValidInput={isValidPrompt}
-              setIsValidInput={setIsValidPrompt}
-            ></FormTextField>
-          </div>
-          {buttons}
-        </Box>
+  const alignmentsMapping = {
+    [PROMPT]: (
+      <div className="text-field">
+        <FormTextField
+          isRequired={true}
+          id={PROMPT}
+          label={"Prompt"}
+          defaultValue={""}
+          body={props.body}
+          setBody={props.setBody}
+          isValidInput={isValidPrompt}
+          setIsValidInput={setIsValidPrompt}
+        ></FormTextField>
       </div>
-    );
-  } else if (alignment === CONFIGURATION) {
-    return (
-      <div>
-        {playlistDetails}
-        {toggleButton}
-        <RequestBody body={props.body} setBody={props.setBody}></RequestBody>
-        {buttons}
+    ),
+    [CONFIGURATION]: (
+      <RequestBody body={props.body} setBody={props.setBody}></RequestBody>
+    ),
+    [PHOTO]: <PhotoDropzone files={files} setFiles={setFiles}></PhotoDropzone>,
+    [EXISTING_PLAYLIST]: (
+      <div className="text-field">
+        <FormTextField
+          isRequired={true}
+          id={"Existing Playlist"}
+          label={"Playlist URL"}
+          defaultValue={""}
+          body={props.body}
+          setBody={props.setBody}
+          isValidInput={isValidExistingPlaylist}
+          setIsValidInput={setIsValidExistingPlaylist}
+        ></FormTextField>
       </div>
-    );
-  } else if (alignment === PHOTO) {
-    return (
-      <div>
-        {playlistDetails}
-        {toggleButton}
-        <PhotoDropzone files={files} setFiles={setFiles}></PhotoDropzone>
-        {buttons}
-      </div>
-    );
-  } else if (alignment === EXISTING_PLAYLIST) {
-    return (
-      <div>
-        {playlistDetails}
-        {toggleButton}
-        <div className="text-field">
-          <FormTextField
-            isRequired={true}
-            id={"Existing Playlist"}
-            label={'Playlist URL'}
-            defaultValue={""}
-            body={props.body}
-            setBody={props.setBody}
-            isValidInput={isValidExistingPlaylist}
-            setIsValidInput={setIsValidExistingPlaylist}
-          ></FormTextField>
-        </div>
-        {buttons}
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        {playlistDetails}
-        {toggleButton}
-        <div className="text-field">
-          <FormTextField
-            isRequired={true}
-            id={"Wrapped"}
-            defaultValue={""}
-            body={props.body}
-            setBody={props.setBody}
-            isValidInput={isValidExistingPlaylist}
-            setIsValidInput={setIsValidExistingPlaylist}
-          ></FormTextField>
-        </div>
-        {buttons}
-      </div>
-    );
-  }
+    ),
+    [WRAPPED]: "",
+    [FOR_YOU]: "",
+  };
+
+  return (
+    <div>
+      {playlistDetails}
+      {toggleButton}
+      {[alignmentsMapping[alignment]]}
+      {buttons}
+    </div>
+  );
 }
 
 LandingPage.propTypes = {
