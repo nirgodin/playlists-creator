@@ -5,10 +5,12 @@ from fastapi import APIRouter, Depends, UploadFile, File, Form
 from fastapi.security import HTTPBasicCredentials, HTTPBasic
 
 from server.component_factory import get_authenticator, get_request_body_controller, get_configuration_controller, \
-    get_prompt_controller, get_photo_controller, get_existing_playlist_controller, get_wrapped_controller
+    get_prompt_controller, get_photo_controller, get_existing_playlist_controller, get_wrapped_controller, \
+    get_for_you_controller
 from server.consts.app_consts import PHOTO
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
+from server.controllers.content_controllers.for_you_controller import ForYouController
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
@@ -84,3 +86,14 @@ async def wrapped(request: dict,
 
     async with build_spotify_client(request) as client:
         return await wrapped_controller.post(request_body=request, spotify_client=client)
+
+
+@api_router.post('/forYou')
+async def wrapped(request: dict,
+                  credentials: Annotated[HTTPBasicCredentials, Depends(security)],
+                  authenticator: Annotated[Authenticator, Depends(get_authenticator)],
+                  for_you_controller: Annotated[ForYouController, Depends(get_for_you_controller)]):
+    authenticator.authenticate(credentials)
+
+    async with build_spotify_client(request) as client:
+        return await for_you_controller.post(request_body=request, spotify_client=client)

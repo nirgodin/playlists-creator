@@ -10,6 +10,7 @@ from genie_common.utils import create_client_session, build_authorization_header
 from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
+from server.controllers.content_controllers.for_you_controller import ForYouController
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
@@ -140,6 +141,18 @@ async def get_wrapped_controller() -> WrappedController:
     return WrappedController(
         playlists_creator=playlists_creator,
         openai_client=openai_client,
+    )
+
+
+async def get_for_you_controller() -> ForYouController:
+    playlists_creator = await get_playlists_creator()
+    openai_client = await get_openai_client()
+    playlists_imitator = await get_playlist_imitator()
+
+    return ForYouController(
+        playlists_creator=playlists_creator,
+        openai_client=openai_client,
+        playlists_imitator=playlists_imitator
     )
 
 

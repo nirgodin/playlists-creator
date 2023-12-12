@@ -24,7 +24,8 @@ class PlaylistImitator:
     async def imitate_playlist(self, playlist_details: PlaylistDetails, dir_path: str) -> PlaylistResources:
         transformed_playlist_data = self._transform_playlist_data(playlist_details)
         tracks_uris = self._tracks_selector.select_tracks(transformed_playlist_data)
-        cover_image_path = await self._save_original_cover_image(dir_path, playlist_details.cover_image_url)
+        # TODO: Think how to do this
+        cover_image_path = None  # await self._save_original_cover_image(dir_path, playlist_details.cover_image_url)
 
         return PlaylistResources(
             uris=tracks_uris,

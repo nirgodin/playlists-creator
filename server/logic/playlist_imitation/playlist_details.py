@@ -10,4 +10,4 @@ class PlaylistDetails:
     tracks: List[dict]
     artists: List[dict]
     audio_features: List[dict]
-    cover_image_url: Optional[str]
+    cover_image_url: Optional[str] = None

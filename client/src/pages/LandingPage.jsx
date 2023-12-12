@@ -5,7 +5,7 @@ import FormTextField from ".././components/FormTextField";
 import SendButton from ".././components/SendButton";
 import { useState, useEffect } from "react";
 import RequestBody from ".././components/RequestBody";
-import { PROMPT, CONFIGURATION, PHOTO, EXISTING_PLAYLIST, WRAPPED } from "../consts";
+import { PROMPT, CONFIGURATION, PHOTO, EXISTING_PLAYLIST, WRAPPED, FOR_YOU } from "../consts";
 import PhotoDropzone from "../components/PhotoDropzone";
 import _ from "underscore";
 import PropTypes from "prop-types";
@@ -15,6 +15,8 @@ import TuneIcon from "@mui/icons-material/Tune";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
 import QueueMusicRoundedIcon from '@mui/icons-material/QueueMusicRounded';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import ReplayCircleFilledRoundedIcon from '@mui/icons-material/ReplayCircleFilledRounded';
 
 
 function LandingPage(props) {
@@ -70,7 +72,11 @@ function LandingPage(props) {
     },
     {
       value: WRAPPED,
-      icon: <EditNoteIcon sx={{ paddingRight: "10px" }} />,
+      icon: <ReplayCircleFilledRoundedIcon sx={{ paddingRight: "10px" }} />,
+    },
+    {
+      value: FOR_YOU,
+      icon: <FavoriteRoundedIcon sx={{ paddingRight: "10px" }} />,
     },
   ];
 

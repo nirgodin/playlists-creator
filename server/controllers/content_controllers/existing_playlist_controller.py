@@ -5,12 +5,14 @@ from genie_common.openai import OpenAIClient
 from spotipyio import SpotifyClient
 
 from server.consts.app_consts import PLAYLIST_DETAILS, EXISTING_PLAYLIST
+from server.consts.data_consts import TRACK
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
+from server.utils.spotify_utils import extract_tracks_from_response
 
 
 class ExistingPlaylistController(BaseContentController):
@@ -46,7 +48,11 @@ class ExistingPlaylistController(BaseContentController):
                                             playlist_url: str,
                                             spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
         playlist_id = self._extract_playlist_id_from_url(playlist_url)
-        return await self._playlist_details_collector.collect_playlist(playlist_id, spotify_client)
+        playlist = await spotify_client.playlists.info.run_single(playlist_id)
+        items = extract_tracks_from_response(playlist)
+        tracks = [track.get(TRACK) for track in items]
+
+        return await self._playlist_details_collector.collect_playlist(tracks, spotify_client)
 
     @staticmethod
     def _extract_playlist_id_from_url(playlist_url: str) -> str:

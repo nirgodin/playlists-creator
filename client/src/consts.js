@@ -1,5 +1,6 @@
 const PROMPT = "prompt";
 const WRAPPED = "wrapped";
+const FOR_YOU = "forYou";
 const EXISTING_PLAYLIST = "existingPlaylist";
 const CONFIGURATION = "configuration";
 const PHOTO = "photo";
@@ -400,6 +401,7 @@ export {
   EXISTING_PLAYLIST,
   CONFIGURATION,
   PHOTO,
+  FOR_YOU,
   FILTER_PARAMS,
   INCLUDE_NAN,
   PLAYLIST_DETAILS,
