@@ -18,6 +18,7 @@ from server.controllers.content_controllers.prompt_controller import PromptContr
 from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.controllers.request_body_controller import RequestBodyController
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
+from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCalculator
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.ocr.artists_collector import ArtistsCollector
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
@@ -115,6 +116,11 @@ def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:
     )
 
 
+@lru_cache
+def get_z_score_calculator() -> ZScoreCalculator:
+    return ZScoreCalculator(get_database_engine())
+
+
 async def get_configuration_photo_prompt_creator() -> ConfigurationPhotoPromptCreator:
     # TODO: Think how to handle cache here
     possible_values_querier = get_possible_values_querier()
@@ -122,7 +128,10 @@ async def get_configuration_photo_prompt_creator() -> ConfigurationPhotoPromptCr
     default_values_generator = DefaultFilterParamsGenerator()
     params_default_values = default_values_generator.get_filter_params_defaults(columns_values)
 
-    return ConfigurationPhotoPromptCreator(params_default_values)
+    return ConfigurationPhotoPromptCreator(
+        params_default_values=params_default_values,
+        z_score_calculator=get_z_score_calculator()
+    )
 
 
 async def get_request_body_controller() -> RequestBodyController:

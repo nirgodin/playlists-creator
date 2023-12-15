@@ -41,7 +41,7 @@ class ConfigurationController(BaseContentController):
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         filter_params = request_body[FILTER_PARAMS]
-        playlist_cover_prompt = self._photo_prompt_creator.create_prompt(filter_params)
+        playlist_cover_prompt = await self._photo_prompt_creator.create_prompt(filter_params)
 
         return await self._openai_client.images_generation.collect(
             prompt=playlist_cover_prompt,
