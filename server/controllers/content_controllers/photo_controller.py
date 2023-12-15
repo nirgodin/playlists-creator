@@ -8,16 +8,18 @@ from server.controllers.content_controllers.base_content_controller import BaseC
 from server.data.playlist_resources import PlaylistResources
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.playlists_creator import PlaylistsCreator
+from server.tools.authenticator import Authenticator
 from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
 from server.utils.spotify_utils import sample_uris
 
 
 class PhotoController(BaseContentController):
     def __init__(self,
+                 authenticator: Authenticator,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
                  tracks_uris_extractor: TracksURIsImageExtractor):
-        super().__init__(playlists_creator, openai_client)
+        super().__init__(authenticator, playlists_creator, openai_client)
         self._tracks_uris_extractor = tracks_uris_extractor
 
     async def _generate_playlist_resources(self,

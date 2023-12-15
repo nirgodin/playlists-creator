@@ -20,19 +20,21 @@ from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.data.track_details import TrackDetails
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
+from server.tools.authenticator import Authenticator
 from server.utils.general_utils import build_prompt, to_dataclass
 from server.utils.image_utils import current_timestamp_image_path
 
 
 class PromptController(BaseContentController):
     def __init__(self,
+                 authenticator: Authenticator,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
                  openai_adapter: OpenAIAdapter,
                  prompt_details_tracks_selector: PromptDetailsTracksSelector,
                  columns_descriptions_creator: ColumnsDescriptionsCreator,
                  data_filterer: DataFilterer = DataFilterer()):
-        super().__init__(playlists_creator, openai_client)
+        super().__init__(authenticator, playlists_creator, openai_client)
         self._openai_adapter = openai_adapter
         self._data_filterer = data_filterer
         self._columns_descriptions_creator = columns_descriptions_creator

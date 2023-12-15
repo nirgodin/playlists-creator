@@ -11,18 +11,20 @@ from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator 
 from server.logic.data_filterer import DataFilterer
 from server.logic.parameters_transformer import ParametersTransformer
 from server.logic.playlists_creator import PlaylistsCreator
+from server.tools.authenticator import Authenticator
 from server.utils.image_utils import current_timestamp_image_path
 from server.utils.spotify_utils import sample_uris
 
 
 class ConfigurationController(BaseContentController):
     def __init__(self,
+                 authenticator: Authenticator,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
                  photo_prompt_creator: ConfigurationPhotoPromptCreator,
                  data_filterer: DataFilterer = DataFilterer(),
                  parameters_transformer: ParametersTransformer = ParametersTransformer()):
-        super().__init__(playlists_creator, openai_client)
+        super().__init__(authenticator, playlists_creator, openai_client)
         self._photo_prompt_creator = photo_prompt_creator
         self._data_filterer = data_filterer
         self._parameters_transformer = parameters_transformer

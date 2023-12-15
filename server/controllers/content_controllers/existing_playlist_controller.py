@@ -12,16 +12,18 @@ from server.logic.data_collection.spotify_playlist_details_collector import Play
 from server.data.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
+from server.tools.authenticator import Authenticator
 from server.utils.spotify_utils import extract_tracks_from_response
 
 
 class ExistingPlaylistController(BaseContentController):
     def __init__(self,
+                 authenticator: Authenticator,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
                  playlists_imitator: PlaylistImitator,
                  playlist_details_collector: PlaylistDetailsCollector = PlaylistDetailsCollector()):
-        super().__init__(playlists_creator, openai_client)
+        super().__init__(authenticator, playlists_creator, openai_client)
         self._playlist_imitator = playlists_imitator
         self._playlist_details_collector = playlist_details_collector
 

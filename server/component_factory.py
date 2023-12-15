@@ -134,6 +134,10 @@ async def get_configuration_photo_prompt_creator() -> ConfigurationPhotoPromptCr
     )
 
 
+def get_columns_descriptions_creator():
+    return ColumnsDescriptionsCreator(get_possible_values_querier())
+
+
 async def get_request_body_controller() -> RequestBodyController:
     return RequestBodyController(
         possible_values_querier=get_possible_values_querier()
@@ -146,14 +150,11 @@ async def get_configuration_controller() -> ConfigurationController:
     photo_prompt_creator = await get_configuration_photo_prompt_creator()
 
     return ConfigurationController(
+        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         photo_prompt_creator=photo_prompt_creator
     )
-
-
-def get_columns_descriptions_creator():
-    return ColumnsDescriptionsCreator(get_possible_values_querier())
 
 
 async def get_prompt_controller() -> PromptController:
@@ -163,6 +164,7 @@ async def get_prompt_controller() -> PromptController:
     prompt_details_tracks_selector = await get_prompt_details_tracks_selector()
 
     return PromptController(
+        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         openai_adapter=openai_adapter,
@@ -177,6 +179,7 @@ async def get_photo_controller() -> PhotoController:
     tracks_uris_extractor = await get_tracks_uris_image_extractor()
 
     return PhotoController(
+        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         tracks_uris_extractor=tracks_uris_extractor
@@ -189,6 +192,7 @@ async def get_existing_playlist_controller() -> ExistingPlaylistController:
     playlists_imitator = await get_playlist_imitator()
 
     return ExistingPlaylistController(
+        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         playlists_imitator=playlists_imitator
@@ -200,6 +204,7 @@ async def get_wrapped_controller() -> WrappedController:
     openai_client = await get_openai_client()
 
     return WrappedController(
+        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
     )
@@ -211,13 +216,14 @@ async def get_for_you_controller() -> ForYouController:
     playlists_imitator = await get_playlist_imitator()
 
     return ForYouController(
+        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         playlists_imitator=playlists_imitator
     )
 
 
-@lru_cache(maxsize=1)
+@lru_cache
 def get_authenticator() -> Authenticator:
     return Authenticator(
         username=os.environ[USERNAME],
