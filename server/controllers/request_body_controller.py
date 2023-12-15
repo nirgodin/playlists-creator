@@ -7,29 +7,27 @@ from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAIL
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.features_descriptions_manager import FeaturesDescriptionsManager
 from server.logic.request_body.column_group import ColumnGroup
-from server.logic.request_body.column_values import ColumnValues
+from server.logic.request_body.column_details import ColumnDetails
 from server.logic.request_body.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 
 
 class RequestBodyController:
     def __init__(self,
                  possible_values_querier: ColumnsPossibleValuesQuerier,
-                 default_filter_params_generator: DefaultFilterParamsGenerator = DefaultFilterParamsGenerator(),
-                 features_descriptions_manager: FeaturesDescriptionsManager = FeaturesDescriptionsManager()):
+                 default_filter_params_generator: DefaultFilterParamsGenerator = DefaultFilterParamsGenerator()):
         self._possible_values_querier = possible_values_querier
         self._default_filter_params_generator = default_filter_params_generator
-        self._features_descriptions_manager = features_descriptions_manager
 
     async def get(self) -> JSONResponse:
         columns_values = await self._possible_values_querier.query()
         features_values = self._get_features_values(columns_values)
         body = {
-            FILTER_PARAMS: self._default_filter_params_generator.get_filter_params_defaults(),
+            FILTER_PARAMS: self._default_filter_params_generator.get_filter_params_defaults(columns_values),
             ACCESS_CODE: '',
             PLAYLIST_DETAILS: self._generate_default_playlist_details(),
             FEATURES_NAMES: self._get_features_names(features_values),
             FEATURES_VALUES: features_values,
-            FEATURES_DESCRIPTIONS: self._features_descriptions_manager.get_features_descriptions(),
+            FEATURES_DESCRIPTIONS: {column.formatted_name: column.description for column in columns_values},
         }
         content = {
             REQUEST_BODY: [body]
@@ -48,7 +46,7 @@ class RequestBodyController:
         }
 
     @staticmethod
-    def _get_features_values(columns_values: List[ColumnValues]) -> Dict[str, Dict[str, List[Any]]]:
+    def _get_features_values(columns_values: List[ColumnDetails]) -> Dict[str, Dict[str, List[Any]]]:
         features_values = {
             ColumnGroup.MIN_MAX_VALUES.value: {},
             ColumnGroup.POSSIBLE_VALUES.value: {},

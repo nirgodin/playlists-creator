@@ -1,18 +1,17 @@
-from typing import Union, Dict, List, Optional
+from typing import Union, Dict, List
 
 from server.consts.app_consts import VALUE, GREATER_THAN_OPERATOR, LESS_THAN_OPERATOR
 from server.consts.data_consts import IN_OPERATOR
 from server.data.z_score_description import ZScoreDescription
 from server.logic.configuration_photo_prompt.prompt_component import PromptComponent
-from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCalculator
 from server.utils.string_utils import pre_process_column_name
 
 
 class ConfigurationPhotoPromptCreator:
-    def __init__(self):
-        self._params_default_values = DefaultFilterParamsGenerator().get_filter_params_defaults()
-        self._z_score_calculator = ZScoreCalculator()
+    def __init__(self, params_default_values: dict, z_score_calculator: ZScoreCalculator = ZScoreCalculator()):
+        self._params_default_values = params_default_values
+        self._z_score_calculator = z_score_calculator
 
     def create_prompt(self, filter_params: dict) -> str:
         relevant_params = self._get_relevant_params_values(filter_params)

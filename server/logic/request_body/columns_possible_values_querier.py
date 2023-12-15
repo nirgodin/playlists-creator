@@ -1,16 +1,14 @@
 from enum import EnumMeta
-from typing import List, Any, Dict, Tuple
+from typing import List
 
 from genie_common.tools import AioPoolExecutor
-from genie_common.utils import merge_dicts
 from genie_datastores.postgres.models import BaseORMModel
 from genie_datastores.postgres.operations import execute_query
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from server.logic.openai.column_details import ColumnDetails
 from server.logic.request_body.column_group import ColumnGroup
-from server.logic.request_body.column_values import ColumnValues
+from server.logic.request_body.column_details import ColumnDetails
 
 
 class ColumnsPossibleValuesQuerier:
@@ -22,21 +20,22 @@ class ColumnsPossibleValuesQuerier:
         self._columns = columns
         self._pool_executor = pool_executor
 
-    async def query(self) -> List[ColumnValues]:
+    # TODO: Add here cache with TTL
+    async def query(self) -> List[ColumnDetails]:
         return await self._pool_executor.run(
             iterable=self._columns,
             func=self._get_single_column_possible_values,
-            expected_type=dict
+            expected_type=ColumnDetails
         )
 
-    async def _get_single_column_possible_values(self, column: BaseORMModel) -> ColumnValues:
+    async def _get_single_column_possible_values(self, column: BaseORMModel) -> ColumnDetails:
         group = ColumnGroup.POSSIBLE_VALUES
 
         if column.type.python_type == bool:
             possible_values = [False, True]
 
         elif isinstance(column.type.python_type, EnumMeta):
-            possible_values = sorted(column.type.enums)
+            possible_values = column.type.enums
 
         elif column.type.python_type == str:
             possible_values = await self._query_possible_values(column)
@@ -48,9 +47,9 @@ class ColumnsPossibleValuesQuerier:
         else:
             raise ValueError(f"Column `{column.key}` has unknown type. Can't extract possible values")
 
-        return ColumnValues(
+        return ColumnDetails(
             name=column.key,
-            values=possible_values,
+            values=sorted(possible_values),
             group=group
         )
 

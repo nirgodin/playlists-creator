@@ -30,12 +30,12 @@ class PromptController(BaseContentController):
                  openai_client: OpenAIClient,
                  openai_adapter: OpenAIAdapter,
                  prompt_details_tracks_selector: PromptDetailsTracksSelector,
-                 data_filterer: DataFilterer = DataFilterer(),
-                 columns_details_creator: ColumnsDescriptionsCreator = ColumnsDescriptionsCreator()):
+                 columns_descriptions_creator: ColumnsDescriptionsCreator,
+                 data_filterer: DataFilterer = DataFilterer()):
         super().__init__(playlists_creator, openai_client)
         self._openai_adapter = openai_adapter
         self._data_filterer = data_filterer
-        self._columns_details_creator = columns_details_creator
+        self._columns_descriptions_creator = columns_descriptions_creator
         self._prompt_details_tracks_selector = prompt_details_tracks_selector
 
     async def _generate_playlist_resources(self,
@@ -66,15 +66,15 @@ class PromptController(BaseContentController):
         )
 
     async def _generate_uris_from_prompt_details(self, user_text: str) -> Optional[List[str]]:
-        prompt = self._build_query_conditions_prompt(user_text)
+        prompt = await self._build_query_conditions_prompt(user_text)
         json_serialized_response = await self._openai_adapter.chat_completions(prompt, retries_left=1)
         prompt_details = self._serialize_openai_response(json_serialized_response, dataclass=PromptDetails)
 
         if prompt_details is not None:
             return await self._prompt_details_tracks_selector.select_tracks(prompt_details)
 
-    def _build_query_conditions_prompt(self, user_text: str) -> str:
-        columns_details = self._columns_details_creator.create()
+    async def _build_query_conditions_prompt(self, user_text: str) -> str:
+        columns_details = await self._columns_descriptions_creator.create()
         prompt_prefix = QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT.format(columns_details=columns_details)
         prompt_suffix = QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT.format(user_text=user_text)
 
@@ -102,13 +102,6 @@ class PromptController(BaseContentController):
             tracks = await spotify_client.search.run(search_items)
 
             return [track[URI] for track in tracks][:MAX_SPOTIFY_PLAYLIST_SIZE]
-
-    def _build_uris_prompt(self, user_text: str) -> str:
-        columns_details = self._columns_details_creator.create()
-        prompt_prefix = QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT.format(columns_details=columns_details)
-        prompt_suffix = QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT.format(user_text=user_text)
-
-        return build_prompt(prompt_prefix, prompt_suffix)
 
     @staticmethod
     def _extract_prompt_from_request_body(request_body: dict) -> str:

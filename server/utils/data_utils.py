@@ -1,3 +1,4 @@
+import json
 from functools import lru_cache
 from typing import List, Tuple
 
@@ -5,7 +6,7 @@ import pandas as pd
 from pandas import DataFrame, Series
 
 from server.consts.data_consts import DEFAULT_OUTLIER_THRESHOLD, SERIES, Z_SCORE
-from server.consts.path_consts import DATA_PATH
+from server.consts.path_consts import DATA_PATH, COLUMNS_DESCRIPTIONS_PATH
 from server.utils.string_utils import format_column_name
 from server.utils.statistics_utils import calculate_z_score
 
@@ -52,3 +53,15 @@ def get_column_possible_values(column_name: str) -> List[str]:
     unique_values = data[formatted_column_name].unique().tolist()
 
     return sorted([str(value) for value in unique_values if not pd.isna(value)])
+
+
+@lru_cache
+def get_column_description(column_name: str) -> str:
+    columns_descriptions = get_columns_descriptions()
+    return columns_descriptions[column_name]
+
+
+@lru_cache
+def get_columns_descriptions() -> dict:
+    with open(COLUMNS_DESCRIPTIONS_PATH) as f:
+        return json.load(f)

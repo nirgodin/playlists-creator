@@ -6,6 +6,8 @@ from async_lru import alru_cache
 from genie_common.openai import OpenAIClient
 from genie_common.tools import AioPoolExecutor
 from genie_common.utils import create_client_session, build_authorization_headers
+from genie_datastores.postgres.models import AudioFeatures, SpotifyArtist, SpotifyTrack, TrackLyrics
+from genie_datastores.postgres.operations import get_database_engine
 
 from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
@@ -15,13 +17,17 @@ from server.controllers.content_controllers.photo_controller import PhotoControl
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.controllers.request_body_controller import RequestBodyController
+from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
+from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.ocr.artists_collector import ArtistsCollector
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
+from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.embeddings_tracks_selector import EmbeddingsTracksSelector
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
+from server.logic.request_body.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 from server.tools.authenticator import Authenticator
 
 
@@ -82,18 +88,63 @@ async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
     )
 
 
+def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:
+    columns = [  # TODO: Think how to add popularity, followers, main_genre, radio_play_count, release_year
+        AudioFeatures.acousticness,
+        SpotifyArtist.gender,
+        AudioFeatures.danceability,
+        AudioFeatures.duration_ms,  # TODO: Think how to transform to minutes
+        AudioFeatures.energy,
+        SpotifyTrack.explicit,
+        AudioFeatures.instrumentalness,
+        SpotifyArtist.is_israeli,
+        AudioFeatures.key,
+        TrackLyrics.language,
+        AudioFeatures.liveness,
+        AudioFeatures.loudness,
+        AudioFeatures.mode,
+        AudioFeatures.tempo,
+        AudioFeatures.time_signature,
+        SpotifyTrack.number,
+        AudioFeatures.valence
+    ]
+
+    return ColumnsPossibleValuesQuerier(
+        db_engine=get_database_engine(),
+        columns=columns
+    )
+
+
+async def get_configuration_photo_prompt_creator() -> ConfigurationPhotoPromptCreator:
+    # TODO: Think how to handle cache here
+    possible_values_querier = get_possible_values_querier()
+    columns_values = await possible_values_querier.query()
+    default_values_generator = DefaultFilterParamsGenerator()
+    params_default_values = default_values_generator.get_filter_params_defaults(columns_values)
+
+    return ConfigurationPhotoPromptCreator(params_default_values)
+
+
 async def get_request_body_controller() -> RequestBodyController:
-    return RequestBodyController()
+    return RequestBodyController(
+        possible_values_querier=get_possible_values_querier()
+    )
 
 
 async def get_configuration_controller() -> ConfigurationController:
     playlists_creator = await get_playlists_creator()
     openai_client = await get_openai_client()
+    photo_prompt_creator = await get_configuration_photo_prompt_creator()
 
     return ConfigurationController(
         playlists_creator=playlists_creator,
         openai_client=openai_client,
+        photo_prompt_creator=photo_prompt_creator
     )
+
+
+def get_columns_descriptions_creator():
+    return ColumnsDescriptionsCreator(get_possible_values_querier())
 
 
 async def get_prompt_controller() -> PromptController:
@@ -106,6 +157,7 @@ async def get_prompt_controller() -> PromptController:
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         openai_adapter=openai_adapter,
+        columns_descriptions_creator=get_columns_descriptions_creator(),
         prompt_details_tracks_selector=prompt_details_tracks_selector
     )
 

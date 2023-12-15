@@ -19,13 +19,13 @@ class ConfigurationController(BaseContentController):
     def __init__(self,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
+                 photo_prompt_creator: ConfigurationPhotoPromptCreator,
                  data_filterer: DataFilterer = DataFilterer(),
-                 parameters_transformer: ParametersTransformer = ParametersTransformer(),
-                 photo_prompt_creator: ConfigurationPhotoPromptCreator = ConfigurationPhotoPromptCreator()):
+                 parameters_transformer: ParametersTransformer = ParametersTransformer()):
         super().__init__(playlists_creator, openai_client)
+        self._photo_prompt_creator = photo_prompt_creator
         self._data_filterer = data_filterer
         self._parameters_transformer = parameters_transformer
-        self._photo_prompt_creator = photo_prompt_creator
 
     async def _generate_playlist_resources(self,
                                            request_body: dict,

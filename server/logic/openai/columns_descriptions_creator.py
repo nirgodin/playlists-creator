@@ -1,80 +1,31 @@
 from functools import lru_cache
-from typing import List, Generator
-
-from numpy import dtype
-from pandas import DataFrame
-from pandas.core.dtypes.common import is_string_dtype, is_bool_dtype
 
 from server.consts.prompt_consts import SINGLE_COLUMN_DESCRIPTION_FORMAT
-from server.consts.data_consts import EXCLUDED_COLUMNS, IN_OPERATOR, NUMERIC_OPERATORS
-from server.logic.features_descriptions_manager import FeaturesDescriptionsManager
-from server.logic.openai.column_details import ColumnDetails
-from server.utils.data_utils import load_data, get_column_min_max_values, get_column_possible_values
+from server.logic.request_body.column_details import ColumnDetails
+from server.logic.request_body.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 
 
 class ColumnsDescriptionsCreator:
-    def __init__(self):
-        self._features_descriptions_manager = FeaturesDescriptionsManager()
+    def __init__(self, possible_values_querier: ColumnsPossibleValuesQuerier):
+        self._possible_values_querier = possible_values_querier
 
     @lru_cache
-    def create(self) -> str:
-        data = load_data()
+    async def create(self) -> str:
         columns_descriptions = []
+        columns_details = await self._possible_values_querier.query()
 
-        for column_details in self.get_relevant_columns_details(data):
-            column_description = self._build_single_column_description(column_details)
+        for i, column_details in enumerate(columns_details):
+            column_description = self._build_single_column_description(i, column_details)
             columns_descriptions.append(column_description)
 
         return ''.join(columns_descriptions)
 
-    def get_relevant_columns_details(self, data: DataFrame) -> Generator[ColumnDetails, None, None]:
-        relevant_columns = []
-
-        for column_name in data.columns.tolist():
-            if column_name not in EXCLUDED_COLUMNS:
-                relevant_columns.append(column_name)
-
-        yield from self._generate_columns_details(data, relevant_columns)
-
     @staticmethod
-    def _build_single_column_description(column_details: ColumnDetails) -> str:
+    def _build_single_column_description(index: int, column_details: ColumnDetails) -> str:
         return SINGLE_COLUMN_DESCRIPTION_FORMAT.format(
-            column_index=column_details.index + 1,
+            column_index=index + 1,
             column_name=column_details.name,
             column_operator=column_details.operator,
             column_values=column_details.values,
             column_description=column_details.description
         )
-
-    def _generate_columns_details(self, data: DataFrame, relevant_columns: List[str]) -> Generator[ColumnDetails,
-                                                                                                   None,
-                                                                                                   None]:
-        for column_index, column_name in enumerate(relevant_columns):
-            column_dtype = data[column_name].dtype
-            column_operator = self._get_column_operator(column_dtype)
-            column_values = self._get_column_values(column_name, column_operator)
-            column_description = self._features_descriptions_manager.get_single_feature_description(column_name)
-
-            yield ColumnDetails(
-                index=column_index,
-                name=column_name,
-                operator=column_operator,
-                values=column_values,
-                description=column_description
-            )
-
-    @staticmethod
-    def _get_column_operator(column_dtype: dtype) -> str:
-        if is_string_dtype(column_dtype) or is_bool_dtype(column_dtype):
-            return IN_OPERATOR
-
-        else:
-            return NUMERIC_OPERATORS
-
-    @staticmethod
-    def _get_column_values(column_name: str, column_operator: str) -> list:
-        if column_operator == IN_OPERATOR:
-            return get_column_possible_values(column_name)
-
-        else:
-            return get_column_min_max_values(column_name)

@@ -11,7 +11,7 @@
     "key": "The key the track is in.",
     "main_genre": "The main genre of the track",
     "artist_gender": "The gender of the artist",
-    "track_number": "The number of the track. If an album has several discs, the track number is the number on the specified disc.",
+    "number": "The number of the track. If an album has several discs, the track number is the number on the specified disc.",
     "explicit": "Whether or not the track has explicit lyrics (true = yes it does; false = no it does not OR unknown)",
     "album_tracks_number": "The number of tracks in the album.",
     "is_israeli": "A value indicating whether the track is performed by an Israeli artist.",
@@ -23,6 +23,8 @@
     "artist_popularity": "The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular. The artist's popularity is calculated from the popularity of all the artist's tracks.",
     "israeli_radio_play_count": "The number of times the track was played in the Israeli radio during the past two years",
     "duration_minutes": "The duration of the track in minutes",
+    "duration_ms": "The duration of the track in milliseconds",
+    "gender": "The gender of the artist",
     "release_year": "The year the track was first released",
     "album_type": "The type of album",
     "album_group": "The group of the album"
