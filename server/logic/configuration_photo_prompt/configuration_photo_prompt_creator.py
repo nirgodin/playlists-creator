@@ -3,7 +3,7 @@ from typing import Union, Dict, List
 from server.consts.app_consts import VALUE, GREATER_THAN_OPERATOR, LESS_THAN_OPERATOR
 from server.consts.data_consts import IN_OPERATOR
 from server.data.z_score_description import ZScoreDescription
-from server.logic.configuration_photo_prompt.prompt_component import PromptComponent
+from server.data.prompt_component import PromptComponent
 from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCalculator
 from server.utils.string_utils import pre_process_column_name
 
