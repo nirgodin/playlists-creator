@@ -1,14 +1,17 @@
 from enum import EnumMeta
 from typing import List
 
+from cache import AsyncTTL
 from genie_common.tools import AioPoolExecutor
 from genie_datastores.postgres.models import BaseORMModel
 from genie_datastores.postgres.operations import execute_query
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from server.consts.general_consts import ONE_DAY_IN_SECONDS
 from server.data.column_group import ColumnGroup
 from server.data.column_details import ColumnDetails
+from server.utils.string_utils import titleize_feature_name
 
 
 class ColumnsPossibleValuesQuerier:
@@ -20,7 +23,7 @@ class ColumnsPossibleValuesQuerier:
         self._columns = columns
         self._pool_executor = pool_executor
 
-    # TODO: Add here cache with TTL
+    @AsyncTTL(time_to_live=ONE_DAY_IN_SECONDS)
     async def query(self) -> List[ColumnDetails]:
         return await self._pool_executor.run(
             iterable=self._columns,
@@ -32,10 +35,10 @@ class ColumnsPossibleValuesQuerier:
         group = ColumnGroup.POSSIBLE_VALUES
 
         if column.type.python_type == bool:
-            possible_values = [False, True]
+            possible_values = ["False", "True"]
 
         elif isinstance(column.type.python_type, EnumMeta):
-            possible_values = column.type.enums
+            possible_values = [titleize_feature_name(value) for value in column.type.enums]
 
         elif column.type.python_type == str:
             possible_values = await self._query_possible_values(column)
