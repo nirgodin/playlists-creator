@@ -1,10 +1,9 @@
 from typing import List, Optional, Callable, Dict
 
-from genie_common.utils import safe_nested_get
 from spotipyio import SpotifyClient
 
 from server.consts.api_consts import ID, MAX_TRACKS_NUMBER_PER_REQUEST
-from server.consts.data_consts import TRACK, ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES
+from server.consts.data_consts import ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES
 from server.consts.openai_consts import URL
 from server.logic.playlist_imitation.playlist_details import PlaylistDetails
 from server.utils.spotify_utils import sample_uris

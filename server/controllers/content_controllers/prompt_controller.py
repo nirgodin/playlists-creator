@@ -17,7 +17,7 @@ from server.data.prompt_details import PromptDetails
 from server.logic.data_filterer import DataFilterer
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
-from server.logic.openai.track_details import TrackDetails
+from server.data.track_details import TrackDetails
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.utils.general_utils import build_prompt, to_dataclass
