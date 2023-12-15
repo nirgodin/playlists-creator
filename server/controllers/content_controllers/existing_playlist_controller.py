@@ -9,7 +9,7 @@ from server.consts.data_consts import TRACK
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
-from server.logic.playlist_imitation.playlist_details import PlaylistDetails
+from server.data.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.utils.spotify_utils import extract_tracks_from_response

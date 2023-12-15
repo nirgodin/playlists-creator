@@ -7,7 +7,7 @@ from pandas import DataFrame
 
 from server.consts.data_consts import FOLLOWERS, TOTAL, ALBUM, ARTIST, NAME, \
     POPULARITY
-from server.logic.playlist_imitation.playlist_details import PlaylistDetails
+from server.data.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_imitator_consts import AUDIO_FEATURES_IRRELEVANT_KEYS, \
     ARTISTS_FEATURES_IRRELEVANT_KEYS, TRACKS_FEATURES_IRRELEVANT_KEYS, ALBUM_RELEVANT_FEATURES
 

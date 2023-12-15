@@ -3,7 +3,7 @@ from pandas import DataFrame
 
 from server.consts.data_consts import SONG, ARTIST_NAME, NAME
 from server.data.playlist_resources import PlaylistResources
-from server.logic.playlist_imitation.playlist_details import PlaylistDetails
+from server.data.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_details_pipeline import PlaylistDetailsPipeline
 from server.logic.playlist_imitation.playlist_details_serializer import PlaylistDetailsSerializer
 from server.logic.playlist_imitation.playlist_imitator_tracks_selector import PlaylistImitatorTracksSelector

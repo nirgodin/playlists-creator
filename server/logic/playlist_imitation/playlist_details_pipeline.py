@@ -12,7 +12,7 @@ from server.consts.audio_features_consts import KEY_NAMES_MAPPING, MODE, MAJOR
 from server.consts.data_consts import RELEASE_YEAR, RELEASE_DATE
 from server.consts.path_consts import PLAYLIST_IMITATOR_PIPELINE_PATH
 from server.logic.playlist_imitation.playlist_imitator_consts import DATABASE_COLUMNS
-from server.logic.playlist_imitation.playlist_imitator_resources import PlaylistImitatorResources
+from server.data.playlist_imitation.playlist_imitator_resources import PlaylistImitatorResources
 from server.utils.data_utils import sort_data_columns_alphabetically
 from server.utils.regex_utils import extract_year
 
