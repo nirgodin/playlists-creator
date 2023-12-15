@@ -2,10 +2,13 @@ import asyncio
 from functools import lru_cache
 from typing import List, Tuple
 
-from postgres_client import execute_query, get_orm_columns, RadioTrack, SpotifyTrack, AudioFeatures, TrackLyrics, \
-    SpotifyArtist, get_database_engine
-from sqlalchemy import select, Subquery, TextClause
+from genie_datastores.postgres.operations import execute_query, get_database_engine
+from genie_datastores.postgres.utils import get_orm_columns
+from genie_datastores.postgres.models import RadioTrack, SpotifyTrack, AudioFeatures, TrackLyrics, SpotifyArtist
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.sql import Subquery
+from sqlalchemy.sql.elements import TextClause
 
 from server.consts.database_consts import RADIO_TRACK_COLUMNS
 from server.data.query_condition import QueryCondition
