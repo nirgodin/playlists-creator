@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from tempfile import TemporaryDirectory
 from typing import Optional
 
+from fastapi.security import HTTPBasicCredentials
 from genie_common.openai import OpenAIClient
 from genie_common.tools.logs import logger
 from spotipyio import SpotifyClient
@@ -11,19 +12,24 @@ from server.consts.app_consts import PLAYLIST_DETAILS
 from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.data.playlist_resources import PlaylistResources
 from server.logic.playlists_creator import PlaylistsCreator
+from server.tools.authenticator import Authenticator
 from server.tools.response_factory import ResponseFactory
+from server.utils.spotify_utils import build_spotify_client
 
 
 class BaseContentController(ABC):
-    def __init__(self, playlists_creator: PlaylistsCreator, openai_client: OpenAIClient):
+    def __init__(self, authenticator: Authenticator, playlists_creator: PlaylistsCreator, openai_client: OpenAIClient):
+        self._authenticator = authenticator
         self._playlists_creator = playlists_creator
         self._openai_client = openai_client
 
-    async def post(self, request_body: dict, spotify_client: SpotifyClient) -> JSONResponse:
+    async def post(self, request_body: dict, credentials: HTTPBasicCredentials) -> JSONResponse:
         logger.info("Received request", extra={"controller": self.__class__.__name__})
+        self._authenticator.authenticate(credentials)
 
         with TemporaryDirectory() as dir_path:
-            return await self._execute_playlist_creation_process(request_body, dir_path, spotify_client)
+            async with build_spotify_client(request_body) as spotify_client:
+                return await self._execute_playlist_creation_process(request_body, dir_path, spotify_client)
 
     async def _execute_playlist_creation_process(self,
                                                  request_body: dict,

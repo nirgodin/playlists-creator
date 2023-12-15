@@ -3,6 +3,7 @@ from secrets import compare_digest
 
 from fastapi import HTTPException
 from fastapi.security import HTTPBasicCredentials
+from genie_common.tools import logger
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 
@@ -12,6 +13,7 @@ class Authenticator:
         self._password = self._to_bytes(password)
 
     def authenticate(self, credentials: HTTPBasicCredentials):
+        logger.info("Authenticating request credentials")
         is_correct_username = self._authenticate_single_pair(credentials.username, self._username)
         is_correct_password = self._authenticate_single_pair(credentials.password, self._password)
 
