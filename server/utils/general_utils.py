@@ -7,7 +7,6 @@ from genie_common.google import GoogleDriveAdapter
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID, TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID
 from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH, TRACK_NAMES_EMBEDDINGS_PATH
 from server.consts.typing_consts import DataClass
-from server.logic.configuration_photo_prompt.z_scores_metadata_creator import ZScoresMetadataCreator
 from server.logic.playlist_imitation.playlist_imitator_database_creator import PlaylistImitatorDatabaseCreator
 
 
@@ -35,7 +34,6 @@ def download_database() -> None:
             local_dir=RESOURCES_DIR_PATH
         )
 
-    ZScoresMetadataCreator().create()
     PlaylistImitatorDatabaseCreator().create()
 
 
