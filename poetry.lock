@@ -215,6 +215,16 @@ dev = ["cogapp", "pre-commit", "pytest", "wheel"]
 tests = ["pytest"]
 
 [[package]]
+name = "async-cache"
+version = "1.1.1"
+description = "An asyncio Cache"
+optional = false
+python-versions = ">=3.3"
+files = [
+    {file = "async-cache-1.1.1.tar.gz", hash = "sha256:81aa9ccd19fb06784aaf30bd5f2043dc0a23fc3e998b93d0c2c17d1af9803393"},
+]
+
+[[package]]
 name = "async-lru"
 version = "2.0.4"
 description = "Simple LRU cache for asyncio"
@@ -2383,4 +2393,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "4d483c434fc282f3d6253766586fccfe0880b32467dc4fc158dffce8ccdaddeb"
+content-hash = "507d6a9cfd21c9ec51340c8fc529e170a22685d207ceff8758de5c775ee5ab79"
