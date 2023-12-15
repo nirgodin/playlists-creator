@@ -1,6 +1,6 @@
 import React from "react";
-import RangeSliders from "./RangeSliders";
-import SelectChips from "./SelectChips";
+import RangeSliders from "../components/RangeSliders";
+import SelectChips from "../components/SelectChips";
 import { useEffect, useState } from "react";
 import _ from "underscore";
 import { FEATURES_DESCRIPTIONS } from "../consts";
