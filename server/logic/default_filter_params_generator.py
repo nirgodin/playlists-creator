@@ -4,8 +4,8 @@ from dataclasses_json.stringcase import camelcase
 
 from server.consts.app_consts import OPERATOR, VALUE, INCLUDE_NAN, GREATER_THAN_OPERATOR, LESS_THAN_OPERATOR
 from server.consts.data_consts import IN_OPERATOR
-from server.logic.request_body.column_group import ColumnGroup
-from server.logic.request_body.column_details import ColumnDetails
+from server.data.column_group import ColumnGroup
+from server.data.column_details import ColumnDetails
 
 
 class DefaultFilterParamsGenerator:

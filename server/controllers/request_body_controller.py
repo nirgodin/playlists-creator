@@ -5,10 +5,9 @@ from starlette.responses import JSONResponse
 from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
     IS_PUBLIC, PROMPT, REQUEST_BODY, FEATURES_NAMES, FEATURES_VALUES, FEATURES_DESCRIPTIONS, EXISTING_PLAYLIST
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
-from server.logic.features_descriptions_manager import FeaturesDescriptionsManager
-from server.logic.request_body.column_group import ColumnGroup
-from server.logic.request_body.column_details import ColumnDetails
-from server.logic.request_body.columns_possible_values_querier import ColumnsPossibleValuesQuerier
+from server.data.column_group import ColumnGroup
+from server.data.column_details import ColumnDetails
+from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 
 
 class RequestBodyController:

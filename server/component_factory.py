@@ -28,7 +28,7 @@ from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
-from server.logic.request_body.columns_possible_values_querier import ColumnsPossibleValuesQuerier
+from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 from server.tools.authenticator import Authenticator
 
 

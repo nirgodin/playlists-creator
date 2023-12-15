@@ -1,8 +1,8 @@
 from functools import lru_cache
 
 from server.consts.prompt_consts import SINGLE_COLUMN_DESCRIPTION_FORMAT
-from server.logic.request_body.column_details import ColumnDetails
-from server.logic.request_body.columns_possible_values_querier import ColumnsPossibleValuesQuerier
+from server.data.column_details import ColumnDetails
+from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 
 
 class ColumnsDescriptionsCreator:

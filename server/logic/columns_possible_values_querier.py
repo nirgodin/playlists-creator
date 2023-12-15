@@ -7,8 +7,8 @@ from genie_datastores.postgres.operations import execute_query
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from server.logic.request_body.column_group import ColumnGroup
-from server.logic.request_body.column_details import ColumnDetails
+from server.data.column_group import ColumnGroup
+from server.data.column_details import ColumnDetails
 
 
 class ColumnsPossibleValuesQuerier:
