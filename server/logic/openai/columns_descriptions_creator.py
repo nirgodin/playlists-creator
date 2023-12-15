@@ -12,7 +12,7 @@ from server.logic.openai.column_details import ColumnDetails
 from server.utils.data_utils import load_data, get_column_min_max_values, get_column_possible_values
 
 
-class ColumnsDetailsCreator:
+class ColumnsDescriptionsCreator:
     def __init__(self):
         self._features_descriptions_manager = FeaturesDescriptionsManager()
 

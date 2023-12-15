@@ -3,14 +3,14 @@ from dataclasses_json.stringcase import camelcase
 from server.consts.app_consts import OPERATOR, VALUE, INCLUDE_NAN, GREATER_THAN_OPERATOR, LESS_THAN_OPERATOR
 from server.consts.data_consts import IN_OPERATOR
 from server.logic.openai.column_details import ColumnDetails
-from server.logic.openai.columns_details_creator import ColumnsDetailsCreator
+from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.utils.data_utils import load_data
 
 
 class DefaultFilterParamsGenerator:
     def __init__(self):
         self._data = load_data()
-        self._columns_details_creator = ColumnsDetailsCreator()
+        self._columns_details_creator = ColumnsDescriptionsCreator()
 
     def get_filter_params_defaults(self) -> dict:
         filter_params = {}
