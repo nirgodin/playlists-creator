@@ -8,21 +8,15 @@ import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { toCamelCase } from "../utils/StringUtils";
 import _ from "underscore";
-import { FEATURES_VALUES, FILTER_PARAMS, MenuProps, POSSIBLE_VALUES, VALUE } from "../consts";
+import { BACKGROUND_COLOR, FEATURES_VALUES, FILTER_PARAMS, MenuProps, POSSIBLE_VALUES, VALUE } from "../consts";
 import PropTypes from "prop-types";
 
 function MultipleSelectChip(props) {
-  const [possibleValues, setPossibleValues] = React.useState([]);
+  const [possibleValues, setPossibleValues] = React.useState(props.possibleValues);
   const [selectedOptions, setSelectedOptions] = React.useState([]);
 
   React.useEffect(() => {
-    if (_.isEqual(possibleValues, [])) {
-      setPossibleValues(props.body[0][FEATURES_VALUES][POSSIBLE_VALUES][props.title])
-    }
-    let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
-    const camelCasedTitle = toCamelCase(props.title);
-    newBody[FILTER_PARAMS][camelCasedTitle][VALUE] = selectedOptions;
-    props.setBody([newBody]);
+    props.effectCallback(selectedOptions, props.title)
   }, [possibleValues, selectedOptions]);
   
   const handleChange = (event) => {
@@ -46,7 +40,7 @@ function MultipleSelectChip(props) {
           <Select
             labelId="demo-multiple-chip-label"
             id="demo-multiple-chip"
-            multiple
+            multiple={props.multiple}
             value={selectedOptions}
             onChange={handleChange}
             input={
@@ -55,7 +49,7 @@ function MultipleSelectChip(props) {
             renderValue={(selected) => (
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                 {selected.map((value) => (
-                  <Chip key={value} label={value} sx={{ color: "rgb(0, 30, 60)", bgcolor: "#6db4fc", fontWeight: "600" }} />
+                  <Chip key={value} label={value} sx={{ color: BACKGROUND_COLOR, bgcolor: "#6db4fc", fontWeight: "600" }} />
                 ))}
               </Box>
             )}
@@ -77,6 +71,9 @@ MultipleSelectChip.propTypes = {
   title: PropTypes.string,
   body: PropTypes.array,
   setBody: PropTypes.func,
+  effectCallback: PropTypes.func,
+  multiple: PropTypes.bool,
+  possibleValues: PropTypes.array
 };
 
 export default MultipleSelectChip;

@@ -5,6 +5,17 @@ import InfoToolTip from "./InfoToolTip";
 import PropTypes from "prop-types";
 
 function MultipleSelectChipWrapper(props) {
+  const selectChip = (
+    <MultipleSelectChip
+      title={props.title}
+      body={props.body}
+      setBody={props.setBody}
+      effectCallback={props.effectCallback}
+      multiple={props.multiple}
+      possibleValues={props.possibleValues}
+    ></MultipleSelectChip>
+  );
+
   if (props.includesCheckbox) {
     return (
       <div className="select-chip-wrapper">
@@ -15,11 +26,7 @@ function MultipleSelectChipWrapper(props) {
               title={props.title}
             ></InfoToolTip>
           </div>
-          <MultipleSelectChip
-            title={props.title}
-            body={props.body}
-            setBody={props.setBody}
-          ></MultipleSelectChip>
+          {selectChip}
           <div className="filter-checkbox">
             <FilterCheckbox
               title={props.title}
@@ -32,13 +39,7 @@ function MultipleSelectChipWrapper(props) {
       </div>
     );
   } else {
-    <div>
-      <MultipleSelectChip
-        title={props.title}
-        body={props.body}
-        setBody={props.setBody}
-      ></MultipleSelectChip>
-    </div>;
+    <div>{selectChip}</div>;
   }
 }
 
@@ -49,6 +50,8 @@ MultipleSelectChipWrapper.propTypes = {
   checkboxLabel: PropTypes.string,
   body: PropTypes.array,
   setBody: PropTypes.func,
+  multiple: PropTypes.bool,
+  possibleValues: PropTypes.array,
 };
 
 export default MultipleSelectChipWrapper;

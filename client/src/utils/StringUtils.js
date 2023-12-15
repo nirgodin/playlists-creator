@@ -28,3 +28,8 @@ export function convertCamelToTitle(camelCaseString) {
 
   return titleCaseString;
 }
+
+export function toSnakeCase(str) {
+  let snakeCaseString = str.replace(/[^a-zA-Z0-9]/g, '_');
+  return snakeCaseString.toLowerCase();
+}

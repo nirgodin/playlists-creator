@@ -3,7 +3,8 @@ from typing import List, Dict, Any
 from starlette.responses import JSONResponse
 
 from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
-    IS_PUBLIC, PROMPT, REQUEST_BODY, FEATURES_NAMES, FEATURES_VALUES, FEATURES_DESCRIPTIONS, EXISTING_PLAYLIST
+    IS_PUBLIC, PROMPT, REQUEST_BODY, FEATURES_NAMES, FEATURES_VALUES, FEATURES_DESCRIPTIONS, EXISTING_PLAYLIST, \
+    TIME_RANGE
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.data.column_group import ColumnGroup
 from server.data.column_details import ColumnDetails
@@ -41,7 +42,8 @@ class RequestBodyController:
             PLAYLIST_DESCRIPTION: '',
             IS_PUBLIC: False,
             PROMPT: '',
-            EXISTING_PLAYLIST: ''
+            EXISTING_PLAYLIST: '',
+            TIME_RANGE: ''
         }
 
     @staticmethod

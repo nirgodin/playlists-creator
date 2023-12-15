@@ -7,6 +7,7 @@ const PHOTO = "photo";
 const FILTER_PARAMS = "filterParams";
 const INCLUDE_NAN = "includeNan";
 const PLAYLIST_DETAILS = "playlistDetails";
+const TIME_RANGE = "timeRange";
 const MIN = "min";
 const MAX = "max";
 const VALUE = "value";
@@ -35,12 +36,14 @@ const ABOUT = "About";
 // Style
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
+const BACKGROUND_COLOR = "#14191f";
+
 const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
-      backgroundColor: "rgb(0, 30, 60)",
+      backgroundColor: BACKGROUND_COLOR,
       color: "white",
     },
   },
@@ -109,6 +112,9 @@ const PHOTO_DROPZONE_IMAGE_STYLE = {
   width: "auto",
   height: "100%",
 };
+
+
+// Descriptions
 
 const PROMPT_DESCRIPTION = [
   {
@@ -491,5 +497,7 @@ export {
   LOGIN_PAGE_TEXT,
   ABOUT_PAGE_TEXT,
   SPOTIFY_LOGOUT_URL,
-  WRAPPED
+  WRAPPED,
+  TIME_RANGE,
+  BACKGROUND_COLOR
 };

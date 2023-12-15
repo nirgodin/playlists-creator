@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import FormTextField from ".././components/FormTextField";
 import SendButton from ".././components/SendButton";
 import { useState, useEffect } from "react";
-import RequestBody from ".././components/RequestBody";
+import RequestBody from "../content_clients/RequestBody";
 import {
   PROMPT,
   CONFIGURATION,
@@ -13,7 +13,7 @@ import {
   WRAPPED,
   FOR_YOU,
 } from "../consts";
-import PhotoDropzone from "../components/PhotoDropzone";
+import PhotoDropzone from "../content_clients/PhotoDropzone";
 import _ from "underscore";
 import PropTypes from "prop-types";
 import Popup from "../components/Popup";
@@ -24,6 +24,7 @@ import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
 import QueueMusicRoundedIcon from "@mui/icons-material/QueueMusicRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import ReplayCircleFilledRoundedIcon from "@mui/icons-material/ReplayCircleFilledRounded";
+import WrappedClient from "../content_clients/WrappedClient";
 
 function LandingPage(props) {
   const [alignment, setAlignment] = useState(PROMPT);
@@ -42,9 +43,11 @@ function LandingPage(props) {
       setIsValidInput(isValid);
     } else if (alignment === CONFIGURATION) {
       setIsValidInput(isValidPlaylistName);
-    } else {
+    } else if (alignment === EXISTING_PLAYLIST) {
       const isValid = isValidExistingPlaylist && isValidPlaylistName;
       setIsValidInput(isValid);
+    } else {
+      setIsValidInput(isValidPlaylistName)
     }
   }, [
     alignment,
@@ -165,7 +168,12 @@ function LandingPage(props) {
         ></FormTextField>
       </div>
     ),
-    [WRAPPED]: "",
+    [WRAPPED]: (
+      <WrappedClient
+        body={props.body}
+        setBody={props.setBody}
+      ></WrappedClient>
+    ),
     [FOR_YOU]: "",
   };
 

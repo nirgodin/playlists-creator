@@ -21,3 +21,4 @@ FEATURES_VALUES = 'featuresValues'
 FEATURES_DESCRIPTIONS = 'featuresDescriptions'
 PHOTO = 'photo'
 EXISTING_PLAYLIST = 'existingPlaylist'
+TIME_RANGE = "timeRange"
