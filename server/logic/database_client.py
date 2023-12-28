@@ -1,10 +1,9 @@
-import asyncio
 from functools import lru_cache
 from typing import List, Tuple
 
-from genie_datastores.postgres.operations import execute_query, get_database_engine
+from genie_datastores.postgres.models import RadioTrack, SpotifyTrack, AudioFeatures, TrackLyrics, SpotifyArtist, Artist
+from genie_datastores.postgres.operations import execute_query
 from genie_datastores.postgres.utils import get_orm_columns
-from genie_datastores.postgres.models import RadioTrack, SpotifyTrack, AudioFeatures, TrackLyrics, SpotifyArtist
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.sql import Subquery
@@ -50,6 +49,7 @@ class DatabaseClient:
             .where(SpotifyTrack.id == AudioFeatures.id)
             .where(SpotifyTrack.id == TrackLyrics.id)
             .where(SpotifyTrack.artist_id == SpotifyArtist.id)
+            .where(SpotifyArtist.id == Artist.id)
             .where(*conditions)
         )
 
@@ -60,7 +60,6 @@ class DatabaseClient:
         radio_subquery = (
             select(*RADIO_TRACK_COLUMNS)
             .where(RadioTrack.track_id.in_(spotify_subquery))
-            .where(RadioTrack.popularity > 56)
             .where(*conditions)
             .group_by(RadioTrack.track_id)
         )
@@ -76,12 +75,3 @@ class DatabaseClient:
                 text_clauses.append(condition.condition)
 
         return text_clauses
-
-
-if __name__ == "__main__":
-    db_engine = get_database_engine()
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(DatabaseClient(db_engine).query(
-        [QueryCondition("popularity", ">", 50), QueryCondition("valence", "<", 0.8)]
-    )
-    )

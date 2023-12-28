@@ -6,7 +6,7 @@ from async_lru import alru_cache
 from genie_common.openai import OpenAIClient
 from genie_common.tools import AioPoolExecutor
 from genie_common.utils import create_client_session, build_authorization_headers
-from genie_datastores.postgres.models import AudioFeatures, SpotifyArtist, SpotifyTrack, TrackLyrics
+from genie_datastores.postgres.models import AudioFeatures, SpotifyArtist, SpotifyTrack, TrackLyrics, Artist
 from genie_datastores.postgres.operations import get_database_engine
 
 from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY
@@ -19,6 +19,7 @@ from server.controllers.content_controllers.wrapped_controller import WrappedCon
 from server.controllers.request_body_controller import RequestBodyController
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
 from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCalculator
+from server.logic.database_client import DatabaseClient
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.ocr.artists_collector import ArtistsCollector
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
@@ -32,19 +33,19 @@ from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQu
 from server.tools.authenticator import Authenticator
 
 
-@alru_cache(maxsize=1)
+@alru_cache
 async def get_session() -> ClientSession:
     session = create_client_session()
     return await session.__aenter__()
 
 
-@alru_cache(maxsize=1)
+@alru_cache
 async def get_playlists_creator() -> PlaylistsCreator:
     session = await get_session()
     return PlaylistsCreator(session)
 
 
-@alru_cache(maxsize=1)
+@alru_cache
 async def get_openai_client() -> OpenAIClient:
     api_key = os.environ[OPENAI_API_KEY]
     headers = build_authorization_headers(api_key)
@@ -54,31 +55,34 @@ async def get_openai_client() -> OpenAIClient:
     return OpenAIClient.create(session)
 
 
-@alru_cache(maxsize=1)
+@alru_cache
 async def get_openai_adapter() -> OpenAIAdapter:
     client = await get_openai_client()
     return OpenAIAdapter(client)
 
 
-@alru_cache(maxsize=1)
+@alru_cache
 async def get_playlist_imitator() -> PlaylistImitator:
     session = await get_session()
     return PlaylistImitator(session)
 
 
-@alru_cache(maxsize=1)
+@alru_cache
 async def get_embeddings_tracks_selector() -> EmbeddingsTracksSelector:
     openai_client = await get_openai_client()
     return EmbeddingsTracksSelector(openai_client)
 
 
-@alru_cache(maxsize=1)
+@alru_cache
 async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
     embeddings_tracks_selector = await get_embeddings_tracks_selector()
-    return PromptDetailsTracksSelector(embeddings_tracks_selector)
+    return PromptDetailsTracksSelector(
+        embeddings_tracks_selector=embeddings_tracks_selector,
+        db_client=get_database_client()
+    )
 
 
-@alru_cache(maxsize=1)
+@alru_cache
 async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
     openai_adapter = await get_openai_adapter()
     pool_executor = AioPoolExecutor()
@@ -92,13 +96,13 @@ async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
 def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:
     columns = [  # TODO: Think how to add popularity, followers, main_genre, radio_play_count, release_year
         AudioFeatures.acousticness,
-        SpotifyArtist.gender,
+        Artist.gender,
         AudioFeatures.danceability,
         AudioFeatures.duration_ms,  # TODO: Think how to transform to minutes
         AudioFeatures.energy,
         SpotifyTrack.explicit,
         AudioFeatures.instrumentalness,
-        SpotifyArtist.is_israeli,
+        Artist.is_israeli,
         AudioFeatures.key,
         TrackLyrics.language,
         AudioFeatures.liveness,
@@ -144,6 +148,10 @@ async def get_request_body_controller() -> RequestBodyController:
     )
 
 
+def get_database_client() -> DatabaseClient:
+    return DatabaseClient(get_database_engine())
+
+
 async def get_configuration_controller() -> ConfigurationController:
     playlists_creator = await get_playlists_creator()
     openai_client = await get_openai_client()
@@ -153,7 +161,8 @@ async def get_configuration_controller() -> ConfigurationController:
         authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
-        photo_prompt_creator=photo_prompt_creator
+        photo_prompt_creator=photo_prompt_creator,
+        db_client=get_database_client()
     )
 
 

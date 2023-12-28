@@ -2,7 +2,7 @@ from genie_datastores.postgres.models import (
     AudioFeatures as AudioFeaturesDB,
     RadioTrack,
     SpotifyArtist,
-    SpotifyTrack
+    SpotifyTrack, Artist
 )
 from genie_datastores.postgres.utils import get_all_columns_except
 from sqlalchemy import func
@@ -11,10 +11,10 @@ from server.consts.data_consts import POPULARITY, ARTIST_POPULARITY, ARTIST_FOLL
 
 ARTIST_COLUMNS = [
     SpotifyArtist.id.label(f"spotify_{SpotifyTrack.artist_id.key}"),
-    SpotifyArtist.gender,
+    Artist.gender,
     SpotifyArtist.genres,
-    SpotifyArtist.primary_genre,
-    SpotifyArtist.is_israeli,
+    Artist.primary_genre,
+    Artist.is_israeli,
 ]
 
 TRACK_COLUMNS = [

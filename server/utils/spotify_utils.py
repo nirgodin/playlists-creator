@@ -1,10 +1,12 @@
 import os
 from contextlib import asynccontextmanager
+from typing import List
 
 from genie_common.utils import safe_nested_get
 from spotipyio import SpotifyClient
 from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
 from spotipyio.logic.authentication.spotify_session import SpotifySession
+from spotipyio.logic.collectors.search_collectors.spotify_search_type import SpotifySearchType
 
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import ACCESS_CODE
@@ -44,3 +46,7 @@ async def build_spotify_client(request_body: dict) -> SpotifyClient:
     finally:
         if session is not None:
             await session.__aexit__("", "", "")
+
+
+def to_uris(spotify_type: SpotifySearchType, *spotify_id: str) -> List[str]:
+    return [f"spotify:{spotify_type.value}:{id_}" for id_ in spotify_id]

@@ -14,10 +14,9 @@ from server.consts.typing_consts import DataClass
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
 from server.data.prompt_details import PromptDetails
-from server.logic.data_filterer import DataFilterer
+from server.data.track_details import TrackDetails
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
-from server.data.track_details import TrackDetails
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.tools.authenticator import Authenticator
@@ -32,11 +31,9 @@ class PromptController(BaseContentController):
                  openai_client: OpenAIClient,
                  openai_adapter: OpenAIAdapter,
                  prompt_details_tracks_selector: PromptDetailsTracksSelector,
-                 columns_descriptions_creator: ColumnsDescriptionsCreator,
-                 data_filterer: DataFilterer = DataFilterer()):
+                 columns_descriptions_creator: ColumnsDescriptionsCreator):
         super().__init__(authenticator, playlists_creator, openai_client)
         self._openai_adapter = openai_adapter
-        self._data_filterer = data_filterer
         self._columns_descriptions_creator = columns_descriptions_creator
         self._prompt_details_tracks_selector = prompt_details_tracks_selector
 
