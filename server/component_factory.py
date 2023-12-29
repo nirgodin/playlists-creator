@@ -6,7 +6,9 @@ from async_lru import alru_cache
 from genie_common.openai import OpenAIClient
 from genie_common.tools import AioPoolExecutor
 from genie_common.utils import create_client_session, build_authorization_headers
-from genie_datastores.postgres.models import AudioFeatures, SpotifyArtist, SpotifyTrack, TrackLyrics, Artist
+from genie_datastores.milvus import MilvusClient
+from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
+from genie_datastores.postgres.models import AudioFeatures, SpotifyTrack, TrackLyrics, Artist
 from genie_datastores.postgres.operations import get_database_engine
 
 from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY
@@ -17,6 +19,7 @@ from server.controllers.content_controllers.photo_controller import PhotoControl
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.controllers.request_body_controller import RequestBodyController
+from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
 from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCalculator
 from server.logic.database_client import DatabaseClient
@@ -24,12 +27,10 @@ from server.logic.default_filter_params_generator import DefaultFilterParamsGene
 from server.logic.ocr.artists_collector import ArtistsCollector
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
-from server.logic.openai.embeddings_tracks_selector import EmbeddingsTracksSelector
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
-from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 from server.tools.authenticator import Authenticator
 
 
@@ -67,18 +68,23 @@ async def get_playlist_imitator() -> PlaylistImitator:
     return PlaylistImitator(session)
 
 
-@alru_cache
-async def get_embeddings_tracks_selector() -> EmbeddingsTracksSelector:
-    openai_client = await get_openai_client()
-    return EmbeddingsTracksSelector(openai_client)
+async def get_milvus_client() -> MilvusClient:
+    client = MilvusClient(
+        uri=get_milvus_uri(),
+        token=get_milvus_token()
+    )
+    return await client.__aenter__()
 
 
 @alru_cache
 async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
-    embeddings_tracks_selector = await get_embeddings_tracks_selector()
+    milvus_client = await get_milvus_client()
+    openai_client = await get_openai_client()
+
     return PromptDetailsTracksSelector(
-        embeddings_tracks_selector=embeddings_tracks_selector,
-        db_client=get_database_client()
+        db_client=get_database_client(),
+        openai_client=openai_client,
+        milvus_client=milvus_client
     )
 
 

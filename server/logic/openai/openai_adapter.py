@@ -16,6 +16,8 @@ class OpenAIAdapter:  # TODO: Should be refactored
 
     async def chat_completions(self,
                                prompt: str,
+                               start_char: str,
+                               end_char: str,
                                chat_history: Optional[List[dict]] = None,
                                retries_left: int = 3) -> Optional[Union[list, dict]]:
         if retries_left == 0:
@@ -28,7 +30,7 @@ class OpenAIAdapter:  # TODO: Should be refactored
             messages=chat_history,
             model=ChatCompletionsModel.GPT_4
         )
-        serialized_response = self._serialize_response(response_content)
+        serialized_response = self._serialize_response(response_content, start_char, end_char)
 
         if not isinstance(serialized_response, str):
             return serialized_response
@@ -44,7 +46,13 @@ class OpenAIAdapter:  # TODO: Should be refactored
                 }
             ]
             chat_history.extend(new_history)
-            return await self.chat_completions(prompt, chat_history, retries_left - 1)
+            return await self.chat_completions(
+                prompt=prompt,
+                start_char=start_char,
+                end_char=end_char,
+                chat_history=chat_history,
+                retries_left=retries_left - 1
+            )
 
     @staticmethod
     def _build_request_messages(prompt: str, chat_history: Optional[List[dict]]) -> List[dict]:
@@ -58,11 +66,24 @@ class OpenAIAdapter:  # TODO: Should be refactored
 
         return chat_history
 
-    @staticmethod
-    def _serialize_response(response_content: str) -> Union[list, dict, str]:
+    def _serialize_response(self, response_content: str, start_char: str, end_char: str) -> Union[list, dict, str]:
         try:
-            return json.loads(response_content)
+            formatted_content = self._format_raw_openai_response(response_content, start_char, end_char)
+            return json.loads(formatted_content)
 
         except Exception as e:
             logger.exception("Could not serialize OpenAI response to JSON. Retrying", extra={CONTENT: response_content})
             return e.__str__()
+
+    @staticmethod
+    def _format_raw_openai_response(response_content: str, start_char: str, end_char: str) -> str:
+        prefix_split_content = response_content.split(start_char)
+        if len(prefix_split_content) > 1:
+            response_content = start_char.join(prefix_split_content[1:])
+
+        suffix_split_content = response_content.split(end_char)
+        if len(suffix_split_content) > 1:
+            response_content = end_char.join(suffix_split_content[:-1])
+
+        stripped_content = response_content.lstrip(start_char).rstrip(end_char)
+        return f"{start_char}{stripped_content}{end_char}"

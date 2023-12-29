@@ -40,7 +40,7 @@ class TracksURIsImageExtractor:
         prompt_suffix = f'```\n{image_text}```'
         prompt = build_prompt(PHOTO_ARTISTS_PROMPT_PREFIX, prompt_suffix)
 
-        return await self._openai_adapter.chat_completions(prompt)
+        return await self._openai_adapter.chat_completions(prompt, start_char="[", end_char="]", retries_left=1)
 
     @staticmethod
     def _extract_tracks_uris(tracks: List[Dict[str, List[dict]]]) -> List[str]:

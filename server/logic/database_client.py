@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import List, Tuple
 
+from genie_common.tools import logger
 from genie_datastores.postgres.models import RadioTrack, SpotifyTrack, AudioFeatures, TrackLyrics, SpotifyArtist, Artist
 from genie_datastores.postgres.operations import execute_query
 from genie_datastores.postgres.utils import get_orm_columns
@@ -13,18 +14,21 @@ from server.consts.database_consts import RADIO_TRACK_COLUMNS
 from server.data.query_condition import QueryCondition
 
 
+# TODO: Maybe not belong here, but remove tracks that are not available on any market as they cannot be played
 class DatabaseClient:
     def __init__(self, db_engine: AsyncEngine):
         self._db_engine = db_engine
 
     async def query(self, query_conditions: List[QueryCondition]) -> List[str]:
+        logger.info("Starting to query database for relevant tracks ids")
         spotify_conditions, radio_conditions = self._split_conditions(query_conditions)
         spotify_subquery = self._build_spotify_subquery(spotify_conditions)
         radio_subquery = self._build_radio_subquery(spotify_subquery, radio_conditions)
-        query = select(radio_subquery.c.track_id)
-        query_result = await execute_query(engine=self._db_engine, query=query)
+        query_result = await execute_query(engine=self._db_engine, query=select(radio_subquery.c.track_id))
+        tracks_ids = query_result.scalars().all()
+        logger.info(f"Successfully queried database and found `{len(tracks_ids)}` relevant tracks")
 
-        return query_result.scalars().all()
+        return tracks_ids
 
     def _split_conditions(self, conditions: List[QueryCondition]) -> Tuple[List[QueryCondition], List[QueryCondition]]:
         radio_conditions = []

@@ -22,6 +22,8 @@ class QueryCondition:
     include_nan: bool = False
 
     def __post_init__(self):
+        if self.operator == IN_OPERATOR and not isinstance(self.value, list):
+            self.value = [self.value]
         self.condition = self._create_condition()
 
     def _create_condition(self) -> Optional[TextClause]:  # TODO: Create using orm methods instead of plain text
