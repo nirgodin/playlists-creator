@@ -16,10 +16,10 @@ async def save_image_from_url(session: ClientSession, image_url: str, output_pat
     logger.info(f"Successfully fetched image and saved it on `{output_path}`")
 
 
-def save_image_from_bytes(image: bytes, output_path: str) -> None:
+def save_image_from_bytes(image: bytes, output_path: str, quality: int = 100) -> None:
     file = io.BytesIO(image)
     image = Image.open(file)
-    image.save(output_path)
+    image.save(output_path, quality=quality)
 
 
 def current_timestamp_image_path(dir_path: str) -> str:

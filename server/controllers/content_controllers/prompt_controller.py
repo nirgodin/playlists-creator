@@ -1,6 +1,7 @@
+from base64 import b64decode
 from typing import List, Optional, Union, Type
 
-from genie_common.models.openai import ImageSize
+from genie_common.models.openai import ImageSize, DallEModel
 from genie_common.openai import OpenAIClient
 from genie_common.tools.logs import logger
 from spotipyio import SpotifyClient
@@ -21,7 +22,7 @@ from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.tools.authenticator import Authenticator
 from server.utils.general_utils import build_prompt, to_dataclass
-from server.utils.image_utils import current_timestamp_image_path
+from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
 
 
 class PromptController(BaseContentController):
@@ -57,12 +58,16 @@ class PromptController(BaseContentController):
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         user_text = self._extract_prompt_from_request_body(request_body)
         playlist_cover_prompt = f'{user_text}, digital art'
-
-        return await self._openai_client.images_generation.collect(
+        encoded_image: str = await self._openai_client.images_generation.collect(
             prompt=playlist_cover_prompt,
+            model=DallEModel.DALLE_3,
             n=1,
-            size=ImageSize.P512
+            size=ImageSize.P1024
         )
+        image: bytes = b64decode(encoded_image)
+        save_image_from_bytes(image, image_path)
+
+        return image_path
 
     async def _generate_uris_from_prompt_details(self, user_text: str) -> Optional[List[str]]:
         prompt = await self._build_query_conditions_prompt(user_text)

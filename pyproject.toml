@@ -15,7 +15,7 @@ opencv-python = "4.7.0.72"
 pytesseract = "0.3.10"
 tqdm = "4.65.0"
 asyncio-pool = "0.6.0"
-google-api-python-client = "2.87.0"
+google-api-python-client = "2.87.0" # TODO: Delete as soon as database is fully integrated
 scikit-learn = "1.2.2"
 fastapi = "0.101.0"
 starlette = "0.27.0"
@@ -23,7 +23,7 @@ python-multipart = "0.0.6"
 uvicorn = "0.20.0"
 async-lru = "2.0.4"
 genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "df151889"}
-spotipyio = {git = "https://github.com/nirgodin/spotipyio.git", rev = "d2965346"}
+spotipyio = {git = "https://github.com/nirgodin/spotipyio.git", rev = "c5431f44"}
 async-cache = "1.1.1"
 
 

@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
+from io import BytesIO
 from tempfile import TemporaryDirectory
 from typing import Optional
 
+from PIL import Image
 from fastapi.security import HTTPBasicCredentials
 from genie_common.openai import OpenAIClient
 from genie_common.tools.logs import logger
