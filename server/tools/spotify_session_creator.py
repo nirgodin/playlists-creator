@@ -43,21 +43,3 @@ class SpotifySessionCreator:
     async def _fetch(self, grant_type: SpotifyGrantType, access_code: str) -> dict:
         async with self._token_generator as token_generator:
             return await token_generator.generate(grant_type, access_code)
-
-
-async def main():
-    token_generator = AccessTokenGenerator(
-        client_id=os.environ[SPOTIPY_CLIENT_ID],
-        client_secret=os.environ[SPOTIPY_CLIENT_SECRET],
-        redirect_uri=os.environ[SPOTIPY_REDIRECT_URI],
-    )
-    session_creator = SpotifySessionCreator(token_generator)
-    access_code = 'AQD7FuqlAY0Y2S79N7ysY3Q8vVDBTyJNdCz3EKJg1_TbmP8u_1_hVMufQxbPnvdX7e_YxLmy1D_Fv2cVmR2xlgJCNVKkja978En8qqXj3a98RiKqvvoLaklfmO1nbCUqyRWNNWsIhC7Gfm6BqIQfuw9jaC735YPqUuQCeKjXz-JfZJRI7HZHfF1HM10UlwoyAGU5Phs45WW7IvZq5rh5VQ2e_ENtUvX6qL8tLUA0GNpXm1NN_VUWWOkQvzBi3u_1I1EG8UJL9r7as5XY6LjpkwO__CGuueNH4NsHJEsY'
-
-    async with session_creator.create(access_code) as session:
-        print("b")
-
-
-if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
