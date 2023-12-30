@@ -1,5 +1,3 @@
-import asyncio
-import os
 from contextlib import asynccontextmanager
 from datetime import timedelta
 
@@ -10,8 +8,6 @@ from spotipyio import AccessTokenGenerator
 from spotipyio.consts.api_consts import ACCESS_TOKEN
 from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
 from spotipyio.logic.authentication.spotify_session import SpotifySession
-
-from server.consts.env_consts import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI
 
 
 class SpotifySessionCreator:
