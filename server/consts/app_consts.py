@@ -1,3 +1,5 @@
+import os
+
 PLAYLIST_DETAILS = 'playlistDetails'
 ACCESS_CODE = 'accessCode'
 IS_SUCCESS = 'isSuccess'
@@ -22,3 +24,4 @@ FEATURES_DESCRIPTIONS = 'featuresDescriptions'
 PHOTO = 'photo'
 EXISTING_PLAYLIST = 'existingPlaylist'
 TIME_RANGE = "timeRange"
+ACCESS_CODE_CACHE_TTL = os.getenv("ACCESS_CODE_CACHE_TTL", 30)

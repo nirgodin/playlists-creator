@@ -92,5 +92,5 @@ class BaseContentController(ABC):
 
             await config.spotify_client.playlists.update_cover.run(playlist_id, image)
 
-        except Exception as e:
-            print('Failed to create playlist cover')
+        except:
+            logger.exception('Failed to create playlist cover')

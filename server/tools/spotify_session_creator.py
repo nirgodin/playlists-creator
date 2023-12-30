@@ -9,6 +9,8 @@ from spotipyio.consts.api_consts import ACCESS_TOKEN
 from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
 from spotipyio.logic.authentication.spotify_session import SpotifySession
 
+from server.consts.app_consts import ACCESS_CODE_CACHE_TTL
+
 
 class SpotifySessionCreator:
     def __init__(self, token_generator: AccessTokenGenerator):
@@ -35,7 +37,7 @@ class SpotifySessionCreator:
 
         return SpotifySession(session=client_session)
 
-    @RedisClient.cache(encoder=GzipJsonEncoder(), ttl=timedelta(minutes=1))  # TODO: Transform to configurable env var
+    @RedisClient.cache(encoder=GzipJsonEncoder(), ttl=timedelta(minutes=ACCESS_CODE_CACHE_TTL))
     async def _fetch(self, grant_type: SpotifyGrantType, access_code: str) -> dict:
         async with self._token_generator as token_generator:
             return await token_generator.generate(grant_type, access_code)
