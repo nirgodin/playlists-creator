@@ -109,6 +109,24 @@ yarl = ">=1.0,<2.0"
 speedups = ["Brotli", "aiodns", "cchardet"]
 
 [[package]]
+name = "aioredis"
+version = "2.0.1"
+description = "asyncio (PEP 3156) Redis support"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "aioredis-2.0.1-py3-none-any.whl", hash = "sha256:9ac0d0b3b485d293b8ca1987e6de8658d7dafcca1cddfcd1d506cae8cdebfdd6"},
+    {file = "aioredis-2.0.1.tar.gz", hash = "sha256:eaa51aaf993f2d71f54b70527c440437ba65340588afeb786cd87c55c89cd98e"},
+]
+
+[package.dependencies]
+async-timeout = "*"
+typing-extensions = "*"
+
+[package.extras]
+hiredis = ["hiredis (>=1.0)"]
+
+[[package]]
 name = "aiosignal"
 version = "1.3.1"
 description = "aiosignal: a list of registered asynchronous callbacks"
@@ -672,8 +690,8 @@ tqdm = ">=4.65,<5.0"
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-common.git"
-reference = "8672d0c4"
-resolved_reference = "8672d0c49ba75ee95a7239b3ebe5a35b606ab84d"
+reference = "b9768009"
+resolved_reference = "b97680094b37d55f0e2479dee898e8a1abf4f995"
 
 [[package]]
 name = "genie-datastores"
@@ -685,19 +703,20 @@ files = []
 develop = false
 
 [package.dependencies]
+aioredis = ">=2.0.0,<2.1.0"
 asyncmy = "0.2.8"
 asyncpg = "0.28.0"
 billboard-py = "^7.0.0"
 dataclasses-json = ">=0.6,<1.0"
-genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "8672d0c4"}
+genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "b9768009"}
 greenlet = "2.0.1"
 sqlalchemy = "<2.0.0"
 
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-datastores.git"
-reference = "df151889"
-resolved_reference = "df151889c1851f9b5f453ca2ab6da05b7bcaa697"
+reference = "279fbf66"
+resolved_reference = "279fbf6685db3c4bd668407cf034d914b806f78d"
 
 [[package]]
 name = "google-api-core"
@@ -1983,4 +2002,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "14f5532db2a3fe1a0b0142c63cec836d82aee8e7260894d17b8c46c2dfbf6043"
+content-hash = "6e3b56046a3021d3551d00e9f283e7e0ec6439dac94607642f467885d1326f37"

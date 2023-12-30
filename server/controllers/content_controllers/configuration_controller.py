@@ -13,6 +13,7 @@ from server.logic.database_client import DatabaseClient
 from server.logic.parameters_transformer import ParametersTransformer
 from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.authenticator import Authenticator
+from server.tools.spotify_session_creator import SpotifySessionCreator
 from server.utils.image_utils import current_timestamp_image_path
 from server.utils.spotify_utils import sample_uris, to_uris
 
@@ -22,10 +23,11 @@ class ConfigurationController(BaseContentController):
                  authenticator: Authenticator,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
+                 session_creator: SpotifySessionCreator,
                  photo_prompt_creator: ConfigurationPhotoPromptCreator,
                  db_client: DatabaseClient,
                  parameters_transformer: ParametersTransformer = ParametersTransformer()):
-        super().__init__(authenticator, playlists_creator, openai_client)
+        super().__init__(authenticator, playlists_creator, openai_client, session_creator)
         self._photo_prompt_creator = photo_prompt_creator
         self._db_client = db_client
         self._parameters_transformer = parameters_transformer

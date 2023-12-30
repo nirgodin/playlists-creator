@@ -10,8 +10,10 @@ from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import AudioFeatures, SpotifyTrack, TrackLyrics, Artist
 from genie_datastores.postgres.operations import get_database_engine
+from spotipyio import AccessTokenGenerator
 
-from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY
+from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
+    SPOTIPY_REDIRECT_URI
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.for_you_controller import ForYouController
@@ -32,6 +34,7 @@ from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.tools.authenticator import Authenticator
+from server.tools.spotify_session_creator import SpotifySessionCreator
 
 
 @alru_cache
@@ -158,6 +161,20 @@ def get_database_client() -> DatabaseClient:
     return DatabaseClient(get_database_engine())
 
 
+@lru_cache
+def get_access_token_generator() -> AccessTokenGenerator:
+    return AccessTokenGenerator(
+        client_id=os.environ[SPOTIPY_CLIENT_ID],
+        client_secret=os.environ[SPOTIPY_CLIENT_SECRET],
+        redirect_uri=os.environ[SPOTIPY_REDIRECT_URI]
+    )
+
+
+@lru_cache
+def get_spotify_session_creator() -> SpotifySessionCreator:
+    return SpotifySessionCreator(get_access_token_generator())
+
+
 async def get_configuration_controller() -> ConfigurationController:
     playlists_creator = await get_playlists_creator()
     openai_client = await get_openai_client()
@@ -167,6 +184,7 @@ async def get_configuration_controller() -> ConfigurationController:
         authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
+        session_creator=get_spotify_session_creator(),
         photo_prompt_creator=photo_prompt_creator,
         db_client=get_database_client()
     )
@@ -182,6 +200,7 @@ async def get_prompt_controller() -> PromptController:
         authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
+        session_creator=get_spotify_session_creator(),
         openai_adapter=openai_adapter,
         columns_descriptions_creator=get_columns_descriptions_creator(),
         prompt_details_tracks_selector=prompt_details_tracks_selector
@@ -197,6 +216,7 @@ async def get_photo_controller() -> PhotoController:
         authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
+        session_creator=get_spotify_session_creator(),
         tracks_uris_extractor=tracks_uris_extractor
     )
 
@@ -210,6 +230,7 @@ async def get_existing_playlist_controller() -> ExistingPlaylistController:
         authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
+        session_creator=get_spotify_session_creator(),
         playlists_imitator=playlists_imitator
     )
 
@@ -222,6 +243,7 @@ async def get_wrapped_controller() -> WrappedController:
         authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
+        session_creator=get_spotify_session_creator(),
     )
 
 
@@ -234,6 +256,7 @@ async def get_for_you_controller() -> ForYouController:
         authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
+        session_creator=get_spotify_session_creator(),
         playlists_imitator=playlists_imitator
     )
 
