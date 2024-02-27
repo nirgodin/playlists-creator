@@ -2,7 +2,7 @@
 name = "playlists-creator"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["nirgodin <70273595+nirgodin@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -22,7 +22,7 @@ starlette = "0.27.0"
 python-multipart = "0.0.6"
 uvicorn = "0.20.0"
 async-lru = "2.0.4"
-genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "6ec45bf1"}
+genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "12c19ea2"}
 spotipyio = {git = "https://github.com/nirgodin/spotipyio.git", rev = "c5431f44"}
 async-cache = "1.1.1"
 
