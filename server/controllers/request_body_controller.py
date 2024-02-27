@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from typing import List, Dict, Any
 
 from starlette.responses import JSONResponse
@@ -33,7 +34,7 @@ class RequestBodyController:
             REQUEST_BODY: [body]
         }
 
-        return JSONResponse(content=content, status_code=200)
+        return JSONResponse(content=content, status_code=HTTPStatus.OK.value)
 
     @staticmethod
     def _generate_default_playlist_details() -> dict:
