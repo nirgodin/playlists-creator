@@ -14,6 +14,7 @@ from spotipyio import AccessTokenGenerator
 
 from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
     SPOTIPY_REDIRECT_URI
+from server.controllers.case_progress_controller import CaseProgressController
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.for_you_controller import ForYouController
@@ -267,3 +268,7 @@ def get_authenticator() -> Authenticator:
         username=os.environ[USERNAME],
         password=os.environ[PASSWORD]
     )
+
+
+def get_case_progress_controller() -> CaseProgressController:
+    return CaseProgressController(get_database_engine())

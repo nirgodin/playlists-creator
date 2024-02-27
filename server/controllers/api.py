@@ -6,8 +6,9 @@ from fastapi.security import HTTPBasicCredentials, HTTPBasic
 
 from server.component_factory import get_authenticator, get_request_body_controller, get_configuration_controller, \
     get_prompt_controller, get_photo_controller, get_existing_playlist_controller, get_wrapped_controller, \
-    get_for_you_controller
+    get_for_you_controller, get_case_progress_controller
 from server.consts.app_consts import PHOTO
+from server.controllers.case_progress_controller import CaseProgressController
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.for_you_controller import ForYouController
@@ -75,3 +76,12 @@ async def for_you(request: dict,
                   credentials: Annotated[HTTPBasicCredentials, Depends(security)],
                   for_you_controller: Annotated[ForYouController, Depends(get_for_you_controller)]):
     return await for_you_controller.post(request_body=request, credentials=credentials)
+
+
+@api_router.get('/caseProgress/{case_id}')
+async def for_you(case_id: str,
+                  credentials: Annotated[HTTPBasicCredentials, Depends(security)],
+                  authenticator: Annotated[Authenticator, Depends(get_authenticator)],
+                  case_progress_controller: Annotated[CaseProgressController, Depends(get_case_progress_controller)]):
+    authenticator.authenticate(credentials)
+    return await case_progress_controller.get(case_id)
