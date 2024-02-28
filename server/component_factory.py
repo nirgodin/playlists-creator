@@ -1,5 +1,6 @@
 import os
 from functools import lru_cache
+from typing import Dict
 
 from aiohttp import ClientSession
 from async_lru import alru_cache
@@ -15,12 +16,14 @@ from spotipyio import AccessTokenGenerator
 from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
     SPOTIPY_REDIRECT_URI
 from server.controllers.case_progress_controller import CaseProgressController
+from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.for_you_controller import ForYouController
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
+from server.controllers.playlist_controller import PlaylistController
 from server.controllers.request_body_controller import RequestBodyController
 from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
@@ -182,7 +185,6 @@ async def get_configuration_controller() -> ConfigurationController:
     photo_prompt_creator = await get_configuration_photo_prompt_creator()
 
     return ConfigurationController(
-        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
@@ -198,7 +200,6 @@ async def get_prompt_controller() -> PromptController:
     prompt_details_tracks_selector = await get_prompt_details_tracks_selector()
 
     return PromptController(
-        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
@@ -214,7 +215,6 @@ async def get_photo_controller() -> PhotoController:
     tracks_uris_extractor = await get_tracks_uris_image_extractor()
 
     return PhotoController(
-        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
@@ -228,7 +228,6 @@ async def get_existing_playlist_controller() -> ExistingPlaylistController:
     playlists_imitator = await get_playlist_imitator()
 
     return ExistingPlaylistController(
-        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
@@ -241,7 +240,6 @@ async def get_wrapped_controller() -> WrappedController:
     openai_client = await get_openai_client()
 
     return WrappedController(
-        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
@@ -254,7 +252,6 @@ async def get_for_you_controller() -> ForYouController:
     playlists_imitator = await get_playlist_imitator()
 
     return ForYouController(
-        authenticator=get_authenticator(),
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
@@ -272,3 +269,18 @@ def get_authenticator() -> Authenticator:
 
 def get_case_progress_controller() -> CaseProgressController:
     return CaseProgressController(get_database_engine())
+
+
+def get_playlist_controller() -> PlaylistController:
+    return PlaylistController(get_database_engine())
+
+
+async def get_method_controller_mapping() -> Dict[str, BaseContentController]:
+    return {
+        "configuration": await get_configuration_controller(),
+        "prompt": await get_prompt_controller(),
+        "photo": await get_photo_controller(),
+        "existingPlaylist": await get_existing_playlist_controller(),
+        "wrapped": await get_wrapped_controller(),
+        "forYou": await get_for_you_controller()
+    }

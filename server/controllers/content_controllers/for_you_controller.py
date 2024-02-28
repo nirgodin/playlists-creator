@@ -9,19 +9,17 @@ from server.data.playlist_resources import PlaylistResources
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
-from server.tools.authenticator import Authenticator
 from server.tools.spotify_session_creator import SpotifySessionCreator
 
 
 class ForYouController(BaseContentController):
     def __init__(self,
-                 authenticator: Authenticator,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
                  session_creator: SpotifySessionCreator,
                  playlists_imitator: PlaylistImitator,
                  playlist_details_collector: PlaylistDetailsCollector = PlaylistDetailsCollector()):
-        super().__init__(authenticator, playlists_creator, openai_client, session_creator)
+        super().__init__(playlists_creator, openai_client, session_creator)
         self._playlist_details_collector = playlist_details_collector
         self._playlists_imitator = playlists_imitator
 

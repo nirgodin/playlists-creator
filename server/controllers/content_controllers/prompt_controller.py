@@ -20,7 +20,6 @@ from server.logic.openai.columns_descriptions_creator import ColumnsDescriptions
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
-from server.tools.authenticator import Authenticator
 from server.tools.spotify_session_creator import SpotifySessionCreator
 from server.utils.general_utils import build_prompt, to_dataclass
 from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
@@ -28,14 +27,13 @@ from server.utils.image_utils import current_timestamp_image_path, save_image_fr
 
 class PromptController(BaseContentController):
     def __init__(self,
-                 authenticator: Authenticator,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
                  session_creator: SpotifySessionCreator,
                  openai_adapter: OpenAIAdapter,
                  prompt_details_tracks_selector: PromptDetailsTracksSelector,
                  columns_descriptions_creator: ColumnsDescriptionsCreator):
-        super().__init__(authenticator, playlists_creator, openai_client, session_creator)
+        super().__init__(playlists_creator, openai_client, session_creator)
         self._openai_adapter = openai_adapter
         self._columns_descriptions_creator = columns_descriptions_creator
         self._prompt_details_tracks_selector = prompt_details_tracks_selector

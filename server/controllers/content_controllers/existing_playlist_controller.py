@@ -19,13 +19,12 @@ from server.utils.spotify_utils import extract_tracks_from_response
 
 class ExistingPlaylistController(BaseContentController):
     def __init__(self,
-                 authenticator: Authenticator,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
                  session_creator: SpotifySessionCreator,
                  playlists_imitator: PlaylistImitator,
                  playlist_details_collector: PlaylistDetailsCollector = PlaylistDetailsCollector()):
-        super().__init__(authenticator, playlists_creator, openai_client, session_creator)
+        super().__init__(playlists_creator, openai_client, session_creator)
         self._playlist_imitator = playlists_imitator
         self._playlist_details_collector = playlist_details_collector
 

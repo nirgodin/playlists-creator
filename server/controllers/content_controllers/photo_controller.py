@@ -16,12 +16,11 @@ from server.utils.spotify_utils import sample_uris
 
 class PhotoController(BaseContentController):
     def __init__(self,
-                 authenticator: Authenticator,
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
                  session_creator: SpotifySessionCreator,
                  tracks_uris_extractor: TracksURIsImageExtractor):
-        super().__init__(authenticator, playlists_creator, openai_client, session_creator)
+        super().__init__(playlists_creator, openai_client, session_creator)
         self._tracks_uris_extractor = tracks_uris_extractor
 
     async def _generate_playlist_resources(self,
