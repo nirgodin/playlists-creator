@@ -24,7 +24,7 @@ class BaseContentController(ABC):
         self._openai_client = openai_client
         self._session_creator = session_creator
 
-    async def post(self, request_body: dict) -> JSONResponse:
+    async def post(self, request_body: dict, case_id: str) -> JSONResponse:
         logger.info("Received request", extra={"controller": self.__class__.__name__})
         access_code = request_body[ACCESS_CODE]
 

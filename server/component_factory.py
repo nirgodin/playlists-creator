@@ -9,7 +9,7 @@ from genie_common.tools import AioPoolExecutor
 from genie_common.utils import create_client_session, build_authorization_headers
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
-from genie_datastores.postgres.models import AudioFeatures, SpotifyTrack, TrackLyrics, Artist
+from genie_datastores.postgres.models import AudioFeatures, SpotifyTrack, TrackLyrics, Artist, PlaylistEndpoint
 from genie_datastores.postgres.operations import get_database_engine
 from spotipyio import AccessTokenGenerator
 
@@ -38,6 +38,7 @@ from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.tools.authenticator import Authenticator
+from server.tools.case_progress_reporter import CaseProgressReporter
 from server.tools.spotify_session_creator import SpotifySessionCreator
 
 
@@ -272,15 +273,22 @@ def get_case_progress_controller() -> CaseProgressController:
 
 
 def get_playlist_controller() -> PlaylistController:
-    return PlaylistController(get_database_engine())
+    return PlaylistController(
+        db_engine=get_database_engine(),
+        case_progress_reporter=get_case_progress_reporter()
+    )
 
 
-async def get_method_controller_mapping() -> Dict[str, BaseContentController]:
+async def get_endpoint_controller_mapping() -> Dict[PlaylistEndpoint, BaseContentController]:
     return {
-        "configuration": await get_configuration_controller(),
-        "prompt": await get_prompt_controller(),
-        "photo": await get_photo_controller(),
-        "existingPlaylist": await get_existing_playlist_controller(),
-        "wrapped": await get_wrapped_controller(),
-        "forYou": await get_for_you_controller()
+        PlaylistEndpoint.CONFIGURATION: await get_configuration_controller(),
+        PlaylistEndpoint.EXISTING_PLAYLIST: await get_existing_playlist_controller(),
+        PlaylistEndpoint.FOR_YOU: await get_for_you_controller(),
+        PlaylistEndpoint.PHOTO: await get_photo_controller(),
+        PlaylistEndpoint.PROMPT: await get_prompt_controller(),
+        PlaylistEndpoint.WRAPPED: await get_wrapped_controller(),
     }
+
+
+def get_case_progress_reporter() -> CaseProgressReporter:
+    return CaseProgressReporter(get_database_engine())
