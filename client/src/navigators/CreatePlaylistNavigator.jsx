@@ -13,6 +13,7 @@ function CreatePlaylistNavigator(props) {
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [playlistLink, setPlaylistLink] = useState("");
+  const [caseId, setCaseId] = useState(undefined);
 
   useEffect(() => {
     if (props.isUserLoggedIn && props.body[0][ACCESS_CODE] === "") {
@@ -45,16 +46,19 @@ function CreatePlaylistNavigator(props) {
           errorMessage={errorMessage}
           setErrorMessage={setErrorMessage}
           setPlaylistLink={setPlaylistLink}
+          setCaseId={setCaseId}
         ></LandingPage>
       </div>
     );
-  } else if (isSuccessful) {
+  } else if (caseId !== undefined) {
     return (
       <PostSendPage
         isSuccessful={isSuccessful}
         setWasRequestSent={setWasRequestSent}
         setIsSuccessful={setIsSuccessful}
+        setPlaylistLink={setPlaylistLink}
         playlistLink={playlistLink}
+        caseId={caseId}
       ></PostSendPage>
     );
   } else {

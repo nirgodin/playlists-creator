@@ -17,6 +17,7 @@ const PLAYLIST_LINK = "playlistLink";
 const MESSAGE = "message";
 const ACCESS_CODE = "accessCode";
 const REQUEST_BODY = "requestBody";
+const CASE_ID = "caseId";
 
 // Spotify
 const SPOTIFY_LOGOUT_URL = "https://www.spotify.com/logout/";
@@ -465,6 +466,7 @@ export {
   PHOTO,
   FOR_YOU,
   FILTER_PARAMS,
+  CASE_ID,
   INCLUDE_NAN,
   PLAYLIST_DETAILS,
   MIN,

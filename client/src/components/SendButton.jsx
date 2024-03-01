@@ -3,11 +3,10 @@ import { useState, useEffect } from "react";
 import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
 import axios from "axios";
 import {
+  CASE_ID,
   FILTER_PARAMS,
-  IS_SUCCESS,
   MESSAGE,
   PHOTO,
-  PLAYLIST_LINK,
 } from "../consts";
 import PropTypes from "prop-types";
 import ClickButton from "./ClickButton";
@@ -16,7 +15,7 @@ import { Tooltip } from "@mui/material";
 function SendButton(props) {
   const [isClicked, setIsClicked] = useState(false);
   const [cursor, setCursor] = useState(undefined);
-  const url = `${process.env.REACT_APP_BASE_URL}/${props.alignment}`;
+  const url = `${process.env.REACT_APP_BASE_URL}/playlist/${props.alignment}`;
 
   useEffect(() => {
     props.isValidInput ? setCursor(undefined) : setCursor("not-allowed");
@@ -26,7 +25,7 @@ function SendButton(props) {
     if (props.alignment === PHOTO) {
       await sendPhotoRequest();
     } else {
-      await sendPlaylistConfigurationRequest();
+      await sendPlaylistRequest();
     }
   }
 
@@ -52,7 +51,7 @@ function SendButton(props) {
       .catch((error) => handleError(error));
   }
 
-  async function sendPlaylistConfigurationRequest() {
+  async function sendPlaylistRequest() {
     await axios
       .post(url, props.body[0], {
         auth: {
@@ -67,18 +66,20 @@ function SendButton(props) {
   }
 
   function handleResponse(jsonfiedData) {
-    const isSuccess = jsonfiedData[IS_SUCCESS];
+    const caseId = jsonfiedData[CASE_ID];
+    const isSuccess = (caseId !== undefined);
 
     if (isSuccess) {
-      const playlistLink = jsonfiedData[PLAYLIST_LINK];
-      props.setPlaylistLink(playlistLink);
+      props.setCaseId(caseId);
+      // const playlistLink = jsonfiedData[PLAYLIST_LINK];
+      // props.setPlaylistLink(playlistLink);
       props.setErrorMessage("");
     } else {
       const errorMessage = jsonfiedData[MESSAGE];
       props.setErrorMessage(errorMessage);
     }
 
-    resetState(isSuccess);
+    // resetState(isSuccess);
   }
 
   function resetState(isSuccess) {
@@ -138,6 +139,7 @@ SendButton.propTypes = {
   setWasRequestSent: PropTypes.func,
   text: PropTypes.string,
   defaultRequestBody: PropTypes.array,
+  setCaseId: PropTypes.func,
 };
 
 export default SendButton;

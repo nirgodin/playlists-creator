@@ -11,7 +11,7 @@ async function sendGetRequest(route, key) {
     })
     .then((resp) => JSON.stringify(resp.data))
     .then((data) => JSON.parse(data))
-    .then((jsonfiedData) => jsonfiedData[key]);
+    .then((jsonfiedData) => jsonfiedData[key])
 }
 
 export { sendGetRequest };

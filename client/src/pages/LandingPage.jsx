@@ -127,6 +127,7 @@ function LandingPage(props) {
           isValidInput={isValidInput}
           files={files}
           setFiles={setFiles}
+          setCaseId={props.setCaseId}
         ></SendButton>
       </Box>
       <p className="error-message" key={props.errorMessage}>
@@ -200,6 +201,7 @@ LandingPage.propTypes = {
   text: PropTypes.string,
   defaultRequestBody: PropTypes.array,
   errorMessage: PropTypes.string,
+  setCaseId: PropTypes.func
 };
 
 export default LandingPage;
