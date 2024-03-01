@@ -6,16 +6,24 @@ from server.consts.api_consts import ID, MAX_TRACKS_NUMBER_PER_REQUEST
 from server.consts.data_consts import ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES
 from server.consts.openai_consts import URL
 from server.data.playlist_imitation.playlist_details import PlaylistDetails
+from server.tools.case_progress_reporter import CaseProgressReporter
 from server.utils.spotify_utils import sample_uris
 
 
 class PlaylistDetailsCollector:
-    async def collect_playlist(self, tracks: List[dict], spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
-        tracks_sample = sample_uris(tracks, MAX_TRACKS_NUMBER_PER_REQUEST)
-        tracks_data = await self._collect_tracks_data(tracks_sample, spotify_client)
-        # tracks_data[COVER_IMAGE_URL] = self._extract_playlist_image_url(playlist)  # TODO: Think how to integrate it
+    def __init__(self, case_progress_reporter: CaseProgressReporter):
+        self._case_progress_reporter = case_progress_reporter
 
-        return PlaylistDetails.from_dict(tracks_data)
+    async def collect_playlist(self,
+                               case_id: str,
+                               tracks: List[dict],
+                               spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
+        async with self._case_progress_reporter.report(case_id=case_id, status="playlist_details"):
+            tracks_sample = sample_uris(tracks, MAX_TRACKS_NUMBER_PER_REQUEST)
+            tracks_data = await self._collect_tracks_data(tracks_sample, spotify_client)
+            # tracks_data[COVER_IMAGE_URL] = self._extract_playlist_image_url(playlist)  # TODO: Think how to integrate
+
+            return PlaylistDetails.from_dict(tracks_data)
 
     async def _collect_tracks_data(self, tracks: List[dict], spotify_client: SpotifyClient) -> Dict[str, List[dict]]:
         track_data = {}

@@ -16,18 +16,24 @@ from server.utils.image_utils import save_image_from_bytes
 
 class WrappedController(BaseContentController):
     async def _generate_playlist_resources(self,
+                                           case_id: str,
                                            request_body: dict,
                                            dir_path: str,
                                            spotify_client: SpotifyClient) -> PlaylistResources:
-        raw_time_range = safe_nested_get(request_body, [PLAYLIST_DETAILS, TIME_RANGE], TimeRange.SHORT_TERM.value)
-        response = await spotify_client.current_user.top_items.run(
-            items_type=ItemsType.TRACKS,
-            time_range=TimeRange(raw_time_range),
-            limit=50
-        )
-        uris = [item[URI] for item in response[ITEMS]]
+        async with self._case_progress_reporter.report(case_id=case_id, status="tracks"):
+            raw_time_range = safe_nested_get(
+                dct=request_body,
+                paths=[PLAYLIST_DETAILS, TIME_RANGE],
+                default=TimeRange.SHORT_TERM.value
+            )
+            response = await spotify_client.current_user.top_items.run(
+                items_type=ItemsType.TRACKS,
+                time_range=TimeRange(raw_time_range),
+                limit=50
+            )
+            uris = [item[URI] for item in response[ITEMS]]
 
-        return PlaylistResources(uris=uris, cover_image_path=None)
+            return PlaylistResources(uris=uris, cover_image_path=None)
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         encoded_image: str = await self._openai_client.images_generation.collect(

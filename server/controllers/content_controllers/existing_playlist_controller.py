@@ -13,6 +13,7 @@ from server.data.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.authenticator import Authenticator
+from server.tools.case_progress_reporter import CaseProgressReporter
 from server.tools.spotify_session_creator import SpotifySessionCreator
 from server.utils.spotify_utils import extract_tracks_from_response
 
@@ -23,17 +24,28 @@ class ExistingPlaylistController(BaseContentController):
                  openai_client: OpenAIClient,
                  session_creator: SpotifySessionCreator,
                  playlists_imitator: PlaylistImitator,
-                 playlist_details_collector: PlaylistDetailsCollector = PlaylistDetailsCollector()):
-        super().__init__(playlists_creator, openai_client, session_creator)
+                 case_progress_reporter: CaseProgressReporter,
+                 playlist_details_collector: PlaylistDetailsCollector):
+        super().__init__(
+            playlists_creator=playlists_creator,
+            openai_client=openai_client,
+            session_creator=session_creator,
+            case_progress_reporter=case_progress_reporter
+        )
         self._playlist_imitator = playlists_imitator
         self._playlist_details_collector = playlist_details_collector
 
     async def _generate_playlist_resources(self,
+                                           case_id: str,
                                            request_body: dict,
                                            dir_path: str,
                                            spotify_client: SpotifyClient) -> PlaylistResources:
         existing_playlist_url = request_body[PLAYLIST_DETAILS][EXISTING_PLAYLIST]
-        playlist_details = await self._extract_raw_playlist_details(existing_playlist_url, spotify_client)
+        playlist_details = await self._extract_raw_playlist_details(
+            case_id=case_id,
+            playlist_url=existing_playlist_url,
+            spotify_client=spotify_client
+        )
 
         if playlist_details is None:
             return PlaylistResources(None, None)
@@ -48,6 +60,7 @@ class ExistingPlaylistController(BaseContentController):
         )
 
     async def _extract_raw_playlist_details(self,
+                                            case_id: str,
                                             playlist_url: str,
                                             spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
         playlist_id = self._extract_playlist_id_from_url(playlist_url)
@@ -55,7 +68,11 @@ class ExistingPlaylistController(BaseContentController):
         items = extract_tracks_from_response(playlist)
         tracks = [track.get(TRACK) for track in items]
 
-        return await self._playlist_details_collector.collect_playlist(tracks, spotify_client)
+        return await self._playlist_details_collector.collect_playlist(
+            case_id=case_id,
+            tracks=tracks,
+            spotify_client=spotify_client
+        )
 
     @staticmethod
     def _extract_playlist_id_from_url(playlist_url: str) -> str:

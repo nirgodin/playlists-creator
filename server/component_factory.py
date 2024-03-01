@@ -28,6 +28,7 @@ from server.controllers.request_body_controller import RequestBodyController
 from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
 from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCalculator
+from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.database_client import DatabaseClient
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.ocr.artists_collector import ArtistsCollector
@@ -80,7 +81,10 @@ async def get_openai_adapter() -> OpenAIAdapter:
 @alru_cache
 async def get_playlist_imitator() -> PlaylistImitator:
     session = await get_session()
-    return PlaylistImitator(session)
+    return PlaylistImitator(
+        session=session,
+        case_progress_reporter=get_case_progress_reporter()
+    )
 
 
 async def get_milvus_client() -> MilvusClient:
@@ -238,7 +242,8 @@ async def get_photo_controller() -> PhotoController:
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
-        tracks_uris_extractor=tracks_uris_extractor
+        tracks_uris_extractor=tracks_uris_extractor,
+        case_progress_reporter=get_case_progress_reporter()
     )
 
 
@@ -251,7 +256,9 @@ async def get_existing_playlist_controller() -> ExistingPlaylistController:
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
-        playlists_imitator=playlists_imitator
+        playlists_imitator=playlists_imitator,
+        case_progress_reporter=get_case_progress_reporter(),
+        playlist_details_collector=get_playlist_details_collector()
     )
 
 
@@ -263,6 +270,7 @@ async def get_wrapped_controller() -> WrappedController:
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
+        case_progress_reporter=get_case_progress_reporter()
     )
 
 
@@ -275,8 +283,14 @@ async def get_for_you_controller() -> ForYouController:
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
-        playlists_imitator=playlists_imitator
+        playlists_imitator=playlists_imitator,
+        case_progress_reporter=get_case_progress_reporter(),
+        playlist_details_collector=get_playlist_details_collector()
     )
+
+
+def get_playlist_details_collector() -> PlaylistDetailsCollector:
+    return PlaylistDetailsCollector(get_case_progress_reporter())
 
 
 @lru_cache
