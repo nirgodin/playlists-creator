@@ -23,11 +23,11 @@ class PromptDetailsTracksSelector:
         self._openai_client = openai_client
         self._milvus_client = milvus_client
 
-    async def select_tracks(self, prompt_details: PromptDetails) -> List[str]:
+    async def select_tracks(self, case_id: str, prompt_details: PromptDetails) -> List[str]:
         tracks_ids = []
 
         if prompt_details.musical_parameters:
-            tracks_ids = await self._db_client.query(prompt_details.musical_parameters)
+            tracks_ids = await self._db_client.query(case_id, prompt_details.musical_parameters)
 
         if prompt_details.textual_parameters:
             tracks_ids = await self._sort_uris_by_textual_relevance(tracks_ids, prompt_details.textual_parameters)

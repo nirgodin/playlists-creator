@@ -176,7 +176,10 @@ async def get_request_body_controller() -> RequestBodyController:
 
 
 def get_database_client() -> DatabaseClient:
-    return DatabaseClient(get_database_engine())
+    return DatabaseClient(
+        db_engine=get_database_engine(),
+        case_progress_reporter=get_case_progress_reporter()
+    )
 
 
 @lru_cache
@@ -203,7 +206,8 @@ async def get_configuration_controller() -> ConfigurationController:
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
         photo_prompt_creator=photo_prompt_creator,
-        db_client=get_database_client()
+        db_client=get_database_client(),
+        case_progress_reporter=get_case_progress_reporter()
     )
 
 

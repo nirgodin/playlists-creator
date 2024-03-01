@@ -13,6 +13,7 @@ from server.logic.database_client import DatabaseClient
 from server.logic.parameters_transformer import ParametersTransformer
 from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.authenticator import Authenticator
+from server.tools.case_progress_reporter import CaseProgressReporter
 from server.tools.spotify_session_creator import SpotifySessionCreator
 from server.utils.image_utils import current_timestamp_image_path
 from server.utils.spotify_utils import sample_uris, to_uris
@@ -25,18 +26,25 @@ class ConfigurationController(BaseContentController):
                  session_creator: SpotifySessionCreator,
                  photo_prompt_creator: ConfigurationPhotoPromptCreator,
                  db_client: DatabaseClient,
+                 case_progress_reporter: CaseProgressReporter,
                  parameters_transformer: ParametersTransformer = ParametersTransformer()):
-        super().__init__(playlists_creator, openai_client, session_creator)
+        super().__init__(
+            playlists_creator=playlists_creator,
+            openai_client=openai_client,
+            session_creator=session_creator,
+            case_progress_reporter=case_progress_reporter
+        )
         self._photo_prompt_creator = photo_prompt_creator
         self._db_client = db_client
         self._parameters_transformer = parameters_transformer
 
     async def _generate_playlist_resources(self,
+                                           case_id: str,
                                            request_body: dict,
                                            dir_path: str,
                                            spotify_client: SpotifyClient) -> PlaylistResources:
         query_conditions = self._parameters_transformer.transform(request_body)
-        tracks_ids = await self._db_client.query(query_conditions)
+        tracks_ids = await self._db_client.query(case_id, query_conditions)
         tracks_uris = to_uris(SpotifySearchType.TRACK, *tracks_ids)
 
         return PlaylistResources(
