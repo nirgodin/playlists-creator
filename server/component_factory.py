@@ -31,6 +31,7 @@ from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCal
 from server.logic.database_client import DatabaseClient
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.ocr.artists_collector import ArtistsCollector
+from server.logic.ocr.image_text_extractor import ImageTextExtractor
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
@@ -51,7 +52,10 @@ async def get_session() -> ClientSession:
 @alru_cache
 async def get_playlists_creator() -> PlaylistsCreator:
     session = await get_session()
-    return PlaylistsCreator(session)
+    return PlaylistsCreator(
+        session=session,
+        case_progress_reporter=get_case_progress_reporter()
+    )
 
 
 @alru_cache
@@ -66,8 +70,11 @@ async def get_openai_client() -> OpenAIClient:
 
 @alru_cache
 async def get_openai_adapter() -> OpenAIAdapter:
-    client = await get_openai_client()
-    return OpenAIAdapter(client)
+    openai_client = await get_openai_client()
+    return OpenAIAdapter(
+        openai_client=openai_client,
+        case_progress_reporter=get_case_progress_reporter()
+    )
 
 
 @alru_cache
@@ -103,8 +110,14 @@ async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
 
     return TracksURIsImageExtractor(
         openai_adapter=openai_adapter,
-        artists_collector=ArtistsCollector(pool_executor)
+        artists_collector=ArtistsCollector(pool_executor),
+        image_text_extractor=get_image_text_extractor(),
+        case_progress_reporter=get_case_progress_reporter()
     )
+
+
+def get_image_text_extractor() -> ImageTextExtractor:
+    return ImageTextExtractor(get_case_progress_reporter())
 
 
 def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:

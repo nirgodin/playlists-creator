@@ -1,11 +1,14 @@
 from difflib import SequenceMatcher
 from typing import List
 
+from genie_common.tools import logger
+
 from server.consts.data_consts import ORIGINAL_INPUT, NAME
 
 
 class ArtistsFilterer:
     def filter_relevant_artists(self, artists_details: List[dict], relevance_threshold: float = 0.8) -> List[dict]:
+        logger.info("Filtering relevant artists")
         relevant_artists = []
 
         for artist in artists_details:
