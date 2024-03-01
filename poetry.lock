@@ -727,8 +727,8 @@ redis = ["aioredis (>=2.0.0,<2.1.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-datastores.git"
-reference = "f1c7c4a1"
-resolved_reference = "f1c7c4a13c9ae3cacad74fdf24e0b9f54560d183"
+reference = "5195d90b"
+resolved_reference = "5195d90b71471489f9491db9b8d846b579438b52"
 
 [[package]]
 name = "google-api-core"
@@ -1513,13 +1513,13 @@ Pillow = ">=8.0.0"
 
 [[package]]
 name = "python-dateutil"
-version = "2.8.2"
+version = "2.9.0"
 description = "Extensions to the standard Python datetime module"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 files = [
-    {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
-    {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
+    {file = "python-dateutil-2.9.0.tar.gz", hash = "sha256:78e73e19c63f5b20ffa567001531680d939dc042bf7850431877645523c66709"},
+    {file = "python_dateutil-2.9.0-py2.py3-none-any.whl", hash = "sha256:cbf2f1da5e6083ac2fbfd4da39a25f34312230110440f424a14c7558bb85d82e"},
 ]
 
 [package.dependencies]
@@ -2043,4 +2043,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "3a374c637413ce6d8e98e03469faae70a3e4a51177ca66c58c3980cb01f0527b"
+content-hash = "e63d0a66bcb9aa97f1441542e6e42c32cb8de4fdc4531f5f73d15a6f027e0b22"
