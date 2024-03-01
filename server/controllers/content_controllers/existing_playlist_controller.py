@@ -8,6 +8,7 @@ from server.consts.app_consts import PLAYLIST_DETAILS, EXISTING_PLAYLIST
 from server.consts.data_consts import TRACK
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
+from server.logic.cases_manager import CasesManager
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.data.playlist_imitation.playlist_details import PlaylistDetails
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
@@ -25,12 +26,14 @@ class ExistingPlaylistController(BaseContentController):
                  session_creator: SpotifySessionCreator,
                  playlists_imitator: PlaylistImitator,
                  case_progress_reporter: CaseProgressReporter,
+                 cases_manager: CasesManager,
                  playlist_details_collector: PlaylistDetailsCollector):
         super().__init__(
             playlists_creator=playlists_creator,
             openai_client=openai_client,
             session_creator=session_creator,
-            case_progress_reporter=case_progress_reporter
+            case_progress_reporter=case_progress_reporter,
+            cases_manager=cases_manager
         )
         self._playlist_imitator = playlists_imitator
         self._playlist_details_collector = playlist_details_collector

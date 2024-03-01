@@ -18,6 +18,7 @@ from server.data.chat_completions_request import ChatCompletionsRequest
 from server.data.playlist_resources import PlaylistResources
 from server.data.prompt_details import PromptDetails
 from server.data.track_details import TrackDetails
+from server.logic.cases_manager import CasesManager
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlists_creator import PlaylistsCreator
@@ -36,12 +37,14 @@ class PromptController(BaseContentController):
                  openai_adapter: OpenAIAdapter,
                  prompt_details_tracks_selector: PromptDetailsTracksSelector,
                  columns_descriptions_creator: ColumnsDescriptionsCreator,
-                 case_progress_reporter: CaseProgressReporter):
+                 case_progress_reporter: CaseProgressReporter,
+                 cases_manager: CasesManager):
         super().__init__(
             playlists_creator=playlists_creator,
             openai_client=openai_client,
             session_creator=session_creator,
-            case_progress_reporter=case_progress_reporter
+            case_progress_reporter=case_progress_reporter,
+            cases_manager=cases_manager
         )
         self._openai_adapter = openai_adapter
         self._columns_descriptions_creator = columns_descriptions_creator

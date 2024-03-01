@@ -5,14 +5,13 @@ from typing import Optional
 from genie_common.openai import OpenAIClient
 from genie_common.tools.logs import logger
 from spotipyio import SpotifyClient
-from starlette.responses import JSONResponse
 
 from server.consts.app_consts import PLAYLIST_DETAILS, ACCESS_CODE
+from server.logic.cases_manager import CasesManager
 from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.data.playlist_resources import PlaylistResources
 from server.logic.playlists_creator import PlaylistsCreator
 from server.tools.case_progress_reporter import CaseProgressReporter
-from server.tools.response_factory import ResponseFactory
 from server.tools.spotify_session_creator import SpotifySessionCreator
 
 
@@ -21,13 +20,15 @@ class BaseContentController(ABC):
                  playlists_creator: PlaylistsCreator,
                  openai_client: OpenAIClient,
                  session_creator: SpotifySessionCreator,
-                 case_progress_reporter: CaseProgressReporter):
+                 case_progress_reporter: CaseProgressReporter,
+                 cases_manager: CasesManager):
         self._playlists_creator = playlists_creator
         self._openai_client = openai_client
         self._session_creator = session_creator
         self._case_progress_reporter = case_progress_reporter
+        self._cases_manager = cases_manager
 
-    async def post(self, request_body: dict, case_id: str) -> JSONResponse:
+    async def post(self, request_body: dict, case_id: str) -> None:
         logger.info("Received request", extra={"controller": self.__class__.__name__})
         access_code = request_body[ACCESS_CODE]
 
@@ -35,7 +36,7 @@ class BaseContentController(ABC):
             async with self._session_creator.create(access_code) as spotify_session:
                 spotify_client = SpotifyClient.create(spotify_session)
 
-                return await self._execute_playlist_creation_process(
+                await self._execute_playlist_creation_process(
                     request_body=request_body,
                     dir_path=dir_path,
                     spotify_client=spotify_client,
@@ -46,27 +47,25 @@ class BaseContentController(ABC):
                                                  request_body: dict,
                                                  dir_path: str,
                                                  spotify_client: SpotifyClient,
-                                                 case_id: str) -> JSONResponse:
+                                                 case_id: str) -> None:
         logger.info("Starting to execute playlists creation process")
+        playlist_id = None
         playlist_resources = await self._generate_playlist_resources(
             case_id=case_id,
             request_body=request_body,
             dir_path=dir_path,
             spotify_client=spotify_client
         )
-        if not playlist_resources.uris:
-            return ResponseFactory.build_no_content_response()
 
-        playlist_id = await self._create_playlist(
-            request_body=request_body,
-            playlist_resources=playlist_resources,
-            spotify_client=spotify_client,
-            case_id=case_id
-        )
-        if playlist_id is None:
-            return ResponseFactory.build_authentication_failure_response()
+        if playlist_resources.uris:
+            playlist_id = await self._create_playlist(
+                request_body=request_body,
+                playlist_resources=playlist_resources,
+                spotify_client=spotify_client,
+                case_id=case_id
+            )
 
-        return ResponseFactory.build_success_response(playlist_id)
+        await self._cases_manager.mark_completed(case_id=case_id, playlist_id=playlist_id)
 
     @abstractmethod
     async def _generate_playlist_resources(self,

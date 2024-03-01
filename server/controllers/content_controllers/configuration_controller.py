@@ -8,6 +8,7 @@ from spotipyio.logic.collectors.search_collectors.spotify_search_type import Spo
 from server.consts.app_consts import FILTER_PARAMS
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.playlist_resources import PlaylistResources
+from server.logic.cases_manager import CasesManager
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
 from server.logic.database_client import DatabaseClient
 from server.logic.parameters_transformer import ParametersTransformer
@@ -27,12 +28,14 @@ class ConfigurationController(BaseContentController):
                  photo_prompt_creator: ConfigurationPhotoPromptCreator,
                  db_client: DatabaseClient,
                  case_progress_reporter: CaseProgressReporter,
+                 cases_manager: CasesManager,
                  parameters_transformer: ParametersTransformer = ParametersTransformer()):
         super().__init__(
             playlists_creator=playlists_creator,
             openai_client=openai_client,
             session_creator=session_creator,
-            case_progress_reporter=case_progress_reporter
+            case_progress_reporter=case_progress_reporter,
+            cases_manager=cases_manager
         )
         self._photo_prompt_creator = photo_prompt_creator
         self._db_client = db_client

@@ -15,7 +15,7 @@ from spotipyio import AccessTokenGenerator
 
 from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
     SPOTIPY_REDIRECT_URI
-from server.controllers.case_progress_controller import CaseProgressController
+from server.controllers.case_controller import CasesController
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
@@ -23,7 +23,7 @@ from server.controllers.content_controllers.for_you_controller import ForYouCont
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
-from server.controllers.playlist_controller import PlaylistController
+from server.logic.cases_manager import CasesManager
 from server.controllers.request_body_controller import RequestBodyController
 from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
@@ -212,7 +212,8 @@ async def get_configuration_controller() -> ConfigurationController:
         session_creator=get_spotify_session_creator(),
         photo_prompt_creator=photo_prompt_creator,
         db_client=get_database_client(),
-        case_progress_reporter=get_case_progress_reporter()
+        case_progress_reporter=get_case_progress_reporter(),
+        cases_manager=get_cases_manager()
     )
 
 
@@ -229,7 +230,8 @@ async def get_prompt_controller() -> PromptController:
         openai_adapter=openai_adapter,
         columns_descriptions_creator=get_columns_descriptions_creator(),
         prompt_details_tracks_selector=prompt_details_tracks_selector,
-        case_progress_reporter=get_case_progress_reporter()
+        case_progress_reporter=get_case_progress_reporter(),
+        cases_manager=get_cases_manager()
     )
 
 
@@ -243,7 +245,8 @@ async def get_photo_controller() -> PhotoController:
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
         tracks_uris_extractor=tracks_uris_extractor,
-        case_progress_reporter=get_case_progress_reporter()
+        case_progress_reporter=get_case_progress_reporter(),
+        cases_manager=get_cases_manager()
     )
 
 
@@ -258,6 +261,7 @@ async def get_existing_playlist_controller() -> ExistingPlaylistController:
         session_creator=get_spotify_session_creator(),
         playlists_imitator=playlists_imitator,
         case_progress_reporter=get_case_progress_reporter(),
+        cases_manager=get_cases_manager(),
         playlist_details_collector=get_playlist_details_collector()
     )
 
@@ -270,7 +274,8 @@ async def get_wrapped_controller() -> WrappedController:
         playlists_creator=playlists_creator,
         openai_client=openai_client,
         session_creator=get_spotify_session_creator(),
-        case_progress_reporter=get_case_progress_reporter()
+        case_progress_reporter=get_case_progress_reporter(),
+        cases_manager=get_cases_manager()
     )
 
 
@@ -301,12 +306,12 @@ def get_authenticator() -> Authenticator:
     )
 
 
-def get_case_progress_controller() -> CaseProgressController:
-    return CaseProgressController(get_database_engine())
+def get_cases_controller() -> CasesController:
+    return CasesController(get_cases_manager())
 
 
-def get_playlist_controller() -> PlaylistController:
-    return PlaylistController(
+def get_cases_manager() -> CasesManager:
+    return CasesManager(
         db_engine=get_database_engine(),
         case_progress_reporter=get_case_progress_reporter()
     )
