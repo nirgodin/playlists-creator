@@ -11,6 +11,7 @@ from spotipyio.logic.collectors.search_collectors.spotify_search_type import Spo
 from server.consts.api_consts import ID
 from server.data.prompt_details import PromptDetails
 from server.logic.database_client import DatabaseClient
+from server.tools.case_progress_reporter import CaseProgressReporter
 from server.utils.spotify_utils import sample_uris, to_uris
 
 
@@ -18,10 +19,12 @@ class PromptDetailsTracksSelector:
     def __init__(self,
                  db_client: DatabaseClient,
                  openai_client: OpenAIClient,
-                 milvus_client: MilvusClient):
+                 milvus_client: MilvusClient,
+                 case_progress_reporter: CaseProgressReporter):
         self._db_client = db_client
         self._openai_client = openai_client
         self._milvus_client = milvus_client
+        self._case_progress_reporter = case_progress_reporter
 
     async def select_tracks(self, case_id: str, prompt_details: PromptDetails) -> List[str]:
         tracks_ids = []
@@ -30,12 +33,22 @@ class PromptDetailsTracksSelector:
             tracks_ids = await self._db_client.query(case_id, prompt_details.musical_parameters)
 
         if prompt_details.textual_parameters:
-            tracks_ids = await self._sort_uris_by_textual_relevance(tracks_ids, prompt_details.textual_parameters)
+            tracks_ids = await self._filter_tracks_by_textual_relevance(
+                case_id=case_id,
+                tracks_ids=tracks_ids,
+                text=prompt_details.textual_parameters
+            )
 
         uris = to_uris(SpotifySearchType.TRACK, *tracks_ids)
         return sample_uris(uris)
 
-    async def _sort_uris_by_textual_relevance(self, tracks_ids: List[str], text: str) -> List[str]:
+    async def _filter_tracks_by_textual_relevance(self, case_id: str, tracks_ids: List[str], text: str) -> List[str]:
+        logger.info("Filtering tracks by textual relevance")
+
+        async with self._case_progress_reporter.report(case_id=case_id, status="textual_query"):
+            return await self._embed_and_search(text, tracks_ids)
+
+    async def _embed_and_search(self, text: str, tracks_ids: List[str]) -> List[str]:
         prompt_embeddings = await self._openai_client.embeddings.collect(text=text, model=EmbeddingsModel.ADA)
 
         if prompt_embeddings is None:

@@ -59,7 +59,6 @@ class TracksURIsImageExtractor:
             prompt=prompt,
             start_char="[",
             end_char="]",
-            retries_left=1
         )
 
         return await self._openai_adapter.chat_completions(request)

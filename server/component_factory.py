@@ -99,7 +99,8 @@ async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
     return PromptDetailsTracksSelector(
         db_client=get_database_client(),
         openai_client=openai_client,
-        milvus_client=milvus_client
+        milvus_client=milvus_client,
+        case_progress_reporter=get_case_progress_reporter()
     )
 
 
@@ -223,7 +224,8 @@ async def get_prompt_controller() -> PromptController:
         session_creator=get_spotify_session_creator(),
         openai_adapter=openai_adapter,
         columns_descriptions_creator=get_columns_descriptions_creator(),
-        prompt_details_tracks_selector=prompt_details_tracks_selector
+        prompt_details_tracks_selector=prompt_details_tracks_selector,
+        case_progress_reporter=get_case_progress_reporter()
     )
 
 

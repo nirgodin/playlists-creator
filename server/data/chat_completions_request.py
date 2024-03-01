@@ -9,7 +9,7 @@ class ChatCompletionsRequest:
     prompt: str
     start_char: str
     end_char: str
-    retries_left: int = 3
+    retries_left: int = 1
 
     def __post_init__(self):
         self.messages = [
