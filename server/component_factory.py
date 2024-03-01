@@ -290,6 +290,7 @@ async def get_for_you_controller() -> ForYouController:
         session_creator=get_spotify_session_creator(),
         playlists_imitator=playlists_imitator,
         case_progress_reporter=get_case_progress_reporter(),
+        cases_manager=get_cases_manager(),
         playlist_details_collector=get_playlist_details_collector()
     )
 

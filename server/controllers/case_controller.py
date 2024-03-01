@@ -28,7 +28,7 @@ class CasesController:
 
         return JSONResponse(
             status_code=HTTPStatus.OK.value,
-            content={"casePlaylistId": case.playlist_id}  # TODO: Add column to model
+            content={"playlistId": case.playlist_id}
         )
 
     @staticmethod
