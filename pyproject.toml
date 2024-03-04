@@ -29,6 +29,13 @@ async-cache = "1.1.1"
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0.2,<9.0"
 genie-testkit = {git = "https://github.com/nirgodin/genie-testkit.git", rev = "a7f79a07", extras = ["postgres"]}
+pytest-asyncio = ">=0.23.5,<0.24"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+markers = ["asyncio: mark a test as an asyncio coroutine"]
+addopts = "--asyncio-mode=auto"
 
 [build-system]
 requires = ["poetry-core"]
