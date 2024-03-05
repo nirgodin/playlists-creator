@@ -2,6 +2,8 @@ from http import HTTPStatus
 
 from starlette.responses import JSONResponse
 
+from server.consts.app_consts import MESSAGE
+from server.consts.cases_consts import CASE_STATUS, PLAYLIST_ID, CASE_FAILURE_MESSAGE_FORMAT
 from server.logic.cases_manager import CasesManager
 
 
@@ -17,7 +19,7 @@ class CasesController:
 
         return JSONResponse(
             status_code=HTTPStatus.OK.value,
-            content={"caseStatus": case_progress.status}
+            content={CASE_STATUS: case_progress.status}
         )
 
     async def get_playlist_id(self, case_id: str) -> JSONResponse:
@@ -28,12 +30,13 @@ class CasesController:
 
         return JSONResponse(
             status_code=HTTPStatus.OK.value,
-            content={"playlistId": case.playlist_id}
+            content={PLAYLIST_ID: case.playlist_id}
         )
 
     @staticmethod
     def _build_non_existing_case_response(case_id: str) -> JSONResponse:
+        message = CASE_FAILURE_MESSAGE_FORMAT.format(case_id=case_id)
         return JSONResponse(
             status_code=HTTPStatus.BAD_REQUEST.value,
-            content={"message": f"Did not find any record that matches case id `{case_id}`"}
+            content={MESSAGE: message}
         )
