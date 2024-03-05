@@ -789,8 +789,8 @@ postgres = ["asyncmy (==0.2.8)", "asyncpg (==0.28.0)", "greenlet (==2.0.1)", "sq
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-testkit.git"
-reference = "f29105f0"
-resolved_reference = "f29105f0fa29448e9c7626b74fd7f3250a317bbb"
+reference = "3696fe01"
+resolved_reference = "3696fe01b142309b808faffcd0e21cb9520566ef"
 
 [[package]]
 name = "google-api-core"
@@ -1085,13 +1085,13 @@ files = [
 
 [[package]]
 name = "marshmallow"
-version = "3.21.0"
+version = "3.21.1"
 description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "marshmallow-3.21.0-py3-none-any.whl", hash = "sha256:e7997f83571c7fd476042c2c188e4ee8a78900ca5e74bd9c8097afa56624e9bd"},
-    {file = "marshmallow-3.21.0.tar.gz", hash = "sha256:20f53be28c6e374a711a16165fb22a8dc6003e3f7cda1285e3ca777b9193885b"},
+    {file = "marshmallow-3.21.1-py3-none-any.whl", hash = "sha256:f085493f79efb0644f270a9bf2892843142d80d7174bbbd2f3713f2a589dc633"},
+    {file = "marshmallow-3.21.1.tar.gz", hash = "sha256:4e65e9e0d80fc9e609574b9983cf32579f305c718afb30d7233ab818571768c3"},
 ]
 
 [package.dependencies]
@@ -2472,4 +2472,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "474601ba571e9cf78d429a47561657c58fa0b5940cce1c885077ff55c2c7f04b"
+content-hash = "19b5d940d377861698440836264d7493c0ce0a9a9eaa92e4c5b61ba6c41b81cb"

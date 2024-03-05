@@ -14,7 +14,7 @@ from server.tools.authenticator import Authenticator
 class TestResources:
     def __init__(self,
                  client: TestClient = TestClient(app),
-                 postgres_testkit: PostgresTestkit = PostgresTestkit(driver="psycopg2"),
+                 postgres_testkit: PostgresTestkit = PostgresTestkit(),
                  mock_factory: PostgresMockFactory = PostgresMockFactory(),
                  username: str = random_alphanumeric_string(),
                  password: str = random_alphanumeric_string(),
