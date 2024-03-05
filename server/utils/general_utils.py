@@ -2,7 +2,7 @@ import os.path
 import random
 from typing import List, Union, Type
 
-from genie_common.google import GoogleDriveAdapter
+from genie_datastores.google.drive import GoogleDriveClient
 
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID, TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID
 from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH, TRACK_NAMES_EMBEDDINGS_PATH
@@ -20,16 +20,16 @@ def sample_list(n_candidates: int, n_selected_candidates: int) -> List[int]:
 
 
 def download_database() -> None:
-    drive_adapter = GoogleDriveAdapter.create()
+    drive_client = GoogleDriveClient.create()
 
     if not os.path.exists(DATA_PATH):
-        drive_adapter.download_all_dir_files(
+        drive_client.download_all_dir_files(
             folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
             local_dir=RESOURCES_DIR_PATH
         )
 
     if not os.path.exists(TRACK_NAMES_EMBEDDINGS_PATH):
-        drive_adapter.download_all_dir_files(
+        drive_client.download_all_dir_files(
             folder_id=os.environ[TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID],
             local_dir=RESOURCES_DIR_PATH
         )
