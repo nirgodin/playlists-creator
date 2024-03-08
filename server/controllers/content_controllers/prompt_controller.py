@@ -2,7 +2,6 @@ from base64 import b64decode
 from typing import List, Optional, Union, Type
 
 from genie_common.models.openai import ImageSize, DallEModel
-from genie_common.openai import OpenAIClient
 from genie_common.tools.logs import logger
 from genie_common.typing import Json
 from spotipyio import SpotifyClient
@@ -15,37 +14,24 @@ from server.consts.prompt_consts import QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT, Q
 from server.consts.typing_consts import DataClass
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.chat_completions_request import ChatCompletionsRequest
+from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.playlist_resources import PlaylistResources
 from server.data.prompt_details import PromptDetails
 from server.data.track_details import TrackDetails
-from server.logic.cases_manager import CasesManager
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
-from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
-from server.tools.case_progress_reporter import CaseProgressReporter
-from server.tools.spotify_session_creator import SpotifySessionCreator
 from server.utils.general_utils import build_prompt, to_dataclass
 from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
 
 
 class PromptController(BaseContentController):
     def __init__(self,
-                 playlists_creator: PlaylistsCreator,
-                 openai_client: OpenAIClient,
-                 session_creator: SpotifySessionCreator,
+                 context: PlaylistCreationContext,
                  openai_adapter: OpenAIAdapter,
                  prompt_details_tracks_selector: PromptDetailsTracksSelector,
-                 columns_descriptions_creator: ColumnsDescriptionsCreator,
-                 case_progress_reporter: CaseProgressReporter,
-                 cases_manager: CasesManager):
-        super().__init__(
-            playlists_creator=playlists_creator,
-            openai_client=openai_client,
-            session_creator=session_creator,
-            case_progress_reporter=case_progress_reporter,
-            cases_manager=cases_manager
-        )
+                 columns_descriptions_creator: ColumnsDescriptionsCreator):
+        super().__init__(context)
         self._openai_adapter = openai_adapter
         self._columns_descriptions_creator = columns_descriptions_creator
         self._prompt_details_tracks_selector = prompt_details_tracks_selector
@@ -71,7 +57,7 @@ class PromptController(BaseContentController):
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         user_text = self._extract_prompt_from_request_body(request_body)
         playlist_cover_prompt = f'{user_text}, digital art'
-        encoded_image: str = await self._openai_client.images_generation.collect(
+        encoded_image: str = await self._context.openai_client.images_generation.collect(
             prompt=playlist_cover_prompt,
             model=DallEModel.DALLE_3,
             n=1,

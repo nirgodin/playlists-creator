@@ -23,6 +23,7 @@ from server.controllers.content_controllers.for_you_controller import ForYouCont
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
+from server.data.playlist_creation_context import PlaylistCreationContext
 from server.logic.cases_manager import CasesManager
 from server.controllers.request_body_controller import RequestBodyController
 from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
@@ -202,95 +203,79 @@ def get_spotify_session_creator() -> SpotifySessionCreator:
 
 
 async def get_configuration_controller() -> ConfigurationController:
-    playlists_creator = await get_playlists_creator()
-    openai_client = await get_openai_client()
+    context = await get_playlist_creation_context()
     photo_prompt_creator = await get_configuration_photo_prompt_creator()
 
     return ConfigurationController(
-        playlists_creator=playlists_creator,
-        openai_client=openai_client,
-        session_creator=get_spotify_session_creator(),
+        context=context,
         photo_prompt_creator=photo_prompt_creator,
         db_client=get_database_client(),
-        case_progress_reporter=get_case_progress_reporter(),
-        cases_manager=get_cases_manager()
     )
 
 
 async def get_prompt_controller() -> PromptController:
-    playlists_creator = await get_playlists_creator()
-    openai_client = await get_openai_client()
+    context = await get_playlist_creation_context()
     openai_adapter = await get_openai_adapter()
     prompt_details_tracks_selector = await get_prompt_details_tracks_selector()
 
     return PromptController(
-        playlists_creator=playlists_creator,
-        openai_client=openai_client,
-        session_creator=get_spotify_session_creator(),
+        context=context,
         openai_adapter=openai_adapter,
         columns_descriptions_creator=get_columns_descriptions_creator(),
         prompt_details_tracks_selector=prompt_details_tracks_selector,
-        case_progress_reporter=get_case_progress_reporter(),
-        cases_manager=get_cases_manager()
     )
 
 
 async def get_photo_controller() -> PhotoController:
-    playlists_creator = await get_playlists_creator()
-    openai_client = await get_openai_client()
+    context = await get_playlist_creation_context()
     tracks_uris_extractor = await get_tracks_uris_image_extractor()
 
     return PhotoController(
+        context=context,
+        tracks_uris_extractor=tracks_uris_extractor,
+    )
+
+
+@alru_cache
+async def get_playlist_creation_context() -> PlaylistCreationContext:
+    playlists_creator = await get_playlists_creator()
+    openai_client = await get_openai_client()
+    spotify_session = get_spotify_session_creator()
+    case_progress_reporter = get_case_progress_reporter()
+    cases_manager = get_cases_manager()
+
+    return PlaylistCreationContext(
         playlists_creator=playlists_creator,
         openai_client=openai_client,
-        session_creator=get_spotify_session_creator(),
-        tracks_uris_extractor=tracks_uris_extractor,
-        case_progress_reporter=get_case_progress_reporter(),
-        cases_manager=get_cases_manager()
+        session_creator=spotify_session,
+        case_progress_reporter=case_progress_reporter,
+        cases_manager=cases_manager
     )
 
 
 async def get_existing_playlist_controller() -> ExistingPlaylistController:
-    playlists_creator = await get_playlists_creator()
-    openai_client = await get_openai_client()
+    context = await get_playlist_creation_context()
     playlists_imitator = await get_playlist_imitator()
 
     return ExistingPlaylistController(
-        playlists_creator=playlists_creator,
-        openai_client=openai_client,
-        session_creator=get_spotify_session_creator(),
+        context=context,
         playlists_imitator=playlists_imitator,
-        case_progress_reporter=get_case_progress_reporter(),
-        cases_manager=get_cases_manager(),
         playlist_details_collector=get_playlist_details_collector()
     )
 
 
 async def get_wrapped_controller() -> WrappedController:
-    playlists_creator = await get_playlists_creator()
-    openai_client = await get_openai_client()
-
-    return WrappedController(
-        playlists_creator=playlists_creator,
-        openai_client=openai_client,
-        session_creator=get_spotify_session_creator(),
-        case_progress_reporter=get_case_progress_reporter(),
-        cases_manager=get_cases_manager()
-    )
+    context = await get_playlist_creation_context()
+    return WrappedController(context)
 
 
 async def get_for_you_controller() -> ForYouController:
-    playlists_creator = await get_playlists_creator()
-    openai_client = await get_openai_client()
+    context = await get_playlist_creation_context()
     playlists_imitator = await get_playlist_imitator()
 
     return ForYouController(
-        playlists_creator=playlists_creator,
-        openai_client=openai_client,
-        session_creator=get_spotify_session_creator(),
+        context=context,
         playlists_imitator=playlists_imitator,
-        case_progress_reporter=get_case_progress_reporter(),
-        cases_manager=get_cases_manager(),
         playlist_details_collector=get_playlist_details_collector()
     )
 

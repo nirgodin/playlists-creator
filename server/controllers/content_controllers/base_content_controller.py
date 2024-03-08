@@ -2,38 +2,25 @@ from abc import ABC, abstractmethod
 from tempfile import TemporaryDirectory
 from typing import Optional
 
-from genie_common.openai import OpenAIClient
 from genie_common.tools.logs import logger
 from spotipyio import SpotifyClient
 
 from server.consts.app_consts import PLAYLIST_DETAILS, ACCESS_CODE
-from server.logic.cases_manager import CasesManager
 from server.data.playlist_creation_config import PlaylistCreationConfig
+from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.playlist_resources import PlaylistResources
-from server.logic.playlists_creator import PlaylistsCreator
-from server.tools.case_progress_reporter import CaseProgressReporter
-from server.tools.spotify_session_creator import SpotifySessionCreator
 
 
 class BaseContentController(ABC):
-    def __init__(self,
-                 playlists_creator: PlaylistsCreator,
-                 openai_client: OpenAIClient,
-                 session_creator: SpotifySessionCreator,
-                 case_progress_reporter: CaseProgressReporter,
-                 cases_manager: CasesManager):
-        self._playlists_creator = playlists_creator
-        self._openai_client = openai_client
-        self._session_creator = session_creator
-        self._case_progress_reporter = case_progress_reporter
-        self._cases_manager = cases_manager
+    def __init__(self, context: PlaylistCreationContext):
+        self._context = context
 
     async def post(self, request_body: dict, case_id: str) -> None:
         logger.info("Received request", extra={"controller": self.__class__.__name__})
         access_code = request_body[ACCESS_CODE]
 
         with TemporaryDirectory() as dir_path:
-            async with self._session_creator.create(access_code) as spotify_session:
+            async with self._context.session_creator.create(access_code) as spotify_session:
                 spotify_client = SpotifyClient.create(spotify_session)
 
                 await self._execute_playlist_creation_process(
@@ -65,7 +52,7 @@ class BaseContentController(ABC):
                 case_id=case_id
             )
 
-        await self._cases_manager.mark_completed(case_id=case_id, playlist_id=playlist_id)
+        await self._context.cases_manager.mark_completed(case_id=case_id, playlist_id=playlist_id)
 
     @abstractmethod
     async def _generate_playlist_resources(self,
@@ -89,7 +76,7 @@ class BaseContentController(ABC):
             playlist_details=request_body[PLAYLIST_DETAILS],
             uris=playlist_resources.uris,
         )
-        playlist_id = await self._playlists_creator.create(case_id, config)
+        playlist_id = await self._context.playlists_creator.create(case_id, config)
 
         if playlist_id is not None:
             await self._create_playlist_cover_wrapper(
@@ -107,7 +94,7 @@ class BaseContentController(ABC):
                                              config: PlaylistCreationConfig,
                                              image_path: str,
                                              case_id: str):
-        async with self._case_progress_reporter.report(case_id=case_id, status="cover"):
+        async with self._context.case_progress_reporter.report(case_id=case_id, status="cover"):
             try:
                 await self._create_playlist_cover(
                     request_body=request_body,

@@ -20,7 +20,7 @@ class WrappedController(BaseContentController):
                                            request_body: dict,
                                            dir_path: str,
                                            spotify_client: SpotifyClient) -> PlaylistResources:
-        async with self._case_progress_reporter.report(case_id=case_id, status="tracks"):
+        async with self._context.case_progress_reporter.report(case_id=case_id, status="tracks"):
             raw_time_range = safe_nested_get(
                 dct=request_body,
                 paths=[PLAYLIST_DETAILS, TIME_RANGE],
@@ -36,7 +36,7 @@ class WrappedController(BaseContentController):
             return PlaylistResources(uris=uris, cover_image_path=None)
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
-        encoded_image: str = await self._openai_client.images_generation.collect(
+        encoded_image: str = await self._context.openai_client.images_generation.collect(
             prompt="Songs I have been playing on repeat lately, digital art",
             model=DallEModel.DALLE_3,
             n=1,

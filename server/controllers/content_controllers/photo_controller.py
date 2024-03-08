@@ -1,36 +1,19 @@
 from typing import Optional
 
-from genie_common.openai import OpenAIClient
 from spotipyio import SpotifyClient
 
 from server.consts.app_consts import PHOTO
 from server.controllers.content_controllers.base_content_controller import BaseContentController
+from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.playlist_resources import PlaylistResources
-from server.logic.cases_manager import CasesManager
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
-from server.logic.playlists_creator import PlaylistsCreator
-from server.tools.authenticator import Authenticator
-from server.tools.case_progress_reporter import CaseProgressReporter
-from server.tools.spotify_session_creator import SpotifySessionCreator
 from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
 from server.utils.spotify_utils import sample_uris
 
 
 class PhotoController(BaseContentController):
-    def __init__(self,
-                 playlists_creator: PlaylistsCreator,
-                 openai_client: OpenAIClient,
-                 session_creator: SpotifySessionCreator,
-                 tracks_uris_extractor: TracksURIsImageExtractor,
-                 case_progress_reporter: CaseProgressReporter,
-                 cases_manager: CasesManager):
-        super().__init__(
-            playlists_creator=playlists_creator,
-            openai_client=openai_client,
-            session_creator=session_creator,
-            case_progress_reporter=case_progress_reporter,
-            cases_manager=cases_manager
-        )
+    def __init__(self, context: PlaylistCreationContext, tracks_uris_extractor: TracksURIsImageExtractor):
+        super().__init__(context)
         self._tracks_uris_extractor = tracks_uris_extractor
 
     async def _generate_playlist_resources(self,
