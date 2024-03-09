@@ -25,11 +25,12 @@ class ColumnsPossibleValuesQuerier:
 
     @AsyncTTL(time_to_live=ONE_DAY_IN_SECONDS)
     async def query(self) -> List[ColumnDetails]:
-        return await self._pool_executor.run(
+        results = await self._pool_executor.run(
             iterable=self._columns,
             func=self._get_single_column_possible_values,
             expected_type=ColumnDetails
         )
+        return sorted(results, key=lambda column: column.name)
 
     async def _get_single_column_possible_values(self, column: BaseORMModel) -> ColumnDetails:
         group = ColumnGroup.POSSIBLE_VALUES

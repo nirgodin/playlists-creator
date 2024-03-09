@@ -27,5 +27,6 @@
     "gender": "The gender of the artist",
     "release_year": "The year the track was first released",
     "album_type": "The type of album",
-    "album_group": "The group of the album"
+    "album_group": "The group of the album",
+    "lyrics_source": "The source from which the lyrics was taken"
 }

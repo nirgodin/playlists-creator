@@ -15,7 +15,7 @@ from server.consts.cases_consts import PLAYLIST_ID, CASE_STATUS, CASE_FAILURE_ME
 from server.controllers.case_controller import CasesController
 from server.logic.cases_manager import CasesManager
 from server.tools.case_progress_reporter import CaseProgressReporter
-from tests.server.controllers.test_resources import TestResources
+from tests.server.integration.test_resources import TestResources
 
 
 class TestCaseController:
