@@ -1,6 +1,6 @@
 import os
 from functools import lru_cache
-from typing import Dict
+from typing import Dict, List
 
 from aiohttp import ClientSession
 from async_lru import alru_cache
@@ -9,7 +9,8 @@ from genie_common.tools import AioPoolExecutor
 from genie_common.utils import create_client_session, build_authorization_headers
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
-from genie_datastores.postgres.models import AudioFeatures, SpotifyTrack, TrackLyrics, Artist, PlaylistEndpoint
+from genie_datastores.postgres.models import AudioFeatures, SpotifyTrack, TrackLyrics, Artist, PlaylistEndpoint, \
+    BaseORMModel
 from genie_datastores.postgres.operations import get_database_engine
 from spotipyio import AccessTokenGenerator
 
@@ -127,7 +128,15 @@ def get_image_text_extractor() -> ImageTextExtractor:
 
 
 def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:
-    columns = [  # TODO: Think how to add popularity, followers, main_genre, radio_play_count, release_year
+    return ColumnsPossibleValuesQuerier(
+        db_engine=get_database_engine(),
+        columns=get_possible_values_columns()
+    )
+
+
+@lru_cache
+def get_possible_values_columns() -> List[BaseORMModel]:
+    return [  # TODO: Think how to add popularity, followers, main_genre, radio_play_count, release_year
         AudioFeatures.acousticness,
         Artist.gender,
         AudioFeatures.danceability,
@@ -146,11 +155,6 @@ def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:
         SpotifyTrack.number,
         AudioFeatures.valence
     ]
-
-    return ColumnsPossibleValuesQuerier(
-        db_engine=get_database_engine(),
-        columns=columns
-    )
 
 
 @lru_cache
