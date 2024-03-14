@@ -3,13 +3,13 @@ from typing import List, Dict, Any
 
 from starlette.responses import JSONResponse
 
-from server.consts.app_consts import FILTER_PARAMS, ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
-    IS_PUBLIC, PROMPT, REQUEST_BODY, FEATURES_NAMES, FEATURES_VALUES, FEATURES_DESCRIPTIONS, EXISTING_PLAYLIST, \
-    TIME_RANGE
-from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
-from server.data.column_group import ColumnGroup
+from server.consts.app_consts import REQUEST_BODY
 from server.data.column_details import ColumnDetails
+from server.data.column_group import ColumnGroup
+from server.data.request_body.playlist_creation_request_body import PlaylistCreationRequestBody
+from server.data.request_body.playlist_settings import PlaylistSettings
 from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
+from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 
 
 class RequestBodyController:
@@ -22,30 +22,18 @@ class RequestBodyController:
     async def get(self) -> JSONResponse:
         columns_values = await self._possible_values_querier.query()
         features_values = self._get_features_values(columns_values)
-        body = {
-            FILTER_PARAMS: self._default_filter_params_generator.get_filter_params_defaults(columns_values),
-            ACCESS_CODE: '',
-            PLAYLIST_DETAILS: self._generate_default_playlist_details(),
-            FEATURES_NAMES: self._get_features_names(features_values),
-            FEATURES_VALUES: features_values,
-            FEATURES_DESCRIPTIONS: {column.formatted_name: column.description for column in columns_values},
-        }
+        body = PlaylistCreationRequestBody(
+            filter_params=self._default_filter_params_generator.get_filter_params_defaults(columns_values),
+            playlist_details=PlaylistSettings(),
+            features_names=self._get_features_names(features_values),
+            features_values=features_values,
+            features_descriptions={column.formatted_name: column.description for column in columns_values},
+        )
         content = {
-            REQUEST_BODY: [body]
+            REQUEST_BODY: [body.to_dict()]
         }
 
         return JSONResponse(content=content, status_code=HTTPStatus.OK.value)
-
-    @staticmethod
-    def _generate_default_playlist_details() -> dict:
-        return {
-            PLAYLIST_NAME: '',
-            PLAYLIST_DESCRIPTION: '',
-            IS_PUBLIC: False,
-            PROMPT: '',
-            EXISTING_PLAYLIST: '',
-            TIME_RANGE: ''
-        }
 
     @staticmethod
     def _get_features_values(columns_values: List[ColumnDetails]) -> Dict[str, Dict[str, List[Any]]]:
