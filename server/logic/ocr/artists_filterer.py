@@ -1,7 +1,7 @@
-from difflib import SequenceMatcher
 from typing import List
 
 from genie_common.tools import logger
+from genie_common.utils import compute_similarity_score
 
 from server.consts.data_consts import ORIGINAL_INPUT, NAME
 
@@ -19,12 +19,9 @@ class ArtistsFilterer:
 
         return relevant_artists
 
-    def _calculate_single_artist_relevance(self, artist: dict) -> float:
+    @staticmethod
+    def _calculate_single_artist_relevance(artist: dict) -> float:
         original_input = artist[ORIGINAL_INPUT].lower()
         result_name = artist[NAME].lower()
 
-        return self._calculate_similarity_score(original_input, result_name)
-
-    @staticmethod
-    def _calculate_similarity_score(original_input: str, result_name: str) -> float:
-        return SequenceMatcher(None, original_input, result_name).ratio()
+        return compute_similarity_score(original_input, result_name)
