@@ -1,5 +1,5 @@
 from enum import EnumMeta
-from typing import List
+from typing import List, Dict
 
 from cache import AsyncTTL
 from genie_common.tools import AioPoolExecutor
@@ -18,9 +18,11 @@ class ColumnsPossibleValuesQuerier:
     def __init__(self,
                  db_engine: AsyncEngine,
                  columns: List[BaseORMModel],
+                 columns_descriptions: Dict[str, str],
                  pool_executor: AioPoolExecutor = AioPoolExecutor()):
         self._db_engine = db_engine
         self._columns = columns
+        self._columns_descriptions = columns_descriptions
         self._pool_executor = pool_executor
 
     @AsyncTTL(time_to_live=ONE_DAY_IN_SECONDS)
@@ -54,7 +56,8 @@ class ColumnsPossibleValuesQuerier:
         return ColumnDetails(
             name=column.key,
             values=sorted(possible_values),
-            group=group
+            group=group,
+            description=self._columns_descriptions[column.key]
         )
 
     async def _query_possible_values(self, column: BaseORMModel) -> List[str]:

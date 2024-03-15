@@ -44,6 +44,7 @@ from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelec
 from server.tools.authenticator import Authenticator
 from server.tools.case_progress_reporter import CaseProgressReporter
 from server.tools.spotify_session_creator import SpotifySessionCreator
+from server.utils.data_utils import get_columns_descriptions
 
 
 @alru_cache
@@ -130,7 +131,8 @@ def get_image_text_extractor() -> ImageTextExtractor:
 def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:
     return ColumnsPossibleValuesQuerier(
         db_engine=get_database_engine(),
-        columns=get_possible_values_columns()
+        columns=get_possible_values_columns(),
+        columns_descriptions=get_columns_descriptions()
     )
 
 

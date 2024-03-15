@@ -1,3 +1,4 @@
+from copy import deepcopy
 from http import HTTPStatus
 from typing import List, Dict, Any
 
@@ -53,6 +54,6 @@ class RequestBodyController:
 
         for group in features_values.keys():
             group_features = features_values[group]
-            features_names[group] = list(group_features.keys())
+            features_names[group] = sorted(group_features.keys())
 
         return features_names

@@ -1,9 +1,10 @@
 from random import randint, sample, choice
-from typing import List
+from typing import List, Dict
 
 from _pytest.fixtures import fixture
-from genie_common.utils import get_all_enum_values
-from genie_datastores.postgres.models import SpotifyTrack, TrackLyrics, AudioFeatures, SpotifyArtist, DataSource
+from genie_common.utils import get_all_enum_values, random_alphanumeric_string
+from genie_datastores.postgres.models import SpotifyTrack, TrackLyrics, AudioFeatures, SpotifyArtist, DataSource, \
+    BaseORMModel
 from genie_datastores.postgres.operations import insert_records
 from genie_datastores.postgres.testing import PostgresMockFactory, postgres_session
 
@@ -34,6 +35,30 @@ class TestPossibleValuesQuerier:
         assert actual == expected
 
     @fixture(scope="class")
+    def possible_values_querier(self,
+                                resources: TestResources,
+                                columns: List[BaseORMModel],
+                                columns_descriptions: Dict[str, str]) -> ColumnsPossibleValuesQuerier:
+        return ColumnsPossibleValuesQuerier(
+            db_engine=resources.postgres_testkit.get_database_engine(),
+            columns=columns,
+            columns_descriptions=columns_descriptions
+        )
+
+    @fixture(scope="class")
+    def columns(self) -> List[BaseORMModel]:
+        return [
+            SpotifyTrack.explicit,
+            TrackLyrics.lyrics_source,
+            TrackLyrics.language,
+            AudioFeatures.liveness,
+        ]
+
+    @fixture(scope="class")
+    def columns_descriptions(self, columns: List[BaseORMModel]) -> Dict[str, str]:
+        return {column.key: random_alphanumeric_string() for column in columns}
+
+    @fixture(scope="class")
     def spotify_artists(self) -> List[SpotifyArtist]:
         n_elements = randint(1, 10)
         return [PostgresMockFactory.spotify_artist() for _ in range(n_elements)]
@@ -56,7 +81,10 @@ class TestPossibleValuesQuerier:
         return [PostgresMockFactory.audio_features(id=id_) for id_ in tracks_ids]
 
     @fixture(scope="class")
-    def expected(self, tracks_lyrics: List[TrackLyrics], audio_features: List[AudioFeatures]) -> List[ColumnDetails]:
+    def expected(self,
+                 tracks_lyrics: List[TrackLyrics],
+                 audio_features: List[AudioFeatures],
+                 columns_descriptions: Dict[str, str]) -> List[ColumnDetails]:
         liveness_values = [track.liveness for track in audio_features]
         data_sources = [titleize_feature_name(e.value) for e in get_all_enum_values(DataSource)]
 
@@ -64,22 +92,26 @@ class TestPossibleValuesQuerier:
             ColumnDetails(
                 name=SpotifyTrack.explicit.key,
                 values=["False", "True"],
-                group=ColumnGroup.POSSIBLE_VALUES
+                group=ColumnGroup.POSSIBLE_VALUES,
+                description=columns_descriptions[SpotifyTrack.explicit.key]
             ),
             ColumnDetails(
                 name=TrackLyrics.language.key,
                 values=sorted({track.language for track in tracks_lyrics}),
-                group=ColumnGroup.POSSIBLE_VALUES
+                group=ColumnGroup.POSSIBLE_VALUES,
+                description=columns_descriptions[TrackLyrics.language.key]
             ),
             ColumnDetails(
                 name=AudioFeatures.liveness.key,
                 values=[min(liveness_values), max(liveness_values)],
-                group=ColumnGroup.MIN_MAX_VALUES
+                group=ColumnGroup.MIN_MAX_VALUES,
+                description=columns_descriptions[AudioFeatures.liveness.key]
             ),
             ColumnDetails(
                 name=TrackLyrics.lyrics_source.key,
                 values=sorted(data_sources),
-                group=ColumnGroup.POSSIBLE_VALUES
+                group=ColumnGroup.POSSIBLE_VALUES,
+                description=columns_descriptions[TrackLyrics.lyrics_source.key]
             )
         ]
 

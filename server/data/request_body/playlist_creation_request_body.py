@@ -11,8 +11,8 @@ from server.data.request_body.playlist_settings import PlaylistSettings
 @dataclass
 class PlaylistCreationRequestBody:
     filter_params: Dict[str, FilterParam]
-    playlist_details: PlaylistSettings
     features_names: Dict[str, List[str]]
     features_values: Dict[str, Dict[str, List[str]]]
     features_descriptions: Dict[str, str]
+    playlist_details: PlaylistSettings = PlaylistSettings()
     access_code: str = ""
