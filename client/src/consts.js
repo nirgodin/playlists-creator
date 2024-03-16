@@ -459,6 +459,18 @@ const ENDPOINTS_DESCRIPTIONS = {
   [FOR_YOU]: FOR_YOU_DESCRIPTION
 };
 
+const STAGE_PROGRESS_MAPPING = {
+  ["playlist_details"]: 40,
+  ["tracks"]: 70,
+  ["cover"]: 90,
+};
+
+const STAGE_TEXT_MAPPING = {
+  ["playlist_details"]: "Selecting tracks",
+  ["tracks"]: "Creating playlist cover",
+  ["cover"]: "Almost there!",
+};
+
 export {
   PROMPT,
   EXISTING_PLAYLIST,
@@ -501,5 +513,7 @@ export {
   SPOTIFY_LOGOUT_URL,
   WRAPPED,
   TIME_RANGE,
-  BACKGROUND_COLOR
+  BACKGROUND_COLOR,
+  STAGE_PROGRESS_MAPPING,
+  STAGE_TEXT_MAPPING
 };

@@ -4,7 +4,7 @@ import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
 import axios from "axios";
 import {
   CASE_ID,
-  FILTER_PARAMS,
+  // FILTER_PARAMS,
   MESSAGE,
   PHOTO,
 } from "../consts";
@@ -82,13 +82,13 @@ function SendButton(props) {
     // resetState(isSuccess);
   }
 
-  function resetState(isSuccess) {
-    const newRequestBody = props.body[0];
-    newRequestBody[FILTER_PARAMS] = props.defaultRequestBody[0][FILTER_PARAMS];
-    props.setBody([newRequestBody]);
-    props.setIsSuccessful(isSuccess);
-    setIsClicked(false);
-  }
+  // function resetState(isSuccess) {
+  //   const newRequestBody = props.body[0];
+  //   newRequestBody[FILTER_PARAMS] = props.defaultRequestBody[0][FILTER_PARAMS];
+  //   props.setBody([newRequestBody]);
+  //   props.setIsSuccessful(isSuccess);
+  //   setIsClicked(false);
+  // }
 
   function handleError() {
     props.setErrorMessage(

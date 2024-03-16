@@ -7,6 +7,7 @@ import LoginPage from "../pages/LoginPage";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { ACCESS_CODE } from "../consts";
 import PropTypes from "prop-types";
+import PlaylistPage from "../pages/PlaylistPage";
 
 function CreatePlaylistNavigator(props) {
   const [wasRequestSent, setWasRequestSent] = useState(false);
@@ -26,7 +27,7 @@ function CreatePlaylistNavigator(props) {
 
   if (!props.isUserLoggedIn) {
     return (
-      <div>
+      <div key={"login-page"}>
         <LoginPage
           body={props.body}
           setBody={props.setBody}
@@ -36,7 +37,7 @@ function CreatePlaylistNavigator(props) {
     );
   } else if (!wasRequestSent || errorMessage !== "") {
     return (
-      <div>
+      <div key={"landing-page"}>
         <LandingPage
           body={props.body}
           setBody={props.setBody}
@@ -50,17 +51,25 @@ function CreatePlaylistNavigator(props) {
         ></LandingPage>
       </div>
     );
-  } else if (caseId !== undefined) {
+  } else if (!(isSuccessful && playlistLink !== "")) {
     return (
       <PostSendPage
+        key={"post-send-page"}
         isSuccessful={isSuccessful}
-        setWasRequestSent={setWasRequestSent}
         setIsSuccessful={setIsSuccessful}
         setPlaylistLink={setPlaylistLink}
-        playlistLink={playlistLink}
         caseId={caseId}
       ></PostSendPage>
     );
+  } else if (isSuccessful) {
+    return (
+      <PlaylistPage
+        key={"playlist-page"}
+        playlistLink={playlistLink}
+        setWasRequestSent={setWasRequestSent}
+        setIsSuccessful={setIsSuccessful}
+      ></PlaylistPage>
+    )
   } else {
     return <LoadingSpinner></LoadingSpinner>;
   }
