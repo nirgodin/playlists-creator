@@ -6,6 +6,7 @@ from genie_common.tools.logs import logger
 from spotipyio import SpotifyClient
 
 from server.consts.app_consts import PLAYLIST_DETAILS, ACCESS_CODE
+from server.data.case_status import CaseStatus
 from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.playlist_resources import PlaylistResources
@@ -94,7 +95,7 @@ class BaseContentController(ABC):
                                              config: PlaylistCreationConfig,
                                              image_path: str,
                                              case_id: str):
-        async with self._context.case_progress_reporter.report(case_id=case_id, status="cover"):
+        async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.COVER):
             try:
                 await self._create_playlist_cover(
                     request_body=request_body,

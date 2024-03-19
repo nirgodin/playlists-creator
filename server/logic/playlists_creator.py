@@ -6,6 +6,7 @@ from spotipyio.logic.creators.playlists.playlists_creation_request import Playli
 
 from server.consts.api_consts import ID
 from server.consts.app_consts import PLAYLIST_NAME, PLAYLIST_DESCRIPTION, IS_PUBLIC
+from server.data.case_status import CaseStatus
 from server.data.playlist_creation_config import PlaylistCreationConfig
 from server.tools.case_progress_reporter import CaseProgressReporter
 
@@ -16,7 +17,7 @@ class PlaylistsCreator:
         self._case_progress_reporter = case_progress_reporter
 
     async def create(self, case_id: str, config: PlaylistCreationConfig) -> Optional[str]:
-        async with self._case_progress_reporter.report(case_id=case_id, status="playlist"):
+        async with self._case_progress_reporter.report(case_id=case_id, status=CaseStatus.PLAYLIST):
             return await self._create_playlist(config)
 
     async def _create_playlist(self, config: PlaylistCreationConfig) -> Optional[str]:

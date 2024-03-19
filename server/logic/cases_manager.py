@@ -5,6 +5,7 @@ from genie_datastores.postgres.utils import update_by_values
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from server.data.case_status import CaseStatus
 from server.tools.case_progress_reporter import CaseProgressReporter
 
 
@@ -16,7 +17,7 @@ class CasesManager:
     async def create(self, endpoint: PlaylistEndpoint) -> str:
         case_id = random_alphanumeric_string(length=32)
 
-        async with self._case_progress_reporter.report(case_id=case_id, status="created"):
+        async with self._case_progress_reporter.report(case_id=case_id, status=CaseStatus.CREATED):
             case = Case(id=case_id, endpoint=endpoint)
             await insert_records(engine=self._db_engine, records=[case])
 
@@ -44,7 +45,7 @@ class CasesManager:
         return query_result.scalars().first()
 
     async def mark_completed(self, case_id: str, playlist_id: str) -> None:
-        async with self._case_progress_reporter.report(case_id=case_id, status="completed"):
+        async with self._case_progress_reporter.report(case_id=case_id, status=CaseStatus.COMPLETED):
             await update_by_values(
                 self._db_engine,
                 Case,
