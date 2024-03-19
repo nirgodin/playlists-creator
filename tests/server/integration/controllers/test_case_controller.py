@@ -65,13 +65,8 @@ class TestCaseController:
         assert response.json() == expected_response
 
     @fixture(scope="class")
-    def cases_controller(self, resources: TestResources) -> CasesController:
-        return CasesController(
-            CasesManager(
-                db_engine=resources.engine,
-                case_progress_reporter=CaseProgressReporter(resources.engine)
-            )
-        )
+    def cases_controller(self, cases_manager: CasesManager) -> CasesController:
+        return CasesController(cases_manager)
 
     @fixture(scope="class")
     def case_id(self) -> str:
