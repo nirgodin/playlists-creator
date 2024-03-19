@@ -41,7 +41,7 @@ async def playlist(endpoint: PlaylistEndpoint,
     authenticator.authenticate(credentials)
     controller = endpoint_controller_mapping[endpoint]
     case_id = await cases_manager.create(endpoint)
-    background_tasks.add_task(controller.post, request_body=request, case_id=case_id)  # TODO: pass case_id to content controller
+    background_tasks.add_task(controller.post, request_body=request, case_id=case_id)
 
     return JSONResponse(
         status_code=HTTPStatus.CREATED.value,
