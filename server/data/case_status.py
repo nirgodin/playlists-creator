@@ -6,4 +6,5 @@ class CaseStatus(Enum):
     COMPLETED = "completed"
     COVER = "cover"
     PLAYLIST = "playlist"
+    PLAYLIST_DETAILS = "playlist_details"
     TRACKS = "tracks"
