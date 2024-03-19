@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from base64 import b64encode
 from http import HTTPStatus
 from random import randint
@@ -21,6 +22,7 @@ from server.consts.api_consts import ID
 from server.consts.app_consts import ACCESS_CODE, PLAYLIST_DETAILS, TIME_RANGE, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
     IS_PUBLIC
 from server.consts.data_consts import ITEMS, URI
+from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
@@ -29,80 +31,29 @@ from tests.server.integration.test_resources import TestResources
 from tests.server.utils import generate_random_image_bytes
 
 
-class TestWrappedController:
+class BasePlaylistControllerTest(ABC):
     @fixture(autouse=True, scope="class")
-    async def set_up(self, resources: TestResources, wrapped_controller: WrappedController,
+    async def set_up(self,
+                     resources: TestResources,
+                     endpoint: PlaylistEndpoint,
+                     controller: BaseContentController,
                      cases_manager: CasesManager) -> None:
-        endpoint_controller_mapping = {PlaylistEndpoint.WRAPPED: wrapped_controller}
+        endpoint_controller_mapping = {endpoint: controller}
         app.dependency_overrides[get_endpoint_controller_mapping] = lambda: endpoint_controller_mapping
         app.dependency_overrides[get_cases_manager] = lambda: cases_manager
 
         async with postgres_session(resources.engine):
             yield
 
-    async def test_post(self,
-                        mock_responses: aioresponses,
-                        playlist_items: List[Dict[str, str]],
-                        playlist_id: str,
-                        time_range: str,
-                        spotify_session: SpotifySession,
-                        resources: TestResources,
-                        case_id: str):
-        request = {
-            ACCESS_CODE: random_alphanumeric_string(),
-            PLAYLIST_DETAILS: {
-                TIME_RANGE: time_range,
-                PLAYLIST_NAME: random_alphanumeric_string(),
-                PLAYLIST_DESCRIPTION: random_alphanumeric_string(),
-                IS_PUBLIC: random_boolean()
-            }
-        }
+    @fixture
+    @abstractmethod
+    def controller(self, context: PlaylistCreationContext) -> BaseContentController:
+        raise NotImplementedError
 
-        response = resources.client.post(
-            url='api/playlist/wrapped',
-            json=request,
-            auth=resources.auth
-        )
-
-        self._assert_expected_response(response, case_id)
-        await self._assert_expceted_case_progress_records(resources, case_id)
-        await self._assert_expected_case_record(resources, case_id, playlist_id)
-        self._assert_expected_endpoints_calls(mock_responses, playlist_id, playlist_items)
-
-    @fixture(autouse=True, scope="class")
-    def responses(self, mock_responses: aioresponses, user_id: str, playlist_id: str, time_range: str, playlist_items: List[str]):
-        url = f"https://api.spotify.com/v1/me/top/tracks?limit=50&time_range={time_range}"
-        cover = b64encode(generate_random_image_bytes()).decode("utf-8")
-        mock_responses.get(url=url, payload={ITEMS: playlist_items})
-        mock_responses.get(url="https://api.spotify.com/v1/me", payload={ID: user_id})
-        mock_responses.post(url=f'https://api.spotify.com/v1/users/{user_id}/playlists', payload={ID: playlist_id})
-        mock_responses.post(url=f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks')
-        mock_responses.post(url='https://api.openai.com/v1/images/generations', payload={"data": [{"b64_json": cover}]})
-        mock_responses.put(url=f'https://api.spotify.com/v1/playlists/{playlist_id}/images')
-
-        yield
-
-    @fixture(scope="class")
-    def playlist_id(self) -> str:
-        return random_alphanumeric_string()
-
-    @fixture(scope="class")
-    def user_id(self) -> str:
-        return random_alphanumeric_string()
-
-    @fixture(scope="class")
-    def time_range(self) -> str:
-        time_range = random_enum_value(TimeRange)
-        return time_range.value
-
-    @fixture(scope="class")
-    def playlist_items(self) -> List[Dict[str, str]]:
-        n_items = randint(1, 50)
-        return [self._random_playlist_item() for _ in range(n_items)]
-
-    @staticmethod
-    def _random_playlist_item() -> Dict[str, str]:
-        return {URI: f"track:uri:{random_alphanumeric_string(32)}"}
+    @fixture
+    @abstractmethod
+    def endpoint(self) -> PlaylistEndpoint:
+        raise NotImplementedError
 
     @fixture(scope="class")
     def case_id(self) -> str:
@@ -113,11 +64,27 @@ class TestWrappedController:
             yield case_id
 
     @fixture(scope="class")
-    def wrapped_controller(self, context: PlaylistCreationContext) -> WrappedController:
-        return WrappedController(context)
+    def playlist_id(self) -> str:
+        return random_alphanumeric_string()
+
+    @fixture(scope="class")
+    def user_id(self) -> str:
+        return random_alphanumeric_string()
+
+    @fixture(autouse=True, scope="class")
+    def responses(self, mock_responses: aioresponses, user_id: str, playlist_id: str) -> None:
+        """ In case you want to add more responses, use a dedicated `additional_responses` fixtures on child class """
+        cover = b64encode(generate_random_image_bytes()).decode("utf-8")
+        mock_responses.get(url="https://api.spotify.com/v1/me", payload={ID: user_id})
+        mock_responses.post(url=f'https://api.spotify.com/v1/users/{user_id}/playlists', payload={ID: playlist_id})
+        mock_responses.post(url=f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks')
+        mock_responses.post(url='https://api.openai.com/v1/images/generations', payload={"data": [{"b64_json": cover}]})
+        mock_responses.put(url=f'https://api.spotify.com/v1/playlists/{playlist_id}/images')
+
+        yield
 
     @staticmethod
-    async def _assert_expceted_case_progress_records(resources: TestResources, case_id: str) -> None:
+    async def _assert_expected_case_progress_records(resources: TestResources, case_id: str) -> None:
         expected = [
             CaseStatus.CREATED,
             CaseStatus.TRACKS,
@@ -154,7 +121,8 @@ class TestWrappedController:
         assert actual.playlist_id == playlist_id
 
     @staticmethod
-    def _assert_expected_endpoints_calls(mock_responses: aioresponses, playlist_id: str, playlist_items: List[Dict[str, str]]) -> None:
+    def _assert_expected_endpoints_calls(mock_responses: aioresponses, playlist_id: str,
+                                         playlist_items: List[Dict[str, str]]) -> None:
         uris = [item[URI] for item in playlist_items]
         mock_responses.assert_called_with(
             url=f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks',
