@@ -1,3 +1,4 @@
+import os.path
 from base64 import b64decode
 from typing import Optional
 
@@ -10,8 +11,9 @@ from spotipyio.logic.collectors.top_items_collectors.time_range import TimeRange
 from server.consts.app_consts import PLAYLIST_DETAILS, TIME_RANGE
 from server.consts.data_consts import URI, ITEMS
 from server.controllers.content_controllers.base_content_controller import BaseContentController
+from server.data.case_status import CaseStatus
 from server.data.playlist_resources import PlaylistResources
-from server.utils.image_utils import save_image_from_bytes
+from server.utils.image_utils import save_image_from_bytes, current_timestamp_image_path
 
 
 class WrappedController(BaseContentController):
@@ -20,7 +22,7 @@ class WrappedController(BaseContentController):
                                            request_body: dict,
                                            dir_path: str,
                                            spotify_client: SpotifyClient) -> PlaylistResources:
-        async with self._context.case_progress_reporter.report(case_id=case_id, status="tracks"):
+        async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.TRACKS):
             raw_time_range = safe_nested_get(
                 dct=request_body,
                 paths=[PLAYLIST_DETAILS, TIME_RANGE],
@@ -32,8 +34,9 @@ class WrappedController(BaseContentController):
                 limit=50
             )
             uris = [item[URI] for item in response[ITEMS]]
+            image_path = current_timestamp_image_path(dir_path)
 
-            return PlaylistResources(uris=uris, cover_image_path=None)
+            return PlaylistResources(uris=uris, cover_image_path=image_path)
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         encoded_image: str = await self._context.openai_client.images_generation.collect(
