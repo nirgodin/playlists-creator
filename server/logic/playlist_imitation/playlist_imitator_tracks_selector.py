@@ -12,9 +12,11 @@ from server.utils.spotify_utils import sample_uris
 
 
 class PlaylistImitatorTracksSelector:
-    def __init__(self):
-        self._database_filterer = PlaylistImitatorDatabaseFilterer()
-        self._similarity_scores_computer = SimilarityScoresComputer()
+    def __init__(self,
+                 database_filterer: PlaylistImitatorDatabaseFilterer,
+                 similarity_scores_computer: SimilarityScoresComputer):
+        self._database_filterer = database_filterer
+        self._similarity_scores_computer = similarity_scores_computer
 
     def select_tracks(self, playlist_data: DataFrame) -> List[str]:
         filtered_database = self._database_filterer.filter(playlist_data)

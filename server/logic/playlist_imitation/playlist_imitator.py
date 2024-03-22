@@ -15,8 +15,8 @@ class PlaylistImitator:
     def __init__(self,
                  session: ClientSession,
                  case_progress_reporter: CaseProgressReporter,
+                 tracks_selector: PlaylistImitatorTracksSelector,
                  playlist_details_serializer: PlaylistDetailsSerializer = PlaylistDetailsSerializer(),
-                 tracks_selector: PlaylistImitatorTracksSelector = PlaylistImitatorTracksSelector(),
                  transformation_pipeline: PlaylistDetailsPipeline = PlaylistDetailsPipeline(is_training=False)):
         self._session = session
         self._case_progress_reporter = case_progress_reporter
