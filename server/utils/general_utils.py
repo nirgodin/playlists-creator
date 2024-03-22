@@ -2,6 +2,7 @@ import os.path
 import random
 from typing import List, Union, Type
 
+from genie_common.tools import logger
 from genie_datastores.google.drive import GoogleDriveClient
 
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID, TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID
@@ -20,11 +21,17 @@ def sample_list(n_candidates: int, n_selected_candidates: int) -> List[int]:
 
 
 def download_database() -> None:
+    db_drive_id = os.getenv(DATABASE_FOLDER_DRIVE_ID)
+
+    if db_drive_id is None:
+        logger.warn("Did not find `DATABASE_FOLDER_DRIVE_ID` env var. Aborting database download")
+        return
+
     drive_client = GoogleDriveClient.create()
 
     if not os.path.exists(DATA_PATH):
         drive_client.download_all_dir_files(
-            folder_id=os.environ[DATABASE_FOLDER_DRIVE_ID],
+            folder_id=db_drive_id,
             local_dir=RESOURCES_DIR_PATH
         )
 

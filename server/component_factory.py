@@ -39,8 +39,11 @@ from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtracto
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
+from server.logic.playlist_imitation.playlist_imitator_database_filterer import PlaylistImitatorDatabaseFilterer
+from server.logic.playlist_imitation.playlist_imitator_tracks_selector import PlaylistImitatorTracksSelector
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
+from server.logic.similarity_scores_computer import SimilarityScoresComputer
 from server.tools.authenticator import Authenticator
 from server.tools.case_progress_reporter import CaseProgressReporter
 from server.tools.spotify_session_creator import SpotifySessionCreator
@@ -86,7 +89,11 @@ async def get_playlist_imitator() -> PlaylistImitator:
     session = await get_session()
     return PlaylistImitator(
         session=session,
-        case_progress_reporter=get_case_progress_reporter()
+        case_progress_reporter=get_case_progress_reporter(),
+        tracks_selector=PlaylistImitatorTracksSelector(
+            database_filterer=PlaylistImitatorDatabaseFilterer(),
+            similarity_scores_computer=SimilarityScoresComputer()
+        )
     )
 
 
