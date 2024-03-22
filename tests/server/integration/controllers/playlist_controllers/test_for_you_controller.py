@@ -1,8 +1,12 @@
+from typing import Dict, List, Union
 from unittest.mock import AsyncMock
 
 from _pytest.fixtures import fixture
+from aioresponses import aioresponses
 from genie_datastores.postgres.models import PlaylistEndpoint
+from spotipyio.logic.collectors.top_items_collectors.time_range import TimeRange
 
+from server.consts.data_consts import ITEMS
 from server.controllers.content_controllers.for_you_controller import ForYouController
 from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
@@ -11,24 +15,7 @@ from server.logic.data_collection.spotify_playlist_details_collector import Play
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \
     BasePlaylistControllerTest
-from random import randint
-from typing import Dict, List, Union
-
-from _pytest.fixtures import fixture
-from aioresponses import aioresponses
-from genie_common.utils import random_alphanumeric_string, random_enum_value, random_boolean, random_string_array
-from genie_datastores.postgres.models import PlaylistEndpoint
-from spotipyio.logic.authentication.spotify_session import SpotifySession
-from spotipyio.logic.collectors.top_items_collectors.time_range import TimeRange
-
-from server.consts.app_consts import ACCESS_CODE, PLAYLIST_DETAILS, TIME_RANGE, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
-    IS_PUBLIC
-from server.consts.data_consts import ITEMS, URI
-from server.controllers.content_controllers.wrapped_controller import WrappedController
-from server.data.playlist_creation_context import PlaylistCreationContext
-from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \
-    BasePlaylistControllerTest
-from tests.server.integration.test_resources import TestResources
+from tests.server.utils import build_spotify_url, random_playlist_item
 
 
 class TestForYouController(BasePlaylistControllerTest):
@@ -63,20 +50,16 @@ class TestForYouController(BasePlaylistControllerTest):
         return self._get_basic_request_payload()
 
     @fixture(autouse=True, scope="class")
-    def additional_responses(self, mock_responses: aioresponses, time_range: str, playlist_items: List[str]) -> None:
-        url = f"https://api.spotify.com/v1/me/top/tracks?limit=50&time_range={time_range}"
-        mock_responses.get(url=url, payload={ITEMS: playlist_items})
+    def additional_responses(self, uris: List[str], mock_responses: aioresponses) -> None:
+        time_range = TimeRange.MEDIUM_TERM.value
+        playlist_items = [random_playlist_item(uri) for uri in uris]
+        url = build_spotify_url(
+            routes=["me", "top", "tracks"],
+            params={"limit": 50, "time_range": time_range}
+        )
+        mock_responses.get(
+            url=url,
+            payload={ITEMS: playlist_items}
+        )
 
         yield
-
-    @fixture(scope="class")
-    def time_range(self) -> str:
-        return TimeRange.MEDIUM_TERM.value  # TODO: Should not be hard-coded
-
-    @fixture(scope="class")
-    def playlist_items(self, uris: List[str]) -> List[Dict[str, str]]:
-        return [self._random_playlist_item(uri) for uri in uris]
-
-    @staticmethod
-    def _random_playlist_item(uri: str) -> Dict[str, str]:
-        return {URI: uri}

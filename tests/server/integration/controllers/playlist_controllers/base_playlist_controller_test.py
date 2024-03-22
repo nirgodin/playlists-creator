@@ -24,7 +24,7 @@ from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.logic.cases_manager import CasesManager
 from tests.server.integration.test_resources import TestResources
-from tests.server.utils import generate_random_image_bytes
+from tests.server.utils import random_image_bytes, build_spotify_url
 
 
 class BasePlaylistControllerTest(ABC):
@@ -95,12 +95,23 @@ class BasePlaylistControllerTest(ABC):
     @fixture(autouse=True, scope="class")
     def responses(self, mock_responses: aioresponses, user_id: str, playlist_id: str) -> None:
         """ In case you want to add more responses, use a dedicated `additional_responses` fixtures on child class """
-        cover = b64encode(generate_random_image_bytes()).decode("utf-8")
-        mock_responses.get(url="https://api.spotify.com/v1/me", payload={ID: user_id})
-        mock_responses.post(url=f'https://api.spotify.com/v1/users/{user_id}/playlists', payload={ID: playlist_id})
-        mock_responses.post(url=f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks')
+        cover = b64encode(random_image_bytes()).decode("utf-8")
+        mock_responses.get(
+            url=build_spotify_url(["me"]),
+            payload={ID: user_id}
+        )
+        mock_responses.post(
+            url=build_spotify_url(["users", user_id, "playlists"]),
+            payload={ID: playlist_id}
+        )
+        mock_responses.post(
+            url=build_spotify_url(["playlists", playlist_id, "tracks"])
+        )
+        mock_responses.put(
+            url=build_spotify_url(["playlists", playlist_id, "images"])
+        )
+
         mock_responses.post(url='https://api.openai.com/v1/images/generations', payload={"data": [{"b64_json": cover}]})
-        mock_responses.put(url=f'https://api.spotify.com/v1/playlists/{playlist_id}/images')
 
         yield
 
