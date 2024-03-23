@@ -10,7 +10,7 @@ from genie_common.utils import string_to_boolean
 from server.consts.general_consts import BOOL_VALUES
 from server.utils.postgres_utils import convert_iterable_to_postgres_format
 
-ENUM_COLUMNS = "gender"
+ENUM_COLUMNS = ["gender"]
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
