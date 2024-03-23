@@ -12,24 +12,20 @@ from sqlalchemy.sql.elements import TextClause
 
 from server.consts.database_consts import RADIO_TRACK_COLUMNS
 from server.data.query_condition import QueryCondition
-from server.tools.case_progress_reporter import CaseProgressReporter
 
 
 # TODO: Maybe not belong here, but remove tracks that are not available on any market as they cannot be played
 class DatabaseClient:
-    def __init__(self, db_engine: AsyncEngine, case_progress_reporter: CaseProgressReporter):
+    def __init__(self, db_engine: AsyncEngine):
         self._db_engine = db_engine
-        self._case_progress_reporter = case_progress_reporter
 
-    async def query(self, case_id: str, query_conditions: List[QueryCondition]) -> List[str]:
+    async def query(self, query_conditions: List[QueryCondition]) -> List[str]:
         logger.info("Starting to query database for relevant tracks ids")
-
-        async with self._case_progress_reporter.report(case_id=case_id, status="tracks"):
-            query = self._build_query(query_conditions)
-            query_result = await execute_query(engine=self._db_engine, query=query)
-            tracks_ids = query_result.scalars().all()
-
+        query = self._build_query(query_conditions)
+        query_result = await execute_query(engine=self._db_engine, query=query)
+        tracks_ids = query_result.scalars().all()
         logger.info(f"Successfully queried database and found `{len(tracks_ids)}` relevant tracks")
+
         return tracks_ids
 
     def _build_query(self, query_conditions: List[QueryCondition]) -> Select:

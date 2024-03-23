@@ -195,10 +195,7 @@ async def get_request_body_controller() -> RequestBodyController:
 
 
 def get_database_client() -> DatabaseClient:
-    return DatabaseClient(
-        db_engine=get_database_engine(),
-        case_progress_reporter=get_case_progress_reporter()
-    )
+    return DatabaseClient(get_database_engine())
 
 
 @lru_cache

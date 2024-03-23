@@ -9,6 +9,7 @@ from genie_datastores.milvus.utils import convert_iterable_to_milvus_filter
 from spotipyio.logic.collectors.search_collectors.spotify_search_type import SpotifySearchType
 
 from server.consts.api_consts import ID
+from server.data.case_status import CaseStatus
 from server.data.prompt_details import PromptDetails
 from server.logic.database_client import DatabaseClient
 from server.tools.case_progress_reporter import CaseProgressReporter
@@ -30,7 +31,8 @@ class PromptDetailsTracksSelector:
         tracks_ids = []
 
         if prompt_details.musical_parameters:
-            tracks_ids = await self._db_client.query(case_id, prompt_details.musical_parameters)
+            async with self._case_progress_reporter.report(case_id=case_id, status=CaseStatus.TRACKS):
+                tracks_ids = await self._db_client.query(prompt_details.musical_parameters)
 
         if prompt_details.textual_parameters:
             tracks_ids = await self._filter_tracks_by_textual_relevance(
@@ -45,7 +47,7 @@ class PromptDetailsTracksSelector:
     async def _filter_tracks_by_textual_relevance(self, case_id: str, tracks_ids: List[str], text: str) -> List[str]:
         logger.info("Filtering tracks by textual relevance")
 
-        async with self._case_progress_reporter.report(case_id=case_id, status="textual_query"):
+        async with self._case_progress_reporter.report(case_id=case_id, status=CaseStatus.TEXTUAL_QUERY):
             return await self._embed_and_search(text, tracks_ids)
 
     async def _embed_and_search(self, text: str, tracks_ids: List[str]) -> List[str]:

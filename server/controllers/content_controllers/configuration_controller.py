@@ -6,6 +6,7 @@ from spotipyio.logic.collectors.search_collectors.spotify_search_type import Spo
 
 from server.consts.app_consts import FILTER_PARAMS
 from server.controllers.content_controllers.base_content_controller import BaseContentController
+from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.playlist_resources import PlaylistResources
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
@@ -31,9 +32,10 @@ class ConfigurationController(BaseContentController):
                                            request_body: dict,
                                            dir_path: str,
                                            spotify_client: SpotifyClient) -> PlaylistResources:
-        query_conditions = self._parameters_transformer.transform(request_body)
-        tracks_ids = await self._db_client.query(case_id, query_conditions)
-        tracks_uris = to_uris(SpotifySearchType.TRACK, *tracks_ids)
+        async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.TRACKS):
+            query_conditions = self._parameters_transformer.transform(request_body)
+            tracks_ids = await self._db_client.query(query_conditions)
+            tracks_uris = to_uris(SpotifySearchType.TRACK, *tracks_ids)
 
         return PlaylistResources(
             uris=sample_uris(tracks_uris),
