@@ -776,8 +776,8 @@ redis = ["aioredis (>=2.0.0,<2.1.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-datastores.git"
-reference = "d6d39c9b"
-resolved_reference = "d6d39c9b5d6d1ecbf7de43c1079adef40a39f031"
+reference = "b7dcc5c4"
+resolved_reference = "b7dcc5c48238e5725952d446d9cbae8329bab35b"
 
 [[package]]
 name = "genie-testkit"
@@ -2504,4 +2504,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "448222a49561b791e27871710a9430441c7954053d50a2cbd7ca07208f568b97"
+content-hash = "9ef5599dcd00e533ab70f7ac4599bea02ca3b6a4a9837cb7faef6f2809c9097e"

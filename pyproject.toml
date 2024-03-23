@@ -22,7 +22,7 @@ starlette = "0.27.0"
 python-multipart = "0.0.6"
 uvicorn = "0.20.0"
 async-lru = "2.0.4"
-genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "d6d39c9b", extras = ["postgres", "milvus", "redis", "google_drive"]}
+genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "b7dcc5c4", extras = ["postgres", "milvus", "redis", "google_drive"]}
 spotipyio = {git = "https://github.com/nirgodin/spotipyio.git", rev = "44f4ebd2"}
 async-cache = "1.1.1"
 
