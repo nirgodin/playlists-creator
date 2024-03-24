@@ -11,3 +11,10 @@ def test_all_possible_values_columns_have_descriptions():
     descriptions_columns_names = list(descriptions.keys())
 
     assert all(column in descriptions_columns_names for column in columns)
+
+
+def test_no_column_duplicate_key():
+    keys: List[str] = [column.key for column in get_possible_values_columns()]
+    unique_keys = set(keys)
+
+    assert sorted(keys) == sorted(unique_keys)
