@@ -3,7 +3,7 @@ from typing import List, Union
 
 from _pytest.fixtures import fixture
 from genie_datastores.postgres.models import SpotifyTrack, TrackLyrics, AudioFeatures, SpotifyArtist, Artist, \
-    ShazamArtist
+    ShazamArtist, RadioTrack
 from genie_datastores.postgres.testing import PostgresMockFactory
 
 from tests.server.integration.test_records import TestRecords
@@ -15,6 +15,7 @@ def records(resources: TestResources,
             spotify_artists: List[SpotifyArtist],
             artists: List[Artist],
             spotify_tracks: List[SpotifyTrack],
+            radio_tracks: List[RadioTrack],
             audio_features: List[AudioFeatures],
             tracks_lyrics: List[TrackLyrics],
             shazam_artists: List[ShazamArtist]) -> TestRecords:
@@ -24,6 +25,7 @@ def records(resources: TestResources,
         shazam_artists=shazam_artists,
         artists=artists,
         spotify_tracks=spotify_tracks,
+        radio_tracks=radio_tracks,
         audio_features=audio_features,
         tracks_lyrics=tracks_lyrics
     )
@@ -57,6 +59,14 @@ def spotify_tracks(spotify_artists: List[SpotifyArtist]) -> List[SpotifyTrack]:
     n_elements = randint(2, 10)
 
     return [PostgresMockFactory.spotify_track(artist_id=choice(artists_ids)) for _ in range(n_elements)]
+
+
+@fixture(scope="class")
+def radio_tracks(spotify_tracks: List[SpotifyTrack]) -> List[RadioTrack]:
+    k = randint(0, len(spotify_tracks))
+    selected_tracks = sample(spotify_tracks, k=k)
+
+    return [PostgresMockFactory.radio_track(track_id=track.id) for track in selected_tracks]
 
 
 @fixture(scope="class")
