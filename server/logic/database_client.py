@@ -1,7 +1,7 @@
 from typing import List, Dict, Set
 
 from genie_common.tools import logger
-from genie_datastores.postgres.models import RadioTrack, SpotifyTrack, BaseORMModel
+from genie_datastores.postgres.models import RadioTrack, BaseORMModel
 from genie_datastores.postgres.operations import execute_query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine

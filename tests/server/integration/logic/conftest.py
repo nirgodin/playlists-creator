@@ -45,10 +45,10 @@ def shazam_artists() -> List[ShazamArtist]:
 
 @fixture(scope="class")
 def artists(spotify_artists: List[SpotifyArtist], shazam_artists: List[ShazamArtist]) -> List[Artist]:
-    max_artists = min(len(spotify_artists), len(shazam_artists))
-    k = randint(1, max_artists)
-    spotify_ids = sample([artist.id for artist in spotify_artists], k=k)
-    shazam_ids = sample([artist.id for artist in shazam_artists], k=k)
+    n_artists = len(spotify_artists)
+    shazam_artists_ids = [artist.id for artist in shazam_artists]
+    spotify_ids = [artist.id for artist in spotify_artists]
+    shazam_ids = [choice(shazam_artists_ids) for _ in range(n_artists)]
 
     return [PostgresMockFactory.artist(id=id_, shazam_id=shazam_id) for id_, shazam_id in zip(spotify_ids, shazam_ids)]
 

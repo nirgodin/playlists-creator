@@ -10,15 +10,14 @@ from genie_datastores.postgres.testing import postgres_session, PostgresMockFact
 from server.data.query_condition import QueryCondition
 from server.logic.database_client import DatabaseClient
 from tests.server.integration.test_records import TestRecords
+from tests.server.integration.test_resources import TestResources
 
 
 class TestDatabaseClient:
     @fixture(autouse=True, scope="class")
-    async def set_up(self, records: TestRecords, radio_track: RadioTrack) -> None:
+    async def set_up(self, records: TestRecords) -> None:
         async with postgres_session(records.engine):
             await records.insert()
-            await insert_records(engine=records.engine, records=[radio_track])
-
             yield
 
     async def test_query__no_conditions__returns_all(self,
@@ -65,10 +64,12 @@ class TestDatabaseClient:
         assert sorted(actual) == sorted(expected)
 
     async def test_query__multiple_conditions_met__returns_expected_ids(self,
+                                                                        resources: TestResources,
                                                                         db_client: DatabaseClient,
                                                                         radio_track: RadioTrack,
                                                                         track_lyrics: TrackLyrics,
                                                                         artist: Artist):
+        await insert_records(engine=resources.engine, records=[radio_track])
         expected = [radio_track.track_id]
         conditions = [
             QueryCondition(
