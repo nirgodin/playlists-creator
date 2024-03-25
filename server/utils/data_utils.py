@@ -74,5 +74,5 @@ def get_orm_conditions_map() -> Dict[BaseORMModel, List[BinaryExpression]]:
         SpotifyTrack: [RadioTrack.track_id == SpotifyTrack.id],
         AudioFeatures: [RadioTrack.track_id == AudioFeatures.id],
         Artist: [RadioTrack.track_id == SpotifyTrack.id, SpotifyTrack.artist_id == Artist.id],
-        TrackLyrics: (RadioTrack.track_id == TrackLyrics.id)
+        TrackLyrics: [RadioTrack.track_id == TrackLyrics.id]
     }

@@ -63,10 +63,10 @@ def spotify_tracks(spotify_artists: List[SpotifyArtist]) -> List[SpotifyTrack]:
 
 @fixture(scope="class")
 def radio_tracks(spotify_tracks: List[SpotifyTrack]) -> List[RadioTrack]:
-    k = randint(0, len(spotify_tracks))
-    selected_tracks = sample(spotify_tracks, k=k)
+    tracks_ids = [track.id for track in spotify_tracks]
+    n_elements = len(spotify_tracks) * randint(1, 5)
 
-    return [PostgresMockFactory.radio_track(track_id=track.id) for track in selected_tracks]
+    return [PostgresMockFactory.radio_track(track_id=choice(tracks_ids)) for _ in range(n_elements)]
 
 
 @fixture(scope="class")

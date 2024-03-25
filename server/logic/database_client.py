@@ -1,23 +1,24 @@
-from functools import lru_cache
-from typing import List, Tuple
+from typing import List, Dict, Set
 
 from genie_common.tools import logger
-from genie_datastores.postgres.models import RadioTrack, SpotifyTrack, AudioFeatures, TrackLyrics, SpotifyArtist, Artist
+from genie_datastores.postgres.models import RadioTrack, SpotifyTrack, BaseORMModel
 from genie_datastores.postgres.operations import execute_query
-from genie_datastores.postgres.utils import get_orm_columns
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine
-from sqlalchemy.sql import Subquery, Select
-from sqlalchemy.sql.elements import TextClause
+from sqlalchemy.sql import Select
+from sqlalchemy.sql.elements import BinaryExpression
 
-from server.consts.database_consts import RADIO_TRACK_COLUMNS
 from server.data.query_condition import QueryCondition
 
 
-# TODO: Maybe not belong here, but remove tracks that are not available on any market as they cannot be played
 class DatabaseClient:
-    def __init__(self, db_engine: AsyncEngine):
+    def __init__(self,
+                 db_engine: AsyncEngine,
+                 columns: List[BaseORMModel],
+                 orm_conditions_map: Dict[BaseORMModel, List[BinaryExpression]]):
         self._db_engine = db_engine
+        self._columns = columns
+        self._orm_conditions_map = orm_conditions_map
 
     async def query(self, query_conditions: List[QueryCondition]) -> List[str]:
         logger.info("Starting to query database for relevant tracks ids")
@@ -29,58 +30,65 @@ class DatabaseClient:
         return tracks_ids
 
     def _build_query(self, query_conditions: List[QueryCondition]) -> Select:
-        spotify_conditions, radio_conditions = self._split_conditions(query_conditions)
-        spotify_subquery = self._build_spotify_subquery(spotify_conditions)
-        radio_subquery = self._build_radio_subquery(spotify_subquery, radio_conditions)
+        valid_conditions = [condition for condition in query_conditions if condition.value]
+        orms = self._get_relevant_orms(valid_conditions)
+        join_conditions = self._get_relevant_join_conditions(orms)
+        filter_conditions = self._get_relevant_filter_conditions(valid_conditions)
 
-        return select(radio_subquery.c.track_id)
-
-    def _split_conditions(self, conditions: List[QueryCondition]) -> Tuple[List[QueryCondition], List[QueryCondition]]:
-        radio_conditions = []
-        radio_columns = self._get_radio_track_column_names()
-
-        for i, condition in enumerate(conditions):
-            if condition.column in radio_columns:
-                radio_condition = conditions.pop(i)
-                radio_conditions.append(radio_condition)
-
-        return conditions, radio_conditions
-
-    @staticmethod
-    @lru_cache
-    def _get_radio_track_column_names() -> List[str]:
-        return [col.name for col in get_orm_columns(RadioTrack)]
-
-    def _build_spotify_subquery(self, spotify_conditions: List[QueryCondition]):
-        conditions = self._serialize_conditions(spotify_conditions)
-        spotify_subquery = (
-            select(SpotifyTrack.id)
-            .where(SpotifyTrack.id == AudioFeatures.id)
-            .where(SpotifyTrack.id == TrackLyrics.id)
-            .where(SpotifyTrack.artist_id == SpotifyArtist.id)
-            .where(SpotifyArtist.id == Artist.id)
-            .where(*conditions)
+        return (
+            select(RadioTrack.track_id)
+            .distinct(RadioTrack.track_id)
+            .where(*join_conditions)
+            .where(*filter_conditions)
         )
 
-        return spotify_subquery.subquery("spotify")
+    def _get_relevant_orms(self, query_conditions: List[QueryCondition]) -> Set[BaseORMModel]:
+        orms = set()
 
-    def _build_radio_subquery(self, spotify_subquery: Subquery, radio_conditions: List[QueryCondition]):
-        conditions = self._serialize_conditions(radio_conditions)
-        radio_subquery = (
-            select(*RADIO_TRACK_COLUMNS)
-            .where(RadioTrack.track_id.in_(spotify_subquery))
-            .where(*conditions)
-            .group_by(RadioTrack.track_id)
-        )
+        for condition in query_conditions:
+            orm = self._get_single_condition_orm(condition)
+            orms.add(orm)
 
-        return radio_subquery.subquery("radio")
+        return orms
+
+    def _get_single_condition_orm(self, condition: QueryCondition) -> BaseORMModel:
+        for column in self._columns:
+            if column.key == condition.column:
+                return column
+
+        raise ValueError("Did not find query condition ORM")
+
+    def _get_relevant_join_conditions(self, orms: Set[BaseORMModel]) -> List[BinaryExpression]:
+        join_conditions = []
+
+        for orm in orms:
+            conditions = self._orm_conditions_map[orm.class_]
+
+            for condition in conditions:
+                if self._is_new_condition(condition, join_conditions):
+                    join_conditions.append(condition)
+
+        return join_conditions
 
     @staticmethod
-    def _serialize_conditions(conditions: List[QueryCondition]) -> List[TextClause]:
-        text_clauses = []
+    def _is_new_condition(new_condition: BinaryExpression, existing_conditions: List[BinaryExpression]) -> bool:
+        return not any(condition.compare(new_condition) for condition in existing_conditions)
 
-        for condition in conditions:
-            if condition.condition is not None:
-                text_clauses.append(condition.condition)
+    def _get_relevant_filter_conditions(self, query_conditions: List[QueryCondition]) -> List[BinaryExpression]:
+        filter_conditions = []
 
-        return text_clauses
+        for query_condition in query_conditions:
+            orm = self._get_single_condition_orm(query_condition)
+            method = self._operators_methods_mapping[query_condition.operator]
+            condition = getattr(orm, method)(query_condition.value)
+            filter_conditions.append(condition)
+
+        return filter_conditions
+
+    @property
+    def _operators_methods_mapping(self) -> Dict[str, str]:
+        return {
+            "in": "in_",
+            "<=": "__le__",
+            ">=": "__ge__"
+        }
