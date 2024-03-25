@@ -46,7 +46,7 @@ def shazam_artists() -> List[ShazamArtist]:
 @fixture(scope="class")
 def artists(spotify_artists: List[SpotifyArtist], shazam_artists: List[ShazamArtist]) -> List[Artist]:
     max_artists = min(len(spotify_artists), len(shazam_artists))
-    k = randint(0, max_artists)
+    k = randint(1, max_artists)
     spotify_ids = sample([artist.id for artist in spotify_artists], k=k)
     shazam_ids = sample([artist.id for artist in shazam_artists], k=k)
 

@@ -1,9 +1,11 @@
+from random import choice
 from typing import List, Set
 
 from _pytest.fixtures import fixture
 from genie_common.utils import random_boolean
-from genie_datastores.postgres.models import RadioTrack, AudioFeatures, SpotifyTrack, Artist
-from genie_datastores.postgres.testing import postgres_session
+from genie_datastores.postgres.models import RadioTrack, AudioFeatures, SpotifyTrack, Artist, TrackLyrics
+from genie_datastores.postgres.operations import insert_records
+from genie_datastores.postgres.testing import postgres_session, PostgresMockFactory
 
 from server.data.query_condition import QueryCondition
 from server.logic.database_client import DatabaseClient
@@ -12,9 +14,11 @@ from tests.server.integration.test_records import TestRecords
 
 class TestDatabaseClient:
     @fixture(autouse=True, scope="class")
-    async def set_up(self, records: TestRecords) -> None:
+    async def set_up(self, records: TestRecords, radio_track: RadioTrack) -> None:
         async with postgres_session(records.engine):
             await records.insert()
+            await insert_records(engine=records.engine, records=[radio_track])
+
             yield
 
     async def test_query__no_conditions__returns_all(self,
@@ -60,6 +64,29 @@ class TestDatabaseClient:
 
         assert sorted(actual) == sorted(expected)
 
+    async def test_query__multiple_conditions_met__returns_expected_ids(self,
+                                                                        db_client: DatabaseClient,
+                                                                        radio_track: RadioTrack,
+                                                                        track_lyrics: TrackLyrics,
+                                                                        artist: Artist):
+        expected = [radio_track.track_id]
+        conditions = [
+            QueryCondition(
+                column=TrackLyrics.language.key,
+                operator="in",
+                value=[track_lyrics.language]
+            ),
+            QueryCondition(
+                column=Artist.gender.key,
+                operator="in",
+                value=[artist.gender.value]
+            ),
+        ]
+
+        actual = await db_client.query(conditions)
+
+        assert actual == expected
+
     @staticmethod
     def _get_expected_single_condition_tracks_ids(expected_is_israeli: bool,
                                                   artists: List[Artist],
@@ -69,3 +96,19 @@ class TestDatabaseClient:
         tracks_ids = [track.id for track in spotify_tracks if track.artist_id in artists_ids]
 
         return {track.track_id for track in radio_tracks if track.track_id in tracks_ids}
+
+    @fixture(scope="class")
+    def radio_track(self, track_lyrics: TrackLyrics) -> RadioTrack:
+        return PostgresMockFactory.radio_track(track_id=track_lyrics.id)
+
+    @fixture(scope="class")
+    def track_lyrics(self, tracks_lyrics: List[TrackLyrics]) -> TrackLyrics:
+        return choice(tracks_lyrics)
+
+    @fixture(scope="class")
+    def artist(self, track_lyrics: TrackLyrics, spotify_tracks: List[SpotifyTrack], artists: List[Artist]) -> Artist:
+        tracks = [track for track in spotify_tracks if track.id == track_lyrics.id]
+        spotify_track = tracks[0]
+        artists = [artist for artist in artists if artist.id == spotify_track.artist_id]
+
+        return artists[0]
