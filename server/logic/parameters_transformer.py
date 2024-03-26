@@ -16,7 +16,7 @@ class ParametersTransformer:
         for column_name, column_details in filter_params.items():
             query_condition = self._pre_process_single_column_details(column_name, column_details)
 
-            if query_condition.condition is not None:
+            if query_condition.value:
                 pre_processed_body.append(query_condition)
 
         return pre_processed_body

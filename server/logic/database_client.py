@@ -30,10 +30,9 @@ class DatabaseClient:
         return tracks_ids
 
     def _build_query(self, query_conditions: List[QueryCondition]) -> Select:
-        valid_conditions = [condition for condition in query_conditions if condition.value]
-        orms = self._get_relevant_orms(valid_conditions)
+        orms = self._get_relevant_orms(query_conditions)
         join_conditions = self._get_relevant_join_conditions(orms)
-        filter_conditions = self._get_relevant_filter_conditions(valid_conditions)
+        filter_conditions = self._get_relevant_filter_conditions(query_conditions)
 
         return (
             select(RadioTrack.track_id)
