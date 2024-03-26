@@ -47,7 +47,9 @@ class TestParametersTransformer:
     @fixture(scope="class")
     def contained_columns(self) -> Dict[str, List[str]]:
         n_params = randint(0, 5)
-        return {random_lowercase_string(): random_string_array() for _ in range(n_params)}
+        columns = {random_lowercase_string(): random_string_array() for _ in range(n_params)}
+
+        return {column: values for column, values in columns.items() if values != []}
 
     @fixture(scope="class")
     def expected(self,
