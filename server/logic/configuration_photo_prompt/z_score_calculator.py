@@ -14,7 +14,7 @@ class ZScoreCalculator:
     def __init__(self, db_engine: AsyncEngine):
         self._db_engine = db_engine
 
-    async def calculate(self, value: float, column: BaseORMModel):
+    async def calculate(self, value: float, column: BaseORMModel) -> float:
         mean, std = await self._get_column_std_and_mean(column)
         return calculate_z_score(value, mean, std)
 

@@ -77,6 +77,11 @@ class BasePlaylistControllerTest(ABC):
         raise NotImplementedError
 
     @fixture(scope="class")
+    @abstractmethod
+    def expected_progress_statuses(self) -> List[CaseStatus]:
+        raise NotImplementedError
+
+    @fixture(scope="class")
     def case_id(self) -> str:
         with patch("server.logic.cases_manager.random_alphanumeric_string") as mock_random_alphanumeric_string:
             case_id = random_alphanumeric_string()
@@ -119,11 +124,6 @@ class BasePlaylistControllerTest(ABC):
     def uris(self) -> List[str]:
         n_elements = randint(1, 50)
         return [self._random_track_uri() for _ in range(n_elements)]
-
-    @fixture(scope="class")
-    @abstractmethod
-    def expected_progress_statuses(self) -> List[CaseStatus]:
-        raise NotImplementedError
 
     @staticmethod
     def _get_basic_request_payload() -> Dict[str, Union[str, dict]]:
