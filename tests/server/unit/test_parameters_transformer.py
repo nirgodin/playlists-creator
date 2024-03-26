@@ -56,7 +56,7 @@ class TestParametersTransformer:
                  contained_columns: Dict[str, List[str]]) -> List[QueryCondition]:
         greater_than_conditions = self._to_query_conditions(greater_than_columns, ">=")
         lower_than_conditions = self._to_query_conditions(lower_than_columns, "<=")
-        contained_conditions = self._to_query_conditions(lower_than_columns, "in")
+        contained_conditions = self._to_query_conditions(contained_columns, "in")
 
         return greater_than_conditions + lower_than_conditions + contained_conditions
 
