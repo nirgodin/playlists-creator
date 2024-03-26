@@ -742,8 +742,8 @@ tqdm = ">=4.65,<5.0"
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-common.git"
-reference = "b86a1e6d390e119ca894a3c1059f254ac55a372b"
-resolved_reference = "b86a1e6d390e119ca894a3c1059f254ac55a372b"
+reference = "84c2ce558f3b26b6f13caf079c19b577ce518852"
+resolved_reference = "84c2ce558f3b26b6f13caf079c19b577ce518852"
 
 [[package]]
 name = "genie-datastores"
@@ -760,7 +760,7 @@ asyncmy = {version = "0.2.8", optional = true}
 asyncpg = {version = "0.28.0", optional = true}
 billboard-py = {version = "^7.0.0", optional = true}
 dataclasses-json = {version = ">=0.6,<1.0", optional = true}
-genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "b86a1e6d390e119ca894a3c1059f254ac55a372b"}
+genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "84c2ce558f3b26b6f13caf079c19b577ce518852"}
 google-api-python-client = {version = ">=2.8,<3.0", optional = true}
 greenlet = {version = "2.0.1", optional = true}
 pandas = {version = "<2.2", optional = true}
@@ -776,8 +776,8 @@ redis = ["aioredis (>=2.0.0,<2.1.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-datastores.git"
-reference = "b7dcc5c4"
-resolved_reference = "b7dcc5c48238e5725952d446d9cbae8329bab35b"
+reference = "506f1635"
+resolved_reference = "506f1635a6361c2086818af1b51c3ffec53a14b3"
 
 [[package]]
 name = "genie-testkit"
@@ -791,7 +791,7 @@ develop = false
 [package.dependencies]
 asyncmy = {version = "0.2.8", optional = true}
 asyncpg = {version = "0.28.0", optional = true}
-genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "b86a1e6d390e119ca894a3c1059f254ac55a372b"}
+genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "84c2ce558f3b26b6f13caf079c19b577ce518852"}
 greenlet = {version = "2.0.1", optional = true}
 sqlalchemy = {version = "<2.0.0", optional = true}
 testcontainers = ">=3.7.1,<4.0"
@@ -803,8 +803,8 @@ postgres = ["asyncmy (==0.2.8)", "asyncpg (==0.28.0)", "greenlet (==2.0.1)", "sq
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-testkit.git"
-reference = "bdeea4d7"
-resolved_reference = "bdeea4d7877ad9b7a86f57217bcf01a087869862"
+reference = "a2a417b7"
+resolved_reference = "a2a417b71c1f72f74a788f8e07f8788773d69a52"
 
 [[package]]
 name = "google-api-core"
@@ -2504,4 +2504,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "9ef5599dcd00e533ab70f7ac4599bea02ca3b6a4a9837cb7faef6f2809c9097e"
+content-hash = "49dcd0d938816cbc32623860b824f4b12772d20d27ea357698a32028b2a773b3"
