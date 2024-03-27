@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from genie_common.models.openai import ImageSize
 from spotipyio import SpotifyClient
@@ -35,10 +35,10 @@ class ConfigurationController(BaseContentController):
         async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.TRACKS):
             query_conditions = self._parameters_transformer.transform(request_body)
             tracks_ids = await self._db_client.query(query_conditions)
-            tracks_uris = to_uris(SpotifySearchType.TRACK, *tracks_ids)
+            tracks_uris = self._to_uris(tracks_ids)
 
         return PlaylistResources(
-            uris=sample_uris(tracks_uris),
+            uris=tracks_uris,
             cover_image_path=current_timestamp_image_path(dir_path)
         )
 
@@ -51,3 +51,10 @@ class ConfigurationController(BaseContentController):
             n=1,
             size=ImageSize.P512
         )
+
+    @staticmethod
+    def _to_uris(tracks_ids: List[str]) -> List[str]:
+        tracks_uris = to_uris(SpotifySearchType.TRACK, *tracks_ids)
+        sampled_uris = sample_uris(tracks_uris)
+
+        return sorted(sampled_uris)
