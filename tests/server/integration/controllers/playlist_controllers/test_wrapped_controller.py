@@ -1,3 +1,4 @@
+from random import randint
 from typing import Dict, List, Union
 
 from _pytest.fixtures import fixture
@@ -13,7 +14,7 @@ from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
 from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \
     BasePlaylistControllerTest
-from tests.server.utils import build_spotify_url, random_playlist_item
+from tests.server.utils import build_spotify_url, random_playlist_item, random_track_uri
 
 
 class TestWrappedController(BasePlaylistControllerTest):
@@ -56,3 +57,8 @@ class TestWrappedController(BasePlaylistControllerTest):
     def time_range(self) -> str:
         time_range = random_enum_value(TimeRange)
         return time_range.value
+
+    @fixture(scope="class")
+    def uris(self) -> List[str]:
+        n_elements = randint(1, 50)
+        return [random_track_uri() for _ in range(n_elements)]

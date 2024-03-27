@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 
 import numpy as np
 from PIL import Image
+from genie_common.utils import random_alphanumeric_string
 
 from server.consts.data_consts import URI
 
@@ -31,3 +32,7 @@ def build_spotify_url(routes: List[str], params: Optional[Dict[str, Any]] = None
         return f"{url}?{urlencode(params)}"
 
     return url
+
+
+def random_track_uri() -> str:
+    return f"track:uri:{random_alphanumeric_string(32)}"
