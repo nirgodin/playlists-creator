@@ -44,6 +44,7 @@ from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.logic.similarity_scores_computer import SimilarityScoresComputer
 from server.tools.authenticator import Authenticator
+from server.tools.cached_token_generator import CachedTokenGenerator
 from server.tools.case_progress_reporter import CaseProgressReporter
 from server.tools.spotify_session_creator import SpotifySessionCreator
 from server.utils.data_utils import get_columns_descriptions, get_possible_values_columns, get_orm_conditions_map
@@ -189,7 +190,8 @@ def get_access_token_generator() -> AccessTokenGenerator:
 
 @lru_cache
 def get_spotify_session_creator() -> SpotifySessionCreator:
-    return SpotifySessionCreator(get_access_token_generator())
+    cached_token_generator = CachedTokenGenerator(get_access_token_generator())
+    return SpotifySessionCreator(cached_token_generator)
 
 
 async def get_configuration_controller() -> ConfigurationController:

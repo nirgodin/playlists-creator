@@ -1,19 +1,15 @@
 from contextlib import asynccontextmanager
-from datetime import timedelta
 
-from genie_common.encoders import GzipJsonEncoder
 from genie_common.utils import build_authorization_headers, create_client_session
-from genie_datastores.redis import RedisClient
-from spotipyio import AccessTokenGenerator
 from spotipyio.consts.api_consts import ACCESS_TOKEN
 from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
 from spotipyio.logic.authentication.spotify_session import SpotifySession
 
-from server.consts.app_consts import ACCESS_CODE_CACHE_TTL
+from server.tools.cached_token_generator import CachedTokenGenerator
 
 
 class SpotifySessionCreator:
-    def __init__(self, token_generator: AccessTokenGenerator):
+    def __init__(self, token_generator: CachedTokenGenerator):
         self._token_generator = token_generator
 
     @asynccontextmanager
@@ -29,15 +25,10 @@ class SpotifySessionCreator:
                 await session.__aexit__(None, None, None)
 
     async def _build_session(self, access_code: str) -> SpotifySession:
-        response = await self._fetch(SpotifyGrantType.AUTHORIZATION_CODE, access_code)
+        response = await self._token_generator.generate(SpotifyGrantType.AUTHORIZATION_CODE, access_code)
         access_token = response[ACCESS_TOKEN]
         headers = build_authorization_headers(access_token)
         raw_session = create_client_session(headers)
         client_session = await raw_session.__aenter__()
 
         return SpotifySession(session=client_session)
-
-    @RedisClient.cache(encoder=GzipJsonEncoder(), ttl=timedelta(minutes=ACCESS_CODE_CACHE_TTL))
-    async def _fetch(self, grant_type: SpotifyGrantType, access_code: str) -> dict:
-        async with self._token_generator as token_generator:
-            return await token_generator.generate(grant_type, access_code)
