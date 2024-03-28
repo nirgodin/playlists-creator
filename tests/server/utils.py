@@ -4,8 +4,11 @@ from urllib.parse import urlencode
 
 import numpy as np
 from PIL import Image
+from genie_common.utils import random_alphanumeric_string
+from spotipyio import SpotifySearchType
 
 from server.consts.data_consts import URI
+from server.utils.spotify_utils import to_uris
 
 
 def random_image_bytes(width: int = 1024, height: int = 1024, mode: str = "RGB", format_: str = "PNG") -> bytes:
@@ -31,3 +34,10 @@ def build_spotify_url(routes: List[str], params: Optional[Dict[str, Any]] = None
         return f"{url}?{urlencode(params)}"
 
     return url
+
+
+def random_track_uri() -> str:
+    track_id = random_alphanumeric_string(32)
+    uris = to_uris(SpotifySearchType.TRACK, track_id)
+
+    return uris[0]

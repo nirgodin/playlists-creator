@@ -1,6 +1,6 @@
 import os
 from functools import lru_cache
-from typing import Dict, List
+from typing import Dict
 
 from aiohttp import ClientSession
 from async_lru import alru_cache
@@ -9,8 +9,7 @@ from genie_common.tools import AioPoolExecutor
 from genie_common.utils import create_client_session, build_authorization_headers
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
-from genie_datastores.postgres.models import AudioFeatures, SpotifyTrack, TrackLyrics, Artist, PlaylistEndpoint, \
-    BaseORMModel
+from genie_datastores.postgres.models import PlaylistEndpoint
 from genie_datastores.postgres.operations import get_database_engine
 from spotipyio import AccessTokenGenerator
 
@@ -45,9 +44,10 @@ from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.logic.similarity_scores_computer import SimilarityScoresComputer
 from server.tools.authenticator import Authenticator
+from server.tools.cached_token_generator import CachedTokenGenerator
 from server.tools.case_progress_reporter import CaseProgressReporter
 from server.tools.spotify_session_creator import SpotifySessionCreator
-from server.utils.data_utils import get_columns_descriptions
+from server.utils.data_utils import get_columns_descriptions, get_possible_values_columns, get_orm_conditions_map
 
 
 @alru_cache
@@ -144,29 +144,6 @@ def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:
 
 
 @lru_cache
-def get_possible_values_columns() -> List[BaseORMModel]:
-    return [  # TODO: Think how to add popularity, followers, main_genre, radio_play_count, release_year
-        AudioFeatures.acousticness,
-        Artist.gender,
-        AudioFeatures.danceability,
-        AudioFeatures.duration_ms,  # TODO: Think how to transform to minutes
-        AudioFeatures.energy,
-        SpotifyTrack.explicit,
-        AudioFeatures.instrumentalness,
-        Artist.is_israeli,
-        AudioFeatures.key,
-        TrackLyrics.language,
-        AudioFeatures.liveness,
-        AudioFeatures.loudness,
-        AudioFeatures.mode,
-        AudioFeatures.tempo,
-        AudioFeatures.time_signature,
-        SpotifyTrack.number,
-        AudioFeatures.valence
-    ]
-
-
-@lru_cache
 def get_z_score_calculator() -> ZScoreCalculator:
     return ZScoreCalculator(get_database_engine())
 
@@ -197,7 +174,8 @@ async def get_request_body_controller() -> RequestBodyController:
 def get_database_client() -> DatabaseClient:
     return DatabaseClient(
         db_engine=get_database_engine(),
-        case_progress_reporter=get_case_progress_reporter()
+        columns=get_possible_values_columns(),
+        orm_conditions_map=get_orm_conditions_map()
     )
 
 
@@ -212,7 +190,8 @@ def get_access_token_generator() -> AccessTokenGenerator:
 
 @lru_cache
 def get_spotify_session_creator() -> SpotifySessionCreator:
-    return SpotifySessionCreator(get_access_token_generator())
+    cached_token_generator = CachedTokenGenerator(get_access_token_generator())
+    return SpotifySessionCreator(cached_token_generator)
 
 
 async def get_configuration_controller() -> ConfigurationController:

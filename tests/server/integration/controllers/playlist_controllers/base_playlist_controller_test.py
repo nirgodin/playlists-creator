@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from base64 import b64encode
 from http import HTTPStatus
-from random import randint
 from typing import Dict, List, Union
 from unittest.mock import patch
 
@@ -23,6 +22,7 @@ from server.controllers.content_controllers.base_content_controller import BaseC
 from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.logic.cases_manager import CasesManager
+from tests.server.integration.test_records import TestRecords
 from tests.server.integration.test_resources import TestResources
 from tests.server.utils import random_image_bytes, build_spotify_url
 
@@ -30,15 +30,16 @@ from tests.server.utils import random_image_bytes, build_spotify_url
 class BasePlaylistControllerTest(ABC):
     @fixture(autouse=True, scope="class")
     async def set_up(self,
-                     resources: TestResources,
                      endpoint: PlaylistEndpoint,
                      controller: BaseContentController,
-                     cases_manager: CasesManager) -> None:
+                     cases_manager: CasesManager,
+                     records: TestRecords) -> None:
         endpoint_controller_mapping = {endpoint: controller}
         app.dependency_overrides[get_endpoint_controller_mapping] = lambda: endpoint_controller_mapping
         app.dependency_overrides[get_cases_manager] = lambda: cases_manager
 
-        async with postgres_session(resources.engine):
+        async with postgres_session(records.engine):
+            await records.insert()
             yield
 
     async def test_post(self,
@@ -74,6 +75,16 @@ class BasePlaylistControllerTest(ABC):
     @fixture(scope="class")
     @abstractmethod
     def payload(self) -> Dict[str, Union[str, dict]]:
+        raise NotImplementedError
+
+    @fixture(scope="class")
+    @abstractmethod
+    def expected_progress_statuses(self) -> List[CaseStatus]:
+        raise NotImplementedError
+
+    @fixture(scope="class")
+    @abstractmethod
+    def uris(self) -> List[str]:
         raise NotImplementedError
 
     @fixture(scope="class")
@@ -115,16 +126,6 @@ class BasePlaylistControllerTest(ABC):
 
         yield
 
-    @fixture(scope="class")
-    def uris(self) -> List[str]:
-        n_elements = randint(1, 50)
-        return [self._random_track_uri() for _ in range(n_elements)]
-
-    @fixture(scope="class")
-    @abstractmethod
-    def expected_progress_statuses(self) -> List[CaseStatus]:
-        raise NotImplementedError
-
     @staticmethod
     def _get_basic_request_payload() -> Dict[str, Union[str, dict]]:
         return {
@@ -135,10 +136,6 @@ class BasePlaylistControllerTest(ABC):
                 IS_PUBLIC: random_boolean()
             }
         }
-
-    @staticmethod
-    def _random_track_uri() -> str:
-        return f"track:uri:{random_alphanumeric_string(32)}"
 
     @staticmethod
     async def _assert_expected_case_progress_records(resources: TestResources, expected_progress_statuses: List[CaseStatus], case_id: str) -> None:
