@@ -3,7 +3,7 @@ from typing import Dict, List, Tuple
 
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
-from genie_common.utils import random_alphanumeric_string, get_all_enum_values
+from genie_common.utils import random_alphanumeric_string, get_all_enum_values, contains_all_substrings
 from genie_datastores.postgres.models import PlaylistEndpoint
 
 from tests.server.integration.test_resources import TestResources
@@ -38,7 +38,7 @@ class TestAppAuthentication:
 
     @staticmethod
     def _has_path_parameters(route: APIRoute) -> bool:
-        return all(sub_string in route.path for sub_string in ["{", "}"])  # TODO: Create all substrings contained util
+        return contains_all_substrings(route.path, ["{", "}"])
 
     @property
     def _routes_format_routes_map(self) -> Dict[str, List[str]]:
