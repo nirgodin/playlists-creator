@@ -13,7 +13,7 @@ from genie_datastores.postgres.models import PlaylistEndpoint
 from genie_datastores.postgres.operations import get_database_engine
 from spotipyio import AccessTokenGenerator
 
-from server.consts.env_consts import USERNAME, PASSWORD, OPENAI_API_KEY, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
+from server.consts.env_consts import OPENAI_API_KEY, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
     SPOTIPY_REDIRECT_URI
 from server.controllers.case_controller import CasesController
 from server.controllers.content_controllers.base_content_controller import BaseContentController
@@ -23,9 +23,9 @@ from server.controllers.content_controllers.for_you_controller import ForYouCont
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
+from server.controllers.request_body_controller import RequestBodyController
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.logic.cases_manager import CasesManager
-from server.controllers.request_body_controller import RequestBodyController
 from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
 from server.logic.configuration_photo_prompt.configuration_photo_prompt_creator import ConfigurationPhotoPromptCreator
 from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCalculator
@@ -43,7 +43,6 @@ from server.logic.playlist_imitation.playlist_imitator_tracks_selector import Pl
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.logic.similarity_scores_computer import SimilarityScoresComputer
-from server.tools.authenticator import Authenticator
 from server.tools.cached_token_generator import CachedTokenGenerator
 from server.tools.case_progress_reporter import CaseProgressReporter
 from server.tools.spotify_session_creator import SpotifySessionCreator
@@ -274,14 +273,6 @@ async def get_for_you_controller() -> ForYouController:
 
 def get_playlist_details_collector() -> PlaylistDetailsCollector:
     return PlaylistDetailsCollector(get_case_progress_reporter())
-
-
-@lru_cache
-def get_authenticator() -> Authenticator:
-    return Authenticator(
-        username=os.environ[USERNAME],
-        password=os.environ[PASSWORD]
-    )
 
 
 def get_cases_controller() -> CasesController:
