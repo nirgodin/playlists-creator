@@ -37,17 +37,17 @@ class TestParametersTransformer:
     @fixture(scope="class")
     def greater_than_columns(self) -> Dict[str, float]:
         n_params = randint(0, 5)
-        return {random_lowercase_string(): randint(0, 100) for _ in range(n_params)}
+        return {self._random_column_name(): randint(0, 100) for _ in range(n_params)}
 
     @fixture(scope="class")
     def lower_than_columns(self) -> Dict[str, float]:
         n_params = randint(0, 5)
-        return {random_lowercase_string(): randint(0, 100) for _ in range(n_params)}
+        return {self._random_column_name(): randint(0, 100) for _ in range(n_params)}
 
     @fixture(scope="class")
     def contained_columns(self) -> Dict[str, List[str]]:
         n_params = randint(0, 5)
-        columns = {random_lowercase_string(): random_string_array() for _ in range(n_params)}
+        columns = {self._random_column_name(): random_string_array() for _ in range(n_params)}
 
         return {column: values for column, values in columns.items() if values != []}
 
@@ -77,3 +77,12 @@ class TestParametersTransformer:
         return [
             QueryCondition(column=column, operator=operator, value=value) for column, value in column_values.items()
         ]
+
+    @staticmethod
+    def _random_column_name() -> str:
+        column_name = random_lowercase_string()
+
+        while len(column_name) == 0:
+            column_name = random_lowercase_string()
+
+        return column_name

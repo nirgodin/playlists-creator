@@ -13,7 +13,6 @@ from genie_datastores.postgres.operations import execute_query
 from genie_datastores.postgres.testing import postgres_session
 from sqlalchemy import select
 
-from main import app
 from server.component_factory import get_endpoint_controller_mapping, get_cases_manager
 from server.consts.api_consts import ID
 from server.consts.app_consts import ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
@@ -33,10 +32,11 @@ class BasePlaylistControllerTest(ABC):
                      endpoint: PlaylistEndpoint,
                      controller: BaseContentController,
                      cases_manager: CasesManager,
+                     resources: TestResources,
                      records: TestRecords) -> None:
         endpoint_controller_mapping = {endpoint: controller}
-        app.dependency_overrides[get_endpoint_controller_mapping] = lambda: endpoint_controller_mapping
-        app.dependency_overrides[get_cases_manager] = lambda: cases_manager
+        resources.app.dependency_overrides[get_endpoint_controller_mapping] = lambda: endpoint_controller_mapping
+        resources.app.dependency_overrides[get_cases_manager] = lambda: cases_manager
 
         async with postgres_session(records.engine):
             await records.insert()

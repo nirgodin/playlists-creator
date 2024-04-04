@@ -6,7 +6,6 @@ from unittest.mock import AsyncMock
 from _pytest.fixtures import fixture
 from genie_common.utils import random_alphanumeric_string, random_string_array, random_integer_array
 
-from main import app
 from server.component_factory import get_request_body_controller
 from server.consts.app_consts import REQUEST_BODY
 from server.controllers.request_body_controller import RequestBodyController
@@ -21,7 +20,7 @@ from tests.server.integration.test_resources import TestResources
 class TestRequestBodyController:
     @fixture(autouse=True, scope="class")
     async def set_up(self, resources: TestResources, request_body_controller: RequestBodyController):
-        app.dependency_overrides[get_request_body_controller] = lambda: request_body_controller
+        resources.app.dependency_overrides[get_request_body_controller] = lambda: request_body_controller
         yield
 
     async def test_get(self, resources: TestResources, expected: Dict[str, List[dict]]):
