@@ -11,9 +11,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.testclient import TestClient
 
 from server.application_builder import ApplicationBuilder
-from server.component_factory import get_authenticator
 from server.middlewares.authentication_middleware import BasicAuthBackend
-from server.tools.authenticator import Authenticator
 
 
 class TestResources:
@@ -23,7 +21,7 @@ class TestResources:
                  mock_factory: PostgresMockFactory = PostgresMockFactory(),
                  username: str = random_alphanumeric_string(),
                  password: str = random_alphanumeric_string(),
-                 client: TestClient = None,
+                 app: Optional[FastAPI] = None,
                  engine: Optional[AsyncEngine] = None,
                  redis: Optional[Redis] = None):
         self.postgres_testkit = postgres_testkit
@@ -32,7 +30,8 @@ class TestResources:
         self.username = username
         self.password = password
         self.auth = (username, password)
-        self.client = client or self._create_default_test_client()
+        self.app = app or self._create_default_app()
+        self.client = TestClient(self.app)
         self.engine = engine
         self.redis = redis
 
@@ -50,7 +49,7 @@ class TestResources:
         self.postgres_testkit.__exit__(exc_type, exc_val, exc_tb)
         self.redis_testkit.__exit__(exc_type, exc_val, exc_tb)
 
-    def _create_default_test_client(self) -> TestClient:
+    def _create_default_app(self) -> FastAPI:
         authentication_middleware = Middleware(
             AuthenticationMiddleware,
             backend=BasicAuthBackend(
@@ -59,6 +58,4 @@ class TestResources:
             )
         )
         app_builder = ApplicationBuilder(middlewares=[authentication_middleware])
-        app = app_builder.build()
-
-        return TestClient(app)
+        return app_builder.build()

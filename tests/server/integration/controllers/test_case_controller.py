@@ -8,20 +8,18 @@ from genie_datastores.postgres.models import Case
 from genie_datastores.postgres.operations import insert_records
 from genie_datastores.postgres.testing import postgres_session
 
-from main import app
 from server.component_factory import get_cases_controller
 from server.consts.app_consts import MESSAGE
 from server.consts.cases_consts import PLAYLIST_ID, CASE_STATUS, CASE_FAILURE_MESSAGE_FORMAT
 from server.controllers.case_controller import CasesController
 from server.logic.cases_manager import CasesManager
-from server.tools.case_progress_reporter import CaseProgressReporter
 from tests.server.integration.test_resources import TestResources
 
 
 class TestCaseController:
     @fixture(autouse=True, scope="class")
     async def set_up(self, resources: TestResources, cases_controller: CasesController, case: Case):
-        app.dependency_overrides[get_cases_controller] = lambda: cases_controller
+        resources.app.dependency_overrides[get_cases_controller] = lambda: cases_controller
         async with postgres_session(resources.engine):
             await insert_records(engine=resources.engine, records=[case])
 
