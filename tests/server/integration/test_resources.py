@@ -6,12 +6,10 @@ from genie_common.utils import random_alphanumeric_string
 from genie_datastores.postgres.testing import PostgresMockFactory
 from genie_testkit import PostgresTestkit, RedisTestkit
 from sqlalchemy.ext.asyncio import AsyncEngine
-from starlette.middleware import Middleware
-from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.testclient import TestClient
 
 from server.application_builder import ApplicationBuilder
-from server.middlewares.authentication_middleware import BasicAuthBackend
+from server.component_factory import get_authentication_middleware
 
 
 class TestResources:
@@ -50,12 +48,6 @@ class TestResources:
         self.redis_testkit.__exit__(exc_type, exc_val, exc_tb)
 
     def _create_default_app(self) -> FastAPI:
-        authentication_middleware = Middleware(
-            AuthenticationMiddleware,
-            backend=BasicAuthBackend(
-                username=self.username,
-                password=self.password
-            )
-        )
+        authentication_middleware = get_authentication_middleware(self.username, self.password)
         app_builder = ApplicationBuilder(middlewares=[authentication_middleware])
         return app_builder.build()

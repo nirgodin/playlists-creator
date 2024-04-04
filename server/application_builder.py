@@ -1,14 +1,12 @@
 import os
-from typing import Type, List, Optional
+from typing import List, Optional
 
 from fastapi import FastAPI, APIRouter
 from starlette.middleware import Middleware
-from starlette.middleware.authentication import AuthenticationMiddleware
-from starlette.middleware.cors import CORSMiddleware
 
+from server.component_factory import get_authentication_middleware, get_cors_middleware
 from server.consts.env_consts import USERNAME, PASSWORD
 from server.controllers.api import api_router
-from server.middlewares.authentication_middleware import BasicAuthBackend
 from server.utils.general_utils import download_database
 
 
@@ -30,24 +28,13 @@ class ApplicationBuilder:
 
     @staticmethod
     def _get_default_middlewares() -> List[Middleware]:
-        return [
-            Middleware(
-                CORSMiddleware,
-                allow_origins=[
-                    "http://localhost:3000",
-                ],
-                allow_credentials=True,
-                allow_methods=["*"],
-                allow_headers=["*"],
-            ),
-            Middleware(
-                AuthenticationMiddleware,
-                backend=BasicAuthBackend(
-                    username=os.environ[USERNAME],
-                    password=os.environ[PASSWORD]
-                )
-            )
-        ]
+        cors_middleware = get_cors_middleware()
+        authentication_middleware = get_authentication_middleware(
+            username=os.environ[USERNAME],
+            password=os.environ[PASSWORD]
+        )
+
+        return [cors_middleware, authentication_middleware]
 
     @staticmethod
     def _get_default_routers() -> List[APIRouter]:

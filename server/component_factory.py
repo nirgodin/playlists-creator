@@ -1,5 +1,6 @@
 import os
 from functools import lru_cache
+from http import HTTPStatus
 from typing import Dict
 
 from aiohttp import ClientSession
@@ -12,6 +13,10 @@ from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import PlaylistEndpoint
 from genie_datastores.postgres.operations import get_database_engine
 from spotipyio import AccessTokenGenerator
+from starlette.middleware import Middleware
+from starlette.middleware.authentication import AuthenticationMiddleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import JSONResponse
 
 from server.consts.env_consts import OPENAI_API_KEY, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
     SPOTIPY_REDIRECT_URI
@@ -43,6 +48,7 @@ from server.logic.playlist_imitation.playlist_imitator_tracks_selector import Pl
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.logic.similarity_scores_computer import SimilarityScoresComputer
+from server.middlewares.authentication_middleware import BasicAuthBackend
 from server.tools.cached_token_generator import CachedTokenGenerator
 from server.tools.case_progress_reporter import CaseProgressReporter
 from server.tools.spotify_session_creator import SpotifySessionCreator
@@ -299,3 +305,30 @@ async def get_endpoint_controller_mapping() -> Dict[PlaylistEndpoint, BaseConten
 
 def get_case_progress_reporter() -> CaseProgressReporter:
     return CaseProgressReporter(get_database_engine())
+
+
+def get_authentication_middleware(username: str, password: str) -> Middleware:
+    backend = BasicAuthBackend(
+        username=username,
+        password=password
+    )
+    return Middleware(
+        AuthenticationMiddleware,
+        backend=backend,
+        on_error=lambda conn, exc: JSONResponse(
+            status_code=HTTPStatus.UNAUTHORIZED.value,
+            content={"message": "Unauthorized"}
+        )
+    )
+
+
+def get_cors_middleware() -> Middleware:
+    return Middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "http://localhost:3000",
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
