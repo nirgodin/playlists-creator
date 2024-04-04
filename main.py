@@ -1,24 +1,9 @@
 import uvicorn as uvicorn
-from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
-from server.controllers.api import api_router
-from server.utils.general_utils import download_database
+from server.application_builder import ApplicationBuilder
 
-download_database()
-app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(api_router)
+app = ApplicationBuilder().build()
 
 if __name__ == '__main__':
     app.mount("/", StaticFiles(directory="client/build", html=True), name="static")
