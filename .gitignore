@@ -26,13 +26,7 @@
 /client/yarn-error.log*
 
 # Python
-/.idea/misc.xml
-/.idea/modules.xml
-/.idea/playlists-creator.iml
-/.idea/inspectionProfiles/profiles_settings.xml
-/.idea/inspectionProfiles/Project_Default.xml
-/.idea/vcs.xml
-/.idea/workspace.xml
+/.idea
 /.DS_Store
 
 # Data
