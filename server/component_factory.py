@@ -13,7 +13,7 @@ from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import PlaylistEndpoint
 from genie_datastores.postgres.operations import get_database_engine
 from genie_datastores.redis.operations import get_redis
-from spotipyio import AccessTokenGenerator
+from spotipyio import AccessTokenGenerator, EntityMatcher, SearchResultArtistEntityExtractor
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
@@ -128,14 +128,24 @@ async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
 @alru_cache
 async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
     openai_adapter = await get_openai_adapter()
-    pool_executor = AioPoolExecutor()
 
     return TracksURIsImageExtractor(
         openai_adapter=openai_adapter,
-        artists_collector=ArtistsSearcher(pool_executor),
+        artists_searcher=get_artists_searcher(),
         image_text_extractor=get_image_text_extractor(),
         case_progress_reporter=get_case_progress_reporter()
     )
+
+
+def get_artists_searcher() -> ArtistsSearcher:
+    pool_executor = AioPoolExecutor()
+    entity_matcher = EntityMatcher(
+        extractors={SearchResultArtistEntityExtractor(): 1},
+        min_present_fields=1,
+        threshold=0.8
+    )
+
+    return ArtistsSearcher(pool_executor, entity_matcher)
 
 
 def get_image_text_extractor() -> ImageTextExtractor:
