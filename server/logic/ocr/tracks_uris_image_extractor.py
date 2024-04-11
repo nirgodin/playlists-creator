@@ -7,7 +7,7 @@ from server.consts.api_consts import ID
 from server.consts.data_consts import URI, TRACKS
 from server.consts.prompt_consts import PHOTO_ARTISTS_PROMPT_PREFIX
 from server.data.chat_completions_request import ChatCompletionsRequest
-from server.logic.ocr.artists_collector import ArtistsCollector
+from server.logic.ocr.artists_searcher import ArtistsSearcher
 from server.logic.ocr.artists_filterer import ArtistsFilterer
 from server.logic.ocr.image_text_extractor import ImageTextExtractor
 from server.logic.openai.openai_adapter import OpenAIAdapter
@@ -18,7 +18,7 @@ from server.utils.general_utils import build_prompt
 class TracksURIsImageExtractor:
     def __init__(self,
                  openai_adapter: OpenAIAdapter,
-                 artists_collector: ArtistsCollector,
+                 artists_collector: ArtistsSearcher,
                  image_text_extractor: ImageTextExtractor,
                  case_progress_reporter: CaseProgressReporter,
                  artists_filterer: ArtistsFilterer = ArtistsFilterer()):
@@ -67,7 +67,7 @@ class TracksURIsImageExtractor:
                                     artists_names: List[str],
                                     spotify_client: SpotifyClient,
                                     country: str) -> List[str]:
-        artists_details = await self._artists_collector.collect(artists_names, spotify_client)  # TODO: Wrap spotify client with case progress reporting class
+        artists_details = await self._artists_collector.search(artists_names, spotify_client)  # TODO: Wrap spotify client with case progress reporting class
         relevant_artists = self._artists_filterer.filter_relevant_artists(artists_details)
         artists_ids = [artist[ID] for artist in relevant_artists]
         top_tracks = await spotify_client.artists.top_tracks.run(artists_ids, market=country)

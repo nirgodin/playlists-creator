@@ -39,7 +39,7 @@ from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCal
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.database_client import DatabaseClient
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
-from server.logic.ocr.artists_collector import ArtistsCollector
+from server.logic.ocr.artists_searcher import ArtistsSearcher
 from server.logic.ocr.image_text_extractor import ImageTextExtractor
 from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
@@ -132,7 +132,7 @@ async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
 
     return TracksURIsImageExtractor(
         openai_adapter=openai_adapter,
-        artists_collector=ArtistsCollector(pool_executor),
+        artists_collector=ArtistsSearcher(pool_executor),
         image_text_extractor=get_image_text_extractor(),
         case_progress_reporter=get_case_progress_reporter()
     )
