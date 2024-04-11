@@ -23,7 +23,7 @@ python-multipart = "0.0.6"
 uvicorn = "0.20.0"
 async-lru = "2.0.4"
 genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "120e0794", extras = ["postgres", "milvus", "redis", "google_drive"]}
-spotipyio = {git = "https://github.com/nirgodin/spotipyio.git", rev = "44f4ebd2"}
+spotipyio = {git = "https://github.com/nirgodin/spotipyio.git", rev = "43372f78"}
 async-cache = "1.1.1"
 
 [tool.poetry.group.dev.dependencies]
