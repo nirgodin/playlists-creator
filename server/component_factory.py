@@ -12,6 +12,7 @@ from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import PlaylistEndpoint
 from genie_datastores.postgres.operations import get_database_engine
+from genie_datastores.redis.operations import get_redis
 from spotipyio import AccessTokenGenerator
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
@@ -28,6 +29,7 @@ from server.controllers.content_controllers.for_you_controller import ForYouCont
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
+from server.controllers.health_controller import HealthController
 from server.controllers.request_body_controller import RequestBodyController
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.logic.cases_manager import CasesManager
@@ -331,4 +333,11 @@ def get_cors_middleware() -> Middleware:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+
+
+def get_health_controller() -> HealthController:
+    return HealthController(
+        db_engine=get_database_engine(),
+        redis=get_redis()
     )
