@@ -2,7 +2,6 @@ from unittest.mock import AsyncMock
 
 from _pytest.fixtures import fixture
 from aiohttp import ClientSession
-from aioresponses import aioresponses
 from genie_common.openai import OpenAIClient
 from spotipyio.logic.authentication.spotify_session import SpotifySession
 
@@ -42,24 +41,8 @@ def playlists_creator(client_session: ClientSession, case_progress_reporter: Cas
 
 
 @fixture(scope="session")
-def client_session() -> ClientSession:
-    return ClientSession()
-
-
-@fixture(scope="session")
 def session_creator(spotify_session: SpotifySession) -> AsyncMock:
     mock_session_creator = AsyncMock(SpotifySessionCreator)
     mock_session_creator.create.return_value.__aenter__.return_value = spotify_session
 
     return mock_session_creator
-
-
-@fixture(scope="session")
-def spotify_session(client_session: ClientSession) -> SpotifySession:
-    return SpotifySession(session=client_session)
-
-
-@fixture(scope="class")
-def mock_responses() -> aioresponses:
-    with aioresponses() as mock_responses:
-        yield mock_responses
