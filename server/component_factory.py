@@ -41,7 +41,6 @@ from server.logic.database_client import DatabaseClient
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
 from server.logic.ocr.artists_searcher import ArtistsSearcher
 from server.logic.ocr.image_text_extractor import ImageTextExtractor
-from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
@@ -125,18 +124,6 @@ async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
     )
 
 
-@alru_cache
-async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
-    openai_adapter = await get_openai_adapter()
-
-    return TracksURIsImageExtractor(
-        openai_adapter=openai_adapter,
-        artists_searcher=get_artists_searcher(),
-        image_text_extractor=get_image_text_extractor(),
-        case_progress_reporter=get_case_progress_reporter()
-    )
-
-
 def get_artists_searcher() -> ArtistsSearcher:
     pool_executor = AioPoolExecutor()
     entity_matcher = EntityMatcher(
@@ -149,7 +136,7 @@ def get_artists_searcher() -> ArtistsSearcher:
 
 
 def get_image_text_extractor() -> ImageTextExtractor:
-    return ImageTextExtractor(get_case_progress_reporter())
+    return ImageTextExtractor()
 
 
 def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:
@@ -237,11 +224,13 @@ async def get_prompt_controller() -> PromptController:
 
 async def get_photo_controller() -> PhotoController:
     context = await get_playlist_creation_context()
-    tracks_uris_extractor = await get_tracks_uris_image_extractor()
+    openai_adapter = await get_openai_adapter()
 
     return PhotoController(
         context=context,
-        tracks_uris_extractor=tracks_uris_extractor,
+        image_text_extractor=get_image_text_extractor(),
+        openai_adapter=openai_adapter,
+        artists_searcher=get_artists_searcher()
     )
 
 
