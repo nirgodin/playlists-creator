@@ -5,7 +5,7 @@ from pytesseract import image_to_string
 
 
 class ImageTextExtractor:
-    def extract(self, image_path: str, language: str) -> str:
+    def extract(self, image_path: str, language: str = "eng") -> str:
         image = cv2.imread(image_path)
         pre_processed_image = self._pre_process_image(image)
         text = image_to_string(pre_processed_image, lang=language, config='--psm 6')
