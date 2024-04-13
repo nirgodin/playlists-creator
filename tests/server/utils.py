@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 
 import numpy as np
 from PIL import Image
+from _pytest.logging import LogCaptureFixture
 from genie_common.utils import random_alphanumeric_string
 from spotipyio import SpotifySearchType
 
@@ -41,3 +42,8 @@ def random_track_uri() -> str:
     uris = to_uris(SpotifySearchType.TRACK, track_id)
 
     return uris[0]
+
+
+def assert_expected_level_logs_count(caplog: LogCaptureFixture, level: str, expected: int) -> None:
+    level_records = [record for record in caplog.records if record.levelname == level]
+    assert len(level_records) == expected

@@ -14,7 +14,7 @@ from server.component_factory import get_artists_searcher
 from server.consts.api_consts import ID
 from server.consts.data_consts import ARTISTS, ITEMS, NAME
 from server.logic.ocr.artists_searcher import ArtistsSearcher
-from tests.server.utils import build_spotify_url
+from tests.server.utils import build_spotify_url, assert_expected_level_logs_count
 
 
 class TestArtistsSearcher:
@@ -32,8 +32,8 @@ class TestArtistsSearcher:
 
         assert sorted(actual) == sorted(expected)
         assert len(mock_responses.requests) == len(artists_names)
-        self._assert_expected_warning_logs(caplog, invalid_responses_artists)
-        self._assert_expected_exception_logs(caplog, exception_artists)
+        assert_expected_level_logs_count(caplog, level="WARNING", expected=len(invalid_responses_artists))
+        assert_expected_level_logs_count(caplog, level="ERROR", expected=len(exception_artists))
 
     @fixture(scope="class")
     def artists_names(self,
