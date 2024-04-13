@@ -84,10 +84,7 @@ async def get_openai_client() -> OpenAIClient:
 @alru_cache
 async def get_openai_adapter() -> OpenAIAdapter:
     openai_client = await get_openai_client()
-    return OpenAIAdapter(
-        openai_client=openai_client,
-        case_progress_reporter=get_case_progress_reporter()
-    )
+    return OpenAIAdapter(openai_client)
 
 
 @alru_cache
