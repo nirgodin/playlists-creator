@@ -4,6 +4,7 @@ from typing import Generator
 from _pytest.fixtures import fixture
 from aiohttp import ClientSession
 from aioresponses import aioresponses
+from genie_common.openai import OpenAIClient
 from spotipyio import SpotifyClient
 from spotipyio.logic.authentication.spotify_session import SpotifySession
 
@@ -35,3 +36,8 @@ def spotify_client(spotify_session: SpotifySession) -> SpotifyClient:
 def mock_responses() -> aioresponses:
     with aioresponses() as mock_responses:
         yield mock_responses
+
+
+@fixture(scope="session")
+def openai_client(client_session: ClientSession) -> OpenAIClient:
+    return OpenAIClient.create(client_session)

@@ -28,11 +28,6 @@ def context(cases_manager: CasesManager,
 
 
 @fixture(scope="session")
-def openai_client(client_session: ClientSession) -> OpenAIClient:
-    return OpenAIClient.create(client_session)
-
-
-@fixture(scope="session")
 def playlists_creator(client_session: ClientSession, case_progress_reporter: CaseProgressReporter) -> PlaylistsCreator:
     return PlaylistsCreator(
         session=client_session,
