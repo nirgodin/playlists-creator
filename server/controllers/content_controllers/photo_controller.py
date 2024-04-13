@@ -38,7 +38,10 @@ class PhotoController(BaseContentController):
         cover_image_path = self._save_photo(request_body[PHOTO], dir_path)
 
         async with self._context.case_progress_reporter.report(case_id, CaseStatus.PHOTO):
-            artists = await self._extract_artists_from_photo(case_id, cover_image_path)
+            photo_text = self._image_text_extractor.extract(cover_image_path)
+
+        async with self._context.case_progress_reporter.report(case_id, CaseStatus.PROMPT):
+            artists = await self._extract_artists_names(photo_text)
 
         async with self._context.case_progress_reporter.report(case_id, CaseStatus.TRACKS):
             uris = await self._generate_tracks_uris(artists, spotify_client)
@@ -54,16 +57,13 @@ class PhotoController(BaseContentController):
 
         return image_path
 
-    async def _extract_artists_from_photo(self, case_id: str, image_path: str, language: str = "eng") -> Optional[List[str]]:
+    async def _extract_artists_names(self, photo_text: str) -> Optional[List[str]]:
         logger.info("Extracting artists names from provided photo")
-        image_text = self._image_text_extractor.extract(image_path, language)
-        prompt_suffix = f'```\n{image_text}```'
+        prompt_suffix = f'```\n{photo_text}\n```'
         prompt = build_prompt(PHOTO_ARTISTS_PROMPT_PREFIX, prompt_suffix)
         request = ChatCompletionsRequest(
-            case_id=case_id,
             prompt=prompt,
-            start_char="[",
-            end_char="]",
+            expected_type=list
         )
 
         return await self._openai_adapter.chat_completions(request)
