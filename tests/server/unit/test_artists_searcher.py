@@ -14,7 +14,7 @@ from server.component_factory import get_artists_searcher
 from server.consts.api_consts import ID
 from server.consts.data_consts import ARTISTS, ITEMS, NAME
 from server.logic.ocr.artists_searcher import ArtistsSearcher
-from tests.server.utils import build_spotify_url, assert_expected_level_logs_count
+from tests.server.utils import build_spotify_url, assert_expected_level_logs_count, build_artists_search_response
 
 
 class TestArtistsSearcher:
@@ -59,13 +59,7 @@ class TestArtistsSearcher:
         self._set_artists_responses(
             artists=artists,
             mock_responses=mock_responses,
-            payload_func=lambda artist_id, artist_name: {
-                ARTISTS: {
-                    ITEMS: [
-                        {ID: artist_id, NAME: artist_name}
-                    ]
-                }
-            }
+            payload_func=build_artists_search_response
         )
 
         return artists
@@ -132,14 +126,6 @@ class TestArtistsSearcher:
         )
 
         return artists
-
-    @fixture(scope="class")
-    def artists_searcher(self, pool_executor: AioPoolExecutor) -> ArtistsSearcher:
-        return get_artists_searcher()
-
-    @fixture(scope="class")
-    def pool_executor(self) -> AioPoolExecutor:
-        return AioPoolExecutor()
 
     @staticmethod
     def _set_artists_responses(artists: Dict[str, str],
