@@ -1,3 +1,4 @@
+from base64 import b64decode
 from typing import Optional, List, Dict
 
 from genie_common.tools import logger
@@ -46,14 +47,15 @@ class PhotoController(BaseContentController):
         async with self._context.case_progress_reporter.report(case_id, CaseStatus.TRACKS):
             uris = await self._generate_tracks_uris(artists, spotify_client)
             return PlaylistResources(
-                uris=sample_uris(uris),
+                uris=sorted(uris),
                 cover_image_path=cover_image_path
             )
 
     @staticmethod
-    def _save_photo(photo: bytes, dir_path: str) -> str:
+    def _save_photo(photo: str, dir_path: str) -> str:
+        decoded_photo = b64decode(photo)
         image_path = current_timestamp_image_path(dir_path)
-        save_image_from_bytes(photo, image_path)
+        save_image_from_bytes(decoded_photo, image_path)
 
         return image_path
 
@@ -69,16 +71,15 @@ class PhotoController(BaseContentController):
         return await self._openai_adapter.chat_completions(request)
 
     async def _generate_tracks_uris(self,
-                                    artists: List[str],
+                                    artists: Optional[List[str]],
                                     spotify_client: SpotifyClient,
                                     country: str = "US") -> Optional[List[str]]:
-        if artists is None:
-            return
+        if artists:
+            artists_ids = await self._artists_searcher.search(artists, spotify_client)
 
-        artists_ids = await self._artists_searcher.search(artists, spotify_client)
-        if artists_ids:
-            top_tracks = await spotify_client.artists.top_tracks.run(artists_ids, market=country)
-            return self._extract_tracks_uris(top_tracks)
+            if artists_ids:
+                top_tracks = await spotify_client.artists.top_tracks.run(artists_ids, market=country)
+                return self._extract_tracks_uris(top_tracks)
 
     @staticmethod
     def _extract_tracks_uris(tracks: List[Dict[str, List[dict]]]) -> List[str]:
