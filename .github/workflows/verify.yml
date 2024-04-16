@@ -20,6 +20,16 @@ jobs:
         cache: 'pip'
     - name: Install dependencies
       run: |
+        apt-get update && apt-get install -y --no-install-recommends \
+        ffmpeg \
+        libfontconfig1 \
+        libice6 \
+        libsm6 \
+        libxext6 \
+        libxrender1 \
+        tesseract-ocr \
+        tesseract-ocr-eng \
+        *libarchive13*
         pip install poetry==1.6.1
         poetry export -f requirements.txt --with dev --output requirements.txt --without-hashes
         pip install -r requirements.txt
