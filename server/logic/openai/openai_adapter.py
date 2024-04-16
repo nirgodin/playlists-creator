@@ -1,6 +1,6 @@
 import json
 from copy import deepcopy
-from typing import Union, Optional
+from typing import Union, Optional, Tuple, Type, Dict
 
 from genie_common.models.openai import ChatCompletionsModel
 from genie_common.openai import OpenAIClient
@@ -10,19 +10,15 @@ from genie_common.typing import Json
 from server.consts.openai_consts import CONTENT, ROLE, USER_ROLE, ASSISTANT_ROLE
 from server.consts.prompt_consts import SERIALIZATION_ERROR_PROMPT_FORMAT
 from server.data.chat_completions_request import ChatCompletionsRequest
-from server.tools.case_progress_reporter import CaseProgressReporter
 
 
 class OpenAIAdapter:
-    def __init__(self, openai_client: OpenAIClient, case_progress_reporter: CaseProgressReporter):
+    def __init__(self, openai_client: OpenAIClient):
         self._openai_client = openai_client
-        self._case_progress_reporter = case_progress_reporter
 
     async def chat_completions(self, request: ChatCompletionsRequest) -> Optional[Json]:
         logger.info("Received chat_completions request")
-
-        async with self._case_progress_reporter.report(case_id=request.case_id, status="prompt"):
-            return await self._call_chat_completions_with_retries(request)
+        return await self._call_chat_completions_with_retries(request)
 
     async def _call_chat_completions_with_retries(self, request: ChatCompletionsRequest) -> Optional[Json]:
         if request.retries_left == 0:
@@ -46,11 +42,13 @@ class OpenAIAdapter:
         return serialized_response
 
     def _serialize_response(self, request: ChatCompletionsRequest, response: str) -> Union[Json, str]:
+        start_char, end_char = self._response_type_chars_mapping[request.expected_type]
+
         try:
             formatted_content = self._format_raw_openai_response(
                 response=response,
-                start_char=request.start_char,
-                end_char=request.end_char
+                start_char=start_char,
+                end_char=end_char
             )
             return json.loads(formatted_content)
 
@@ -88,3 +86,10 @@ class OpenAIAdapter:
         updated_request.retries_left -= 1
 
         return updated_request
+
+    @property
+    def _response_type_chars_mapping(self) -> Dict[Type[Json], Tuple[str, str]]:
+        return {
+            list: ("[", "]"),
+            dict: ("{", "}")
+        }

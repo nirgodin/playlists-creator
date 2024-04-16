@@ -1,5 +1,6 @@
+from asyncio import get_running_loop, new_event_loop, AbstractEventLoop
 from random import randint
-from typing import Dict
+from typing import Dict, Generator
 from unittest.mock import AsyncMock, patch
 
 from _pytest.fixtures import fixture
@@ -16,12 +17,13 @@ from tests.server.integration.test_resources import TestResources
 
 class TestCachedTokenGenerator:
     @fixture(autouse=True, scope="class")
-    def set_up(self, resources: TestResources):
+    async def set_up(self, redis: Redis) -> None:
         with patch("genie_datastores.redis.redis_client.get_redis") as mock_get_redis:
-            mock_get_redis.return_value = resources.redis
+            mock_get_redis.return_value = redis
             yield
 
     async def test_generate__no_cache__calls_spotify_and_sets_key(self,
+                                                                  redis,
                                                                   token_generator: CachedTokenGenerator,
                                                                   access_token_generator: AsyncMock,
                                                                   resources: TestResources,
@@ -34,24 +36,41 @@ class TestCachedTokenGenerator:
         assert actual == response
         assert access_token_generator.generate.call_count == 1
         await self._assert_key_stored_in_cache(
-            redis=resources.redis,
+            redis=redis,
             encoder=encoder,
             access_code=access_code,
             response=response
         )
 
     async def test_create__with_cache__doesnt_call_spotify(self,
+                                                           redis,
                                                            resources: TestResources,
                                                            encoder: GzipJsonEncoder,
                                                            response: Dict[str, str],
                                                            token_generator: CachedTokenGenerator,
                                                            access_token_generator: AsyncMock):
-        access_code = await self._given_cached_access_code(resources.redis, encoder, response)
+        access_code = await self._given_cached_access_code(redis, encoder, response)
 
         actual = await token_generator.generate(SpotifyGrantType.AUTHORIZATION_CODE, access_code)
 
         assert actual == response
         assert access_token_generator.generate.call_count == 0
+
+    @fixture(scope="class")
+    async def redis(self, resources: TestResources) -> Redis:
+        async with resources.redis_testkit.get_redis() as redis:
+            yield redis
+
+    @fixture(scope="class")
+    def event_loop(self) -> Generator[AbstractEventLoop, None, None]:
+        try:
+            loop = get_running_loop()
+        except RuntimeError:
+            loop = new_event_loop()
+
+        yield loop
+
+        loop.close()
 
     @fixture(scope="class")
     def encoder(self) -> GzipJsonEncoder:

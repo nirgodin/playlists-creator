@@ -71,10 +71,8 @@ class PromptController(BaseContentController):
     async def _generate_uris_from_prompt_details(self, case_id: str, user_text: str) -> Optional[List[str]]:
         prompt = await self._build_query_conditions_prompt(user_text)
         request = ChatCompletionsRequest(
-            case_id=case_id,
             prompt=prompt,
-            start_char="{",
-            end_char="}"
+            expected_type=dict
         )
         response: Optional[Json] = await self._openai_adapter.chat_completions(request)
         prompt_details: PromptDetails = self._serialize_openai_response(response, dataclass=PromptDetails)
@@ -105,10 +103,8 @@ class PromptController(BaseContentController):
                                                  spotify_client: SpotifyClient) -> Optional[List[str]]:
         prompt = TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT.format(user_text=user_text)
         request = ChatCompletionsRequest(
-            case_id=case_id,
             prompt=prompt,
-            start_char="[",
-            end_char="]",
+            expected_type=list,
             retries_left=2
         )
         response = await self._openai_adapter.chat_completions(request)

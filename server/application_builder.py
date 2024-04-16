@@ -6,7 +6,8 @@ from starlette.middleware import Middleware
 
 from server.component_factory import get_authentication_middleware, get_cors_middleware
 from server.consts.env_consts import USERNAME, PASSWORD
-from server.controllers.api import api_router
+from server.controllers.api_routes import api_router
+from server.controllers.server_routes import server_router
 from server.utils.general_utils import download_database
 
 
@@ -38,7 +39,7 @@ class ApplicationBuilder:
 
     @staticmethod
     def _get_default_routers() -> List[APIRouter]:
-        return [api_router]
+        return [api_router, server_router]
 
     def _include_routers(self, app: FastAPI) -> None:
         for router in self._routers:

@@ -12,7 +12,8 @@ from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import PlaylistEndpoint
 from genie_datastores.postgres.operations import get_database_engine
-from spotipyio import AccessTokenGenerator
+from genie_datastores.redis.operations import get_redis
+from spotipyio import AccessTokenGenerator, EntityMatcher, SearchResultArtistEntityExtractor
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
@@ -28,6 +29,7 @@ from server.controllers.content_controllers.for_you_controller import ForYouCont
 from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
+from server.controllers.health_controller import HealthController
 from server.controllers.request_body_controller import RequestBodyController
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.logic.cases_manager import CasesManager
@@ -37,9 +39,8 @@ from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCal
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.database_client import DatabaseClient
 from server.logic.default_filter_params_generator import DefaultFilterParamsGenerator
-from server.logic.ocr.artists_collector import ArtistsCollector
+from server.logic.ocr.artists_searcher import ArtistsSearcher
 from server.logic.ocr.image_text_extractor import ImageTextExtractor
-from server.logic.ocr.tracks_uris_image_extractor import TracksURIsImageExtractor
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
@@ -83,10 +84,7 @@ async def get_openai_client() -> OpenAIClient:
 @alru_cache
 async def get_openai_adapter() -> OpenAIAdapter:
     openai_client = await get_openai_client()
-    return OpenAIAdapter(
-        openai_client=openai_client,
-        case_progress_reporter=get_case_progress_reporter()
-    )
+    return OpenAIAdapter(openai_client)
 
 
 @alru_cache
@@ -123,21 +121,19 @@ async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
     )
 
 
-@alru_cache
-async def get_tracks_uris_image_extractor() -> TracksURIsImageExtractor:
-    openai_adapter = await get_openai_adapter()
+def get_artists_searcher() -> ArtistsSearcher:
     pool_executor = AioPoolExecutor()
-
-    return TracksURIsImageExtractor(
-        openai_adapter=openai_adapter,
-        artists_collector=ArtistsCollector(pool_executor),
-        image_text_extractor=get_image_text_extractor(),
-        case_progress_reporter=get_case_progress_reporter()
+    entity_matcher = EntityMatcher(
+        extractors={SearchResultArtistEntityExtractor(): 1},
+        min_present_fields=1,
+        threshold=0.8
     )
+
+    return ArtistsSearcher(pool_executor, entity_matcher)
 
 
 def get_image_text_extractor() -> ImageTextExtractor:
-    return ImageTextExtractor(get_case_progress_reporter())
+    return ImageTextExtractor()
 
 
 def get_possible_values_querier() -> ColumnsPossibleValuesQuerier:
@@ -225,11 +221,13 @@ async def get_prompt_controller() -> PromptController:
 
 async def get_photo_controller() -> PhotoController:
     context = await get_playlist_creation_context()
-    tracks_uris_extractor = await get_tracks_uris_image_extractor()
+    openai_adapter = await get_openai_adapter()
 
     return PhotoController(
         context=context,
-        tracks_uris_extractor=tracks_uris_extractor,
+        image_text_extractor=get_image_text_extractor(),
+        openai_adapter=openai_adapter,
+        artists_searcher=get_artists_searcher()
     )
 
 
@@ -331,4 +329,11 @@ def get_cors_middleware() -> Middleware:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+
+
+def get_health_controller() -> HealthController:
+    return HealthController(
+        db_engine=get_database_engine(),
+        redis=get_redis()
     )

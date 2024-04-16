@@ -1,14 +1,15 @@
 from dataclasses import dataclass
+from typing import Type
+
+from genie_common.typing import Json
 
 from server.consts.openai_consts import CONTENT, ROLE, USER_ROLE
 
 
 @dataclass
 class ChatCompletionsRequest:
-    case_id: str
     prompt: str
-    start_char: str
-    end_char: str
+    expected_type: Type[Json]
     retries_left: int = 1
 
     def __post_init__(self):

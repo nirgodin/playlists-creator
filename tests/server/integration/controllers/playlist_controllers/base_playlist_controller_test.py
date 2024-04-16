@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from base64 import b64encode
 from http import HTTPStatus
 from typing import Dict, List, Union
 from unittest.mock import patch
@@ -23,7 +22,7 @@ from server.data.playlist_creation_context import PlaylistCreationContext
 from server.logic.cases_manager import CasesManager
 from tests.server.integration.test_records import TestRecords
 from tests.server.integration.test_resources import TestResources
-from tests.server.utils import random_image_bytes, build_spotify_url
+from tests.server.utils import build_spotify_url, random_encoded_image
 
 
 class BasePlaylistControllerTest(ABC):
@@ -106,7 +105,7 @@ class BasePlaylistControllerTest(ABC):
     @fixture(autouse=True, scope="class")
     def responses(self, mock_responses: aioresponses, user_id: str, playlist_id: str) -> None:
         """ In case you want to add more responses, use a dedicated `additional_responses` fixtures on child class """
-        cover = b64encode(random_image_bytes()).decode("utf-8")
+        cover = random_encoded_image()
         mock_responses.get(
             url=build_spotify_url(["me"]),
             payload={ID: user_id}
