@@ -1,6 +1,6 @@
-import asyncio
+from asyncio import get_running_loop, new_event_loop, AbstractEventLoop
 from random import randint
-from typing import Dict
+from typing import Dict, Generator
 from unittest.mock import AsyncMock, patch
 
 from _pytest.fixtures import fixture
@@ -17,26 +17,10 @@ from tests.server.integration.test_resources import TestResources
 
 class TestCachedTokenGenerator:
     @fixture(autouse=True, scope="class")
-    async def set_up(self, redis):
+    async def set_up(self, redis: Redis) -> None:
         with patch("genie_datastores.redis.redis_client.get_redis") as mock_get_redis:
             mock_get_redis.return_value = redis
             yield
-
-    @fixture(scope="class")
-    async def redis(self, resources):
-        async with resources.redis_testkit.get_redis() as redis:
-            yield redis
-
-    @fixture(scope="class")
-    def event_loop(self):
-        try:
-            loop = asyncio.get_running_loop()
-        except:
-            loop = asyncio.new_event_loop()
-
-        yield loop
-
-        loop.close()
 
     async def test_generate__no_cache__calls_spotify_and_sets_key(self,
                                                                   redis,
@@ -71,6 +55,22 @@ class TestCachedTokenGenerator:
 
         assert actual == response
         assert access_token_generator.generate.call_count == 0
+
+    @fixture(scope="class")
+    async def redis(self, resources: TestResources) -> Redis:
+        async with resources.redis_testkit.get_redis() as redis:
+            yield redis
+
+    @fixture(scope="class")
+    def event_loop(self) -> Generator[AbstractEventLoop, None, None]:
+        try:
+            loop = get_running_loop()
+        except RuntimeError:
+            loop = new_event_loop()
+
+        yield loop
+
+        loop.close()
 
     @fixture(scope="class")
     def encoder(self) -> GzipJsonEncoder:

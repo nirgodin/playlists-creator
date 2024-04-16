@@ -33,16 +33,17 @@ class TestResources:
         self.engine = engine
         self.redis = redis
 
-    def __enter__(self) -> "TestResources":
+    async def __aenter__(self) -> "TestResources":
         self.postgres_testkit.__enter__()
         self.redis_testkit.__enter__()
         self.engine = self.postgres_testkit.get_database_engine()
-        # self.redis = self.redis_testkit.get_redis()
+        self.redis = await self.redis_testkit.get_redis().__aenter__()
 
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.engine = None
+        await self.redis.__aexit__(exc_type, exc_val, exc_tb)
         self.redis = None
         self.postgres_testkit.__exit__(exc_type, exc_val, exc_tb)
         self.redis_testkit.__exit__(exc_type, exc_val, exc_tb)
