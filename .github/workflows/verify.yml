@@ -20,7 +20,7 @@ jobs:
         cache: 'pip'
     - name: Install dependencies
       run: |
-        apt-get update && apt-get install -y --no-install-recommends \
+        sudo apt-get update && apt-get install -y --no-install-recommends \
         ffmpeg \
         libfontconfig1 \
         libice6 \
