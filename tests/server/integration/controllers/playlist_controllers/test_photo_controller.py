@@ -23,6 +23,20 @@ from tests.server.utils import random_encoded_image, build_spotify_url, \
 
 
 class TestPhotoController(BasePlaylistControllerTest):
+    @fixture(autouse=True, scope="class")
+    def additional_responses(self,
+                             artists_ids_to_names: Dict[str, str],
+                             uris: List[str],
+                             mock_responses: aioresponses) -> None:
+        raw_content = list(artists_ids_to_names.values())
+        content = json.dumps(raw_content)
+        mock_responses.post(
+            url='https://api.openai.com/v1/chat/completions',
+            payload=build_chat_completions_response(content)
+        )
+
+        yield
+
     @fixture(scope="class")
     def controller(self,
                    context: PlaylistCreationContext,
@@ -71,14 +85,11 @@ class TestPhotoController(BasePlaylistControllerTest):
         uris = []
 
         for artist_id in artists_ids_to_names.keys():
-            url = build_spotify_url(["artists", artist_id, "top-tracks"], params={"market": "US"})
-            n_uris = randint(1, 5)
-            artist_uris = random_string_array(n_uris)
-            payload = {
-                TRACKS: [{URI: uri} for uri in artist_uris]
-            }
-            mock_responses.get(url=url, payload=payload)
-            uris.extend(artist_uris)
+            self._set_single_artist_top_tracks_response(
+                artist_id=artist_id,
+                uris=uris,
+                mock_responses=mock_responses
+            )
 
         yield sorted(uris)
 
@@ -88,31 +99,28 @@ class TestPhotoController(BasePlaylistControllerTest):
         artists = random_string_dict(length=n_artists)
 
         for artist_id, artist_name in artists.items():
-            params = {"q": f"artist:{artist_name}", "type": "artist"}
-            url = build_spotify_url(["search"], params)
-            payload = build_artists_search_response(artist_id, artist_name)
-            mock_responses.get(url=url, payload=payload)
+            self._set_single_artist_search_response(
+                artist_id=artist_id,
+                artist_name=artist_name,
+                mock_responses=mock_responses
+            )
 
         yield artists
 
-    @fixture(autouse=True, scope="class")
-    def additional_responses(self, artists_ids_to_names: Dict[str, str], uris: List[str], mock_responses: aioresponses) -> None:
-        raw_content = list(artists_ids_to_names.values())
-        content = json.dumps(raw_content)  # TODO: Extract to genie_common util
-        mock_responses.post(
-            url='https://api.openai.com/v1/chat/completions',
-            payload=build_chat_completions_response(content)
-        )
+    @staticmethod
+    def _set_single_artist_top_tracks_response(artist_id: str, uris: List[str], mock_responses: aioresponses) -> None:
+        url = build_spotify_url(["artists", artist_id, "top-tracks"], params={"market": "US"})
+        n_uris = randint(1, 5)
+        artist_uris = random_string_array(n_uris)
+        payload = {
+            TRACKS: [{URI: uri} for uri in artist_uris]
+        }
+        mock_responses.get(url=url, payload=payload)
+        uris.extend(artist_uris)
 
-        # playlist_items = [random_playlist_item(uri) for uri in uris]
-        # url = build_spotify_url(
-        #     routes=["me", "top", "tracks"],
-        #     params={"limit": 50, "time_range": time_range}
-        # )
-        # mock_responses.get(
-        #     url=url,
-        #     payload={ITEMS: playlist_items}
-        # )
-
-        yield
-
+    @staticmethod
+    def _set_single_artist_search_response(artist_id: str, artist_name: str, mock_responses: aioresponses) -> None:
+        params = {"q": f"artist:{artist_name}", "type": "artist"}
+        url = build_spotify_url(["search"], params)
+        payload = build_artists_search_response(artist_id, artist_name)
+        mock_responses.get(url=url, payload=payload)
