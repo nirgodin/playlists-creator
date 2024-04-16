@@ -12,10 +12,15 @@ from tests.server.integration.test_resources import TestResources
 
 
 class TestHealthController:
-    async def test_check_server_health__is_healthy__returns_200(self, resources: TestResources):
+    @fixture(scope="class")
+    async def redis(self, resources):
+        async with resources.redis_testkit.get_redis() as redis:
+            yield redis
+
+    async def test_check_server_health__is_healthy__returns_200(self, resources: TestResources, redis):
         resources.app.dependency_overrides[get_health_controller] = lambda: HealthController(
             db_engine=resources.engine,
-            redis=resources.redis
+            redis=redis
         )
 
         response = resources.client.get(url="/health", auth=resources.auth)
@@ -25,10 +30,11 @@ class TestHealthController:
 
     async def test_check_server_health__postgres_unhealthy__returns_503(self,
                                                                         resources: TestResources,
-                                                                        non_existing_db_engine: AsyncEngine):
+                                                                        non_existing_db_engine: AsyncEngine,
+                                                                        redis):
         resources.app.dependency_overrides[get_health_controller] = lambda: HealthController(
             db_engine=non_existing_db_engine,
-            redis=resources.redis
+            redis=redis
         )
 
         response = resources.client.get(url="/health", auth=resources.auth)

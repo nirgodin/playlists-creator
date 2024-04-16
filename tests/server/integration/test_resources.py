@@ -37,7 +37,7 @@ class TestResources:
         self.postgres_testkit.__enter__()
         self.redis_testkit.__enter__()
         self.engine = self.postgres_testkit.get_database_engine()
-        self.redis = self.redis_testkit.get_redis()
+        # self.redis = self.redis_testkit.get_redis()
 
         return self
 
