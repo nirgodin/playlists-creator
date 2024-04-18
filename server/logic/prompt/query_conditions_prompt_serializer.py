@@ -10,7 +10,7 @@ class QueryConditionsPromptSerializer(IPromptSerializer):
     def __init__(self, columns_details: str):
         self._columns_details = columns_details
 
-    def serialize(self, user_text: str) -> str:
+    def build_prompt(self, user_text: str) -> str:
         prompt_prefix = QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT.format(columns_details=self._columns_details)
         prompt_suffix = QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT.format(user_text=user_text)
 

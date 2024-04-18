@@ -8,7 +8,7 @@ from server.consts.typing_consts import DataClass
 
 class IPromptSerializer(ABC):
     @abstractmethod
-    def serialize(self, user_text: str) -> str:
+    def build_prompt(self, user_text: str) -> str:
         raise NotImplementedError
 
     @property
