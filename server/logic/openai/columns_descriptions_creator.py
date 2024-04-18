@@ -1,5 +1,3 @@
-from functools import lru_cache
-
 from server.consts.prompt_consts import SINGLE_COLUMN_DESCRIPTION_FORMAT
 from server.data.column_details import ColumnDetails
 from server.logic.columns_possible_values_querier import ColumnsPossibleValuesQuerier
@@ -9,7 +7,6 @@ class ColumnsDescriptionsCreator:
     def __init__(self, possible_values_querier: ColumnsPossibleValuesQuerier):
         self._possible_values_querier = possible_values_querier
 
-    @lru_cache
     async def create(self) -> str:
         columns_descriptions = []
         columns_details = await self._possible_values_querier.query()
