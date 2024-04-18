@@ -180,18 +180,22 @@ def get_database_client() -> DatabaseClient:
     )
 
 
-@lru_cache
-def get_access_token_generator() -> AccessTokenGenerator:
+@alru_cache
+async def get_access_token_generator() -> AccessTokenGenerator:
+    session = await get_session()
     return AccessTokenGenerator(
         client_id=os.environ[SPOTIPY_CLIENT_ID],
         client_secret=os.environ[SPOTIPY_CLIENT_SECRET],
-        redirect_uri=os.environ[SPOTIPY_REDIRECT_URI]
+        redirect_uri=os.environ[SPOTIPY_REDIRECT_URI],
+        session=session
     )
 
 
-@lru_cache
-def get_spotify_session_creator() -> SpotifySessionCreator:
-    cached_token_generator = CachedTokenGenerator(get_access_token_generator())
+@alru_cache
+async def get_spotify_session_creator() -> SpotifySessionCreator:
+    access_token_generator = await get_access_token_generator()
+    cached_token_generator = CachedTokenGenerator(access_token_generator)
+
     return SpotifySessionCreator(cached_token_generator)
 
 
@@ -235,7 +239,7 @@ async def get_photo_controller() -> PhotoController:
 async def get_playlist_creation_context() -> PlaylistCreationContext:
     playlists_creator = await get_playlists_creator()
     openai_client = await get_openai_client()
-    spotify_session = get_spotify_session_creator()
+    spotify_session = await get_spotify_session_creator()
     case_progress_reporter = get_case_progress_reporter()
     cases_manager = get_cases_manager()
 

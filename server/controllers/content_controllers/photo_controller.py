@@ -53,7 +53,9 @@ class PhotoController(BaseContentController):
 
     @staticmethod
     def _save_photo(photo: str, dir_path: str) -> str:
-        decoded_photo = b64decode(photo)
+        split_photo = photo.split(",")
+        encoded_photo = ",".join(split_photo[1:])
+        decoded_photo = b64decode(encoded_photo)
         image_path = current_timestamp_image_path(dir_path)
         save_image_from_bytes(decoded_photo, image_path)
 

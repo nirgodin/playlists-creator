@@ -64,7 +64,8 @@ class TestPhotoController(BasePlaylistControllerTest):
     @fixture(scope="class")
     def payload(self) -> Dict[str, Union[bytes, str, dict]]:
         payload = self._get_basic_request_payload()
-        payload[PHOTO] = random_encoded_image()
+        photo = random_encoded_image()
+        payload[PHOTO] = f"{random_alphanumeric_string()},{photo}"
 
         return payload
 

@@ -40,16 +40,6 @@ async def playlist(endpoint: PlaylistEndpoint,
     )
 
 
-@api_router.post('/photo')
-async def photos(photo: Annotated[UploadFile, File()],
-                 body: Annotated[str, Form()],  # TODO: What to do with body not matching interface?
-                 photo_controller: Annotated[PhotoController, Depends(get_photo_controller)]):
-    request = json.loads(body)
-    request[PHOTO] = await photo.read()
-
-    return await photo_controller.post(request_body=request, case_id="")
-
-
 @api_router.get('/cases/{case_id}/progress')
 async def case_progress(case_id: str,
                         cases_controller: Annotated[CasesController, Depends(get_cases_controller)]):
