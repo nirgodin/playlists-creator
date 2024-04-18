@@ -42,13 +42,3 @@ def download_database() -> None:
         )
 
     PlaylistImitatorDatabaseCreator().create()
-
-
-def to_dataclass(serializable: Union[list, dict], dataclass: Type[DataClass]) -> Union[DataClass, List[DataClass]]:
-    if isinstance(serializable, dict):
-        return dataclass.from_dict(serializable)
-
-    if isinstance(serializable, list):
-        return [dataclass.from_dict(elem) for elem in serializable]
-
-    raise ValueError("Cannot serialize values to dataclass that are neither dict or list")
