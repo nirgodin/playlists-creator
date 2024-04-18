@@ -1,7 +1,7 @@
 import os
 from functools import lru_cache
 from http import HTTPStatus
-from typing import Dict
+from typing import Dict, List, Optional
 
 from aiohttp import ClientSession
 from async_lru import alru_cache
@@ -47,6 +47,10 @@ from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.logic.playlist_imitation.playlist_imitator_database_filterer import PlaylistImitatorDatabaseFilterer
 from server.logic.playlist_imitation.playlist_imitator_tracks_selector import PlaylistImitatorTracksSelector
 from server.logic.playlists_creator import PlaylistsCreator
+from server.logic.prompt.prompt_serialization_manager import PromptSerializationManager
+from server.logic.prompt.prompt_serializer_interface import IPromptSerializer
+from server.logic.prompt.query_conditions_prompt_serializer import QueryConditionsPromptSerializer
+from server.logic.prompt.tracks_names_prompt_serializer import TracksNamesPromptSerializer
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.logic.similarity_scores_computer import SimilarityScoresComputer
 from server.middlewares.authentication_middleware import BasicAuthBackend
@@ -117,7 +121,6 @@ async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
         db_client=get_database_client(),
         openai_client=openai_client,
         milvus_client=milvus_client,
-        case_progress_reporter=get_case_progress_reporter()
     )
 
 
@@ -212,15 +215,40 @@ async def get_configuration_controller() -> ConfigurationController:
 
 async def get_prompt_controller() -> PromptController:
     context = await get_playlist_creation_context()
-    openai_adapter = await get_openai_adapter()
     prompt_details_tracks_selector = await get_prompt_details_tracks_selector()
+    serialization_manager = await get_prompt_serialization_manager()
 
     return PromptController(
         context=context,
-        openai_adapter=openai_adapter,
-        columns_descriptions_creator=get_columns_descriptions_creator(),
         prompt_details_tracks_selector=prompt_details_tracks_selector,
+        serialization_manager=serialization_manager
     )
+
+
+async def get_prompt_serialization_manager() -> PromptSerializationManager:
+    openai_adapter = await get_openai_adapter()
+    prioritized_serializers = await get_prioritized_prompt_serializers()
+
+    return PromptSerializationManager(
+        prioritized_serializers=prioritized_serializers,
+        openai_adapter=openai_adapter
+    )
+
+
+async def get_query_conditions_prompt_serializer(descriptions_creator: Optional[ColumnsDescriptionsCreator]) -> QueryConditionsPromptSerializer:
+    if descriptions_creator is None:
+        descriptions_creator = get_columns_descriptions_creator()
+
+    columns_details = await descriptions_creator.create()
+    return QueryConditionsPromptSerializer(columns_details)
+
+
+async def get_prioritized_prompt_serializers(descriptions_creator: Optional[ColumnsDescriptionsCreator] = None) -> List[IPromptSerializer]:
+    query_conditions_prompt_serializer = await get_query_conditions_prompt_serializer(descriptions_creator)
+    return [
+        query_conditions_prompt_serializer,
+        TracksNamesPromptSerializer()
+    ]
 
 
 async def get_photo_controller() -> PhotoController:
