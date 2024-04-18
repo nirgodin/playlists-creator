@@ -5,7 +5,7 @@ from server.logic.prompt.prompt_serializer_interface import IPromptSerializer
 
 
 class TracksNamesPromptSerializer(IPromptSerializer):
-    def serialize(self, user_text: str) -> str:
+    def build_prompt(self, user_text: str) -> str:
         return self._prompt_format.format(user_text=user_text)
 
     @property
@@ -19,7 +19,7 @@ class TracksNamesPromptSerializer(IPromptSerializer):
     @property
     def _prompt_format(self) -> str:
         return """\
-            In this task you should help serialize free texts inputs that describes the characteristics of a Spotify \
+            In this task you should help build_prompt free texts inputs that describes the characteristics of a Spotify \
             playlist, to a JSON serializable string that specifies a list of tracks and artists names. The JSON string \
             should have the following format: An array of dictionaries, each comprised by the following fields: \
             `artist_name`, `track_name`.
