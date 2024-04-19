@@ -1,7 +1,7 @@
 from typing import List
 
 from genie_common.models.openai import EmbeddingsModel
-from genie_common.openai import OpenAIClient
+from genie_common.clients.openai import OpenAIClient
 from genie_common.tools import logger
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.models import SearchRequest

@@ -3,7 +3,7 @@ from copy import deepcopy
 from typing import Union, Optional, Tuple, Type, Dict
 
 from genie_common.models.openai import ChatCompletionsModel
-from genie_common.openai import OpenAIClient
+from genie_common.clients.openai import OpenAIClient
 from genie_common.tools.logs import logger
 from genie_common.typing import Json
 

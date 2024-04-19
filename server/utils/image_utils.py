@@ -4,7 +4,7 @@ import os
 from PIL import Image
 from aiohttp import ClientSession
 from genie_common.tools import logger
-from genie_common.utils import fetch_image
+from genie_common.clients.utils import fetch_image
 
 from server.utils.datetime_utils import get_current_timestamp
 

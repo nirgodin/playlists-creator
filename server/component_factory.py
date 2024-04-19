@@ -5,9 +5,9 @@ from typing import Dict, List, Optional
 
 from aiohttp import ClientSession
 from async_lru import alru_cache
-from genie_common.openai import OpenAIClient
+from genie_common.clients.openai import OpenAIClient
 from genie_common.tools import AioPoolExecutor
-from genie_common.utils import create_client_session, build_authorization_headers
+from genie_common.clients.utils import create_client_session, build_authorization_headers
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import PlaylistEndpoint
@@ -364,8 +364,10 @@ def get_cors_middleware() -> Middleware:
     )
 
 
-def get_health_controller() -> HealthController:
+async def get_health_controller() -> HealthController:
+    milvus = await get_milvus_client()
     return HealthController(
         db_engine=get_database_engine(),
-        redis=get_redis()
+        redis=get_redis(),
+        milvus=milvus
     )

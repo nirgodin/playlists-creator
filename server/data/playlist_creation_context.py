@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from genie_common.openai import OpenAIClient
+from genie_common.clients.openai import OpenAIClient
 
 from server.logic.cases_manager import CasesManager
 from server.logic.playlists_creator import PlaylistsCreator
