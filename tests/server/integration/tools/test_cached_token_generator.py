@@ -17,7 +17,7 @@ from tests.server.integration.test_resources import TestResources
 
 class TestCachedTokenGenerator:
     @fixture(autouse=True, scope="class")
-    async def set_up(self, redis: Redis) -> None:
+    def set_up(self, redis: Redis) -> None:
         with patch("genie_datastores.redis.redis_client.get_redis") as mock_get_redis:
             mock_get_redis.return_value = redis
             yield
