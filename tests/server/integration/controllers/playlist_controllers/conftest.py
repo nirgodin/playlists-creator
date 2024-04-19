@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock
 
 from _pytest.fixtures import fixture
 from aiohttp import ClientSession
-from genie_common.openai import OpenAIClient
+from genie_common.clients.openai import OpenAIClient
 from spotipyio.logic.authentication.spotify_session import SpotifySession
 
 from server.data.playlist_creation_context import PlaylistCreationContext
