@@ -54,6 +54,6 @@ class PromptDetailsTracksSelector:
             vector=prompt_embeddings,
             filter=request_filter
         )
-        response = await self._milvus_client.search(request)  # TODO: Integrate here distance threshold
+        response = await self._milvus_client.vectors.search(request)  # TODO: Integrate here distance threshold
 
         return [track[ID] for track in response["data"]]

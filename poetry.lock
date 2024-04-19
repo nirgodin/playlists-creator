@@ -607,13 +607,13 @@ websockets = ["websocket-client (>=1.3.0)"]
 
 [[package]]
 name = "exceptiongroup"
-version = "1.2.0"
+version = "1.2.1"
 description = "Backport of PEP 654 (exception groups)"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "exceptiongroup-1.2.0-py3-none-any.whl", hash = "sha256:4bfd3996ac73b41e9b9628b04e079f193850720ea5945fc96a08633c66912f14"},
-    {file = "exceptiongroup-1.2.0.tar.gz", hash = "sha256:91f5c769735f051a4290d52edd0858999b57e5876e9f85937691bd4c9fa3ed68"},
+    {file = "exceptiongroup-1.2.1-py3-none-any.whl", hash = "sha256:5258b9ed329c5bbdd31a309f53cbfb0b155341807f6ff7606a1e801a891b29ad"},
+    {file = "exceptiongroup-1.2.1.tar.gz", hash = "sha256:a4785e48b045528f5bfe627b6ad554ff32def154f42372786903b7abcfe1aa16"},
 ]
 
 [package.extras]
@@ -745,16 +745,19 @@ files = []
 develop = false
 
 [package.dependencies]
-aiohttp = ">=3.6.3,<3.9.0"
+aiohttp = {version = ">=3.6.3,<3.9.0", optional = true}
 asyncio-pool = "^0.6.0"
 opencv-python-headless = ">=4.7,<5.0"
 tqdm = ">=4.65,<5.0"
 
+[package.extras]
+clients = ["aiohttp (>=3.6.3,<3.9.0)"]
+
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-common.git"
-reference = "d1c812930ad6c97dee0b8c00d1dd0de51cdf8262"
-resolved_reference = "d1c812930ad6c97dee0b8c00d1dd0de51cdf8262"
+reference = "69af96d75fc061f735b8540d66c6734cca59574b"
+resolved_reference = "69af96d75fc061f735b8540d66c6734cca59574b"
 
 [[package]]
 name = "genie-datastores"
@@ -771,7 +774,7 @@ asyncmy = {version = "0.2.8", optional = true}
 asyncpg = {version = "0.28.0", optional = true}
 billboard-py = {version = "^7.0.0", optional = true}
 dataclasses-json = {version = ">=0.6,<1.0", optional = true}
-genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "d1c812930ad6c97dee0b8c00d1dd0de51cdf8262"}
+genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "69af96d75fc061f735b8540d66c6734cca59574b", extras = ["clients"]}
 google-api-python-client = {version = ">=2.8,<3.0", optional = true}
 greenlet = {version = "2.0.1", optional = true}
 pandas = {version = "<2.2", optional = true}
@@ -787,8 +790,8 @@ redis = ["aioredis (>=2.0.0,<2.1.0)"]
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-datastores.git"
-reference = "064e0462"
-resolved_reference = "064e046297ad9f500550dcefda3b4dc6c09b2e7e"
+reference = "2c3be604"
+resolved_reference = "2c3be604878e144b7d709a5eb2718fb4a251c5f7"
 
 [[package]]
 name = "genie-testkit"
@@ -803,7 +806,7 @@ develop = false
 aioredis = {version = ">=2.0.0,<2.1.0", optional = true}
 asyncmy = {version = "0.2.8", optional = true}
 asyncpg = {version = "0.28.0", optional = true}
-genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "d1c812930ad6c97dee0b8c00d1dd0de51cdf8262"}
+genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "69af96d75fc061f735b8540d66c6734cca59574b"}
 greenlet = {version = "2.0.1", optional = true}
 sqlalchemy = {version = "<2.0.0", optional = true}
 testcontainers = ">=3.7.1,<4.0"
@@ -817,8 +820,8 @@ redis = ["aioredis (>=2.0.0,<2.1.0)", "testcontainers-redis (==0.0.1rc1)"]
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-testkit.git"
-reference = "5f369e80"
-resolved_reference = "5f369e80aca8f97cbced714d63f14977d4c2ca10"
+reference = "980ce2e5"
+resolved_reference = "980ce2e5eb58c5d6695fcbe92a1a8965c81652d1"
 
 [[package]]
 name = "google-api-core"
@@ -2009,18 +2012,18 @@ test = ["asv", "gmpy2", "mpmath", "pooch", "pytest", "pytest-cov", "pytest-timeo
 
 [[package]]
 name = "setuptools"
-version = "69.2.0"
+version = "69.5.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "setuptools-69.2.0-py3-none-any.whl", hash = "sha256:c21c49fb1042386df081cb5d86759792ab89efca84cf114889191cd09aacc80c"},
-    {file = "setuptools-69.2.0.tar.gz", hash = "sha256:0ff4183f8f42cd8fa3acea16c45205521a4ef28f73c6391d8a25e92893134f2e"},
+    {file = "setuptools-69.5.1-py3-none-any.whl", hash = "sha256:c636ac361bc47580504644275c9ad802c50415c7522212252c033bd15f301f32"},
+    {file = "setuptools-69.5.1.tar.gz", hash = "sha256:6c1fccdac05a97e598fb0ae3bbed5904ccb317337a51139dcd51453611bbb987"},
 ]
 
 [package.extras]
-docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx (<7.2.5)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
-testing = ["build[virtualenv]", "filelock (>=3.4.0)", "importlib-metadata", "ini2toml[lite] (>=0.9)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mypy (==1.9)", "packaging (>=23.2)", "pip (>=19.1)", "pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-home (>=0.5)", "pytest-mypy (>=0.9.1)", "pytest-perf", "pytest-ruff (>=0.2.1)", "pytest-timeout", "pytest-xdist (>=3)", "tomli", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
+testing = ["build[virtualenv]", "filelock (>=3.4.0)", "importlib-metadata", "ini2toml[lite] (>=0.9)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mypy (==1.9)", "packaging (>=23.2)", "pip (>=19.1)", "pytest (>=6,!=8.1.1)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-home (>=0.5)", "pytest-mypy", "pytest-perf", "pytest-ruff (>=0.2.1)", "pytest-timeout", "pytest-xdist (>=3)", "tomli", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
 testing-integration = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "packaging (>=23.2)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
 
 [[package]]
@@ -2551,4 +2554,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "a12ff2f8e7f84704d5d8e84c80002a2fc8dc0e669d4a044deb9a8e88251d2e3c"
+content-hash = "692ba19d41718f4429c2be0929e687a4e6870c142183692793ed3cabeba5b42a"
