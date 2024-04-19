@@ -1,10 +1,10 @@
 from typing import Optional
 
-from aioredis import Redis
 from fastapi import FastAPI
 from genie_common.utils import random_alphanumeric_string
 from genie_datastores.postgres.testing import PostgresMockFactory
 from genie_testkit import PostgresTestkit, RedisTestkit
+from redis import Redis
 from sqlalchemy.ext.asyncio import AsyncEngine
 from starlette.testclient import TestClient
 
@@ -37,15 +37,14 @@ class TestResources:
         self.postgres_testkit.__enter__()
         self.redis_testkit.__enter__()
         self.engine = self.postgres_testkit.get_database_engine()
-        self.redis = await self.redis_testkit.get_redis().__aenter__()
+        self.redis = self.redis_testkit.get_redis()
 
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.engine = None
-        await self.redis.__aexit__(exc_type, exc_val, exc_tb)
-        self.redis = None
         self.postgres_testkit.__exit__(exc_type, exc_val, exc_tb)
+        self.redis = None
         self.redis_testkit.__exit__(exc_type, exc_val, exc_tb)
 
     def _create_default_app(self) -> FastAPI:
