@@ -2,7 +2,7 @@ from functools import partial
 from http import HTTPStatus
 
 from _pytest.fixtures import fixture
-from aioredis import Redis
+from redis import Redis
 from genie_common.utils import random_postgres_connection_url, random_port, random_alphanumeric_string
 from genie_datastores.milvus import MilvusClient
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
@@ -77,12 +77,12 @@ class TestHealthController:
                 milvus=milvus
             )
 
-    @fixture
+    @fixture(scope="class")
     def non_existing_db_engine(self) -> AsyncEngine:
         url = random_postgres_connection_url()
         return create_async_engine(url=url, poolclass=NullPool)
 
-    @fixture
+    @fixture(scope="class")
     def non_existing_redis(self) -> Redis:
         return Redis(
             host=random_alphanumeric_string(),
@@ -90,7 +90,7 @@ class TestHealthController:
             password=random_alphanumeric_string(),
         )
 
-    @fixture
+    @fixture(scope="class")
     async def non_existing_milvus(self) -> MilvusClient:
         uri = f"http://localhost:{random_port()}"
 

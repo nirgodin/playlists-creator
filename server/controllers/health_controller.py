@@ -1,7 +1,8 @@
 from http import HTTPStatus
-from typing import Callable, Awaitable, Dict
+from inspect import iscoroutinefunction
+from typing import Callable, Awaitable, Dict, Optional
 
-from aioredis import Redis
+from redis import Redis
 from fastapi import HTTPException
 from genie_common.tools import logger
 from genie_datastores.milvus import MilvusClient
@@ -20,7 +21,7 @@ class HealthController:
     async def check_server_health(self) -> JSONResponse:
         for resource_name, check_func in self._health_checks.items():
             try:
-                await check_func()
+                await self._execute_health_check(check_func)
 
             except:
                 logger.exception(f"Could not connect to {resource_name}")
@@ -31,10 +32,20 @@ class HealthController:
 
         return JSONResponse(status_code=HTTPStatus.OK.value, content={"detail": "Server is healthy"})
 
+    @staticmethod
+    async def _execute_health_check(check_func: Callable[[], Optional[Awaitable[None]]]) -> None:
+        if iscoroutinefunction(check_func):
+            await check_func()
+        else:
+            check_func()
+
     @property
-    def _health_checks(self) -> Dict[str, Callable[[], Awaitable[None]]]:
+    def _health_checks(self) -> Dict[str, Callable[[], Optional[Awaitable[None]]]]:
         return {
-            "Postgres": lambda: execute_query(engine=self._db_engine, query=text("SELECT 1")),
+            "Postgres": self._is_postgres_healthy,
             "Redis": self._redis.ping,
             "Milvus": self._milvus.collections.list
         }
+
+    async def _is_postgres_healthy(self) -> None:
+        await execute_query(engine=self._db_engine, query=text("SELECT 1"))
