@@ -109,24 +109,6 @@ yarl = ">=1.0,<2.0"
 speedups = ["Brotli", "aiodns", "cchardet"]
 
 [[package]]
-name = "aioredis"
-version = "2.0.1"
-description = "asyncio (PEP 3156) Redis support"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "aioredis-2.0.1-py3-none-any.whl", hash = "sha256:9ac0d0b3b485d293b8ca1987e6de8658d7dafcca1cddfcd1d506cae8cdebfdd6"},
-    {file = "aioredis-2.0.1.tar.gz", hash = "sha256:eaa51aaf993f2d71f54b70527c440437ba65340588afeb786cd87c55c89cd98e"},
-]
-
-[package.dependencies]
-async-timeout = "*"
-typing-extensions = "*"
-
-[package.extras]
-hiredis = ["hiredis (>=1.0)"]
-
-[[package]]
 name = "aioresponses"
 version = "0.7.6"
 description = "Mock out requests made by ClientSession from aiohttp package"
@@ -769,7 +751,6 @@ files = []
 develop = false
 
 [package.dependencies]
-aioredis = {version = ">=2.0.0,<2.1.0", optional = true}
 asyncmy = {version = "0.2.8", optional = true}
 asyncpg = {version = "0.28.0", optional = true}
 billboard-py = {version = "^7.0.0", optional = true}
@@ -778,6 +759,7 @@ genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "69a
 google-api-python-client = {version = ">=2.8,<3.0", optional = true}
 greenlet = {version = "2.0.1", optional = true}
 pandas = {version = "<2.2", optional = true}
+redis = {version = ">=5.0.3,<5.1", optional = true}
 sqlalchemy = {version = "<2.0.0", optional = true}
 
 [package.extras]
@@ -785,13 +767,13 @@ google-drive = ["google-api-python-client (>=2.8,<3.0)"]
 google-sheets = ["gspread (>=5.12.4,<5.13)", "pandas (<2.2)"]
 milvus = ["dataclasses-json (>=0.6,<1.0)"]
 postgres = ["asyncmy (==0.2.8)", "asyncpg (==0.28.0)", "billboard-py (>=7.0.0,<8.0.0)", "greenlet (==2.0.1)", "pandas (<2.2)", "sqlalchemy (<2.0.0)"]
-redis = ["aioredis (>=2.0.0,<2.1.0)"]
+redis = ["redis (>=5.0.3,<5.1)"]
 
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-datastores.git"
-reference = "2c3be604"
-resolved_reference = "2c3be604878e144b7d709a5eb2718fb4a251c5f7"
+reference = "1041a90a"
+resolved_reference = "1041a90abb2fd5e6a25aefcd587634594dd58410"
 
 [[package]]
 name = "genie-testkit"
@@ -803,11 +785,11 @@ files = []
 develop = false
 
 [package.dependencies]
-aioredis = {version = ">=2.0.0,<2.1.0", optional = true}
 asyncmy = {version = "0.2.8", optional = true}
 asyncpg = {version = "0.28.0", optional = true}
 genie-common = {git = "https://github.com/nirgodin/genie-common.git", rev = "69af96d75fc061f735b8540d66c6734cca59574b"}
 greenlet = {version = "2.0.1", optional = true}
+redis = {version = ">=5.0.3,<5.1", optional = true}
 sqlalchemy = {version = "<2.0.0", optional = true}
 testcontainers = ">=3.7.1,<4.0"
 testcontainers-postgres = {version = "0.0.1rc1", optional = true}
@@ -815,13 +797,13 @@ testcontainers-redis = {version = "0.0.1rc1", optional = true}
 
 [package.extras]
 postgres = ["asyncmy (==0.2.8)", "asyncpg (==0.28.0)", "greenlet (==2.0.1)", "sqlalchemy (<2.0.0)", "testcontainers-postgres (==0.0.1rc1)"]
-redis = ["aioredis (>=2.0.0,<2.1.0)", "testcontainers-redis (==0.0.1rc1)"]
+redis = ["redis (>=5.0.3,<5.1)", "testcontainers-redis (==0.0.1rc1)"]
 
 [package.source]
 type = "git"
 url = "https://github.com/nirgodin/genie-testkit.git"
-reference = "980ce2e5"
-resolved_reference = "980ce2e5eb58c5d6695fcbe92a1a8965c81652d1"
+reference = "7a6c3b8d"
+resolved_reference = "7a6c3b8dda7747cec45cb5767de66c3a2efcb1b0"
 
 [[package]]
 name = "google-api-core"
@@ -2554,4 +2536,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "692ba19d41718f4429c2be0929e687a4e6870c142183692793ed3cabeba5b42a"
+content-hash = "f1daaf5895dad2dae2a31a7d884d70a81d3373dba6ad148c18bac4a15abec573"
