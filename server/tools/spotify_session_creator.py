@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from genie_common.utils import build_authorization_headers, create_client_session
+from genie_common.clients.utils import build_authorization_headers, create_client_session
 from spotipyio.consts.api_consts import ACCESS_TOKEN
 from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
 from spotipyio.logic.authentication.spotify_session import SpotifySession

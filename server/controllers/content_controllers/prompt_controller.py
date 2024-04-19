@@ -1,39 +1,31 @@
 from base64 import b64decode
-from typing import List, Optional, Union, Type
+from typing import List, Optional
 
 from genie_common.models.openai import ImageSize, DallEModel
 from genie_common.tools.logs import logger
-from genie_common.typing import Json
 from spotipyio import SpotifyClient
 
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import PLAYLIST_DETAILS, PROMPT
 from server.consts.data_consts import URI
-from server.consts.prompt_consts import QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT, QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT, \
-    TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT
 from server.consts.typing_consts import DataClass
 from server.controllers.content_controllers.base_content_controller import BaseContentController
-from server.data.chat_completions_request import ChatCompletionsRequest
+from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.playlist_resources import PlaylistResources
 from server.data.prompt_details import PromptDetails
-from server.data.track_details import TrackDetails
-from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
-from server.logic.openai.openai_adapter import OpenAIAdapter
+from server.logic.prompt.prompt_serialization_manager import PromptSerializationManager
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
-from server.utils.general_utils import build_prompt, to_dataclass
 from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
 
 
 class PromptController(BaseContentController):
     def __init__(self,
                  context: PlaylistCreationContext,
-                 openai_adapter: OpenAIAdapter,
-                 prompt_details_tracks_selector: PromptDetailsTracksSelector,
-                 columns_descriptions_creator: ColumnsDescriptionsCreator):
+                 serialization_manager: PromptSerializationManager,
+                 prompt_details_tracks_selector: PromptDetailsTracksSelector):
         super().__init__(context)
-        self._openai_adapter = openai_adapter
-        self._columns_descriptions_creator = columns_descriptions_creator
+        self._serialization_manager = serialization_manager
         self._prompt_details_tracks_selector = prompt_details_tracks_selector
 
     async def _generate_playlist_resources(self,
@@ -41,13 +33,10 @@ class PromptController(BaseContentController):
                                            request_body: dict,
                                            dir_path: str,
                                            spotify_client: SpotifyClient) -> PlaylistResources:
-        user_text = self._extract_prompt_from_request_body(request_body)
-        query_conditions_uris = await self._generate_uris_from_prompt_details(case_id, user_text)
+        serialized_prompt = await self._serialize_prompt(request_body, case_id)
 
-        if query_conditions_uris is not None:
-            tracks_uris = query_conditions_uris
-        else:
-            tracks_uris = await self._generate_uris_from_tracks_details(case_id, user_text, spotify_client)
+        with self._context.case_progress_reporter.report(case_id, CaseStatus.TRACKS):
+            tracks_uris = await self._to_uris(serialized_prompt, spotify_client)
 
         return PlaylistResources(
             uris=tracks_uris,
@@ -55,7 +44,7 @@ class PromptController(BaseContentController):
         )
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
-        user_text = self._extract_prompt_from_request_body(request_body)
+        user_text = self._extract_user_text(request_body)
         playlist_cover_prompt = f'{user_text}, digital art'
         encoded_image: str = await self._context.openai_client.images_generation.collect(
             prompt=playlist_cover_prompt,
@@ -68,54 +57,27 @@ class PromptController(BaseContentController):
 
         return image_path
 
-    async def _generate_uris_from_prompt_details(self, case_id: str, user_text: str) -> Optional[List[str]]:
-        prompt = await self._build_query_conditions_prompt(user_text)
-        request = ChatCompletionsRequest(
-            prompt=prompt,
-            expected_type=dict
-        )
-        response: Optional[Json] = await self._openai_adapter.chat_completions(request)
-        prompt_details: PromptDetails = self._serialize_openai_response(response, dataclass=PromptDetails)
+    async def _serialize_prompt(self, request_body: dict, case_id: str) -> Optional[DataClass]:
+        logger.info("Serializing user text to known data model")
+        user_text = self._extract_user_text(request_body)
 
-        if prompt_details is not None:
-            return await self._prompt_details_tracks_selector.select_tracks(case_id, prompt_details)
+        with self._context.case_progress_reporter.report(case_id, CaseStatus.PROMPT):
+            return await self._serialization_manager.serialize(user_text)
 
-    async def _build_query_conditions_prompt(self, user_text: str) -> str:
-        columns_details = await self._columns_descriptions_creator.create()
-        prompt_prefix = QUERY_CONDITIONS_PROMPT_PREFIX_FORMAT.format(columns_details=columns_details)
-        prompt_suffix = QUERY_CONDITIONS_PROMPT_SUFFIX_FORMAT.format(user_text=user_text)
+    async def _to_uris(self,
+                       serialized_prompt: Optional[DataClass],
+                       spotify_client: SpotifyClient) -> Optional[List[str]]:
+        if isinstance(serialized_prompt, PromptDetails):
+            return await self._prompt_details_tracks_selector.select_tracks(serialized_prompt)
 
-        return build_prompt(prompt_prefix, prompt_suffix)
-
-    @staticmethod
-    def _serialize_openai_response(response: Optional[Json],
-                                   dataclass: Type[DataClass]) -> Optional[Union[DataClass, List[DataClass]]]:
-        try:
-            if response is not None:
-                return to_dataclass(response, dataclass)
-
-        except:
-            logger.exception("Could not serialize OpenAI response to dataclass. Returning None instead")
-
-    async def _generate_uris_from_tracks_details(self,
-                                                 case_id: str,
-                                                 user_text: str,
-                                                 spotify_client: SpotifyClient) -> Optional[List[str]]:
-        prompt = TRACKS_AND_ARTISTS_NAMES_PROMPT_FORMAT.format(user_text=user_text)
-        request = ChatCompletionsRequest(
-            prompt=prompt,
-            expected_type=list,
-            retries_left=2
-        )
-        response = await self._openai_adapter.chat_completions(request)
-        tracks_details: List[TrackDetails] = self._serialize_openai_response(response, dataclass=TrackDetails)
-
-        if tracks_details is not None:  # TODO: Add case progress
-            search_items = [details.to_search_item() for details in tracks_details]
+        if isinstance(serialized_prompt, list):  # TODO: Extract to dedicated class / function
+            search_items = [details.to_search_item() for details in serialized_prompt]
             tracks = await spotify_client.search.run(search_items)
 
             return [track[URI] for track in tracks][:MAX_SPOTIFY_PLAYLIST_SIZE]
 
+        logger.info("Prompt was not serialized to any relevant model. Returning None instead")
+
     @staticmethod
-    def _extract_prompt_from_request_body(request_body: dict) -> str:
+    def _extract_user_text(request_body: dict) -> str:
         return request_body[PLAYLIST_DETAILS][PROMPT]

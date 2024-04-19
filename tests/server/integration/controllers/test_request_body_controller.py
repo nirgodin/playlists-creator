@@ -19,7 +19,7 @@ from tests.server.integration.test_resources import TestResources
 
 class TestRequestBodyController:
     @fixture(autouse=True, scope="class")
-    async def set_up(self, resources: TestResources, request_body_controller: RequestBodyController):
+    def set_up(self, resources: TestResources, request_body_controller: RequestBodyController):
         resources.app.dependency_overrides[get_request_body_controller] = lambda: request_body_controller
         yield
 
@@ -41,7 +41,7 @@ class TestRequestBodyController:
         return [self._random_column_details(ColumnGroup.MIN_MAX_VALUES) for _ in range(n_columns)]
 
     @fixture(scope="class")
-    async def request_body_controller(self,
+    def request_body_controller(self,
                                       min_max_columns: List[ColumnDetails],
                                       possible_values_columns: List[ColumnDetails]) -> RequestBodyController:
 

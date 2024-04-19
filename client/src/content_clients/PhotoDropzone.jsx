@@ -2,6 +2,7 @@ import React from "react";
 import { useMemo, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
+  PHOTO,
   PHOTO_DROPZONE_ACCEPT_STYLE,
   PHOTO_DROPZONE_BASE_STYLE,
   PHOTO_DROPZONE_FOCUSED_STYLE,
@@ -16,6 +17,7 @@ import PropTypes from "prop-types";
 
 function PhotoDropzone(props) {
   const [errorMessage, setErrorMessage] = useState("");
+  const [files, setFiles] = useState([]);
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
@@ -38,6 +40,14 @@ function PhotoDropzone(props) {
       if (isImage(file)) {
         Object.assign(file, { preview: URL.createObjectURL(file) });
         assignedFiles.push(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          let newBody = Array.isArray(props.body) ? props.body[0] : props.body;
+          newBody[PHOTO] = e.target.result;
+          props.setBody([newBody]);      
+        };
+        reader.readAsDataURL(file); // Read the file as a Data URL (base64)
+        console.log("hi");
       } else {
         invalidFiles.push(file);
       }
@@ -45,14 +55,14 @@ function PhotoDropzone(props) {
 
     if (!_.isEqual(invalidFiles, [])) {
       setErrorMessage("Invalid file type. Files must be of type Image");
-      props.setFiles([]);
+      setFiles([]);
     } else {
-      props.setFiles(assignedFiles);
+      setFiles(assignedFiles);
       setErrorMessage("");
     }
   }
 
-  const thumbs = props.files.map((file) => (
+  const thumbs = files.map((file) => (
     <div style={PHOTO_DROPZONE_THUMB_STYLE} key={file.name}>
       <div style={PHOTO_DROPZONE_THUMB_INNER_STYLE}>
         <img
@@ -69,8 +79,8 @@ function PhotoDropzone(props) {
 
   useEffect(() => {
     return () =>
-      props.files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, [props.files]);
+      files.forEach((file) => URL.revokeObjectURL(file.preview));
+  }, [files]);
 
   const style = useMemo(
     () => ({
@@ -102,8 +112,10 @@ function PhotoDropzone(props) {
 }
 
 PhotoDropzone.propTypes = {
-  files: PropTypes.array,
-  setFiles: PropTypes.func,
+  body: PropTypes.array,
+  setBody: PropTypes.func,
+  // files: PropTypes.array,
+  // setFiles: PropTypes.func,
 };
 
 export default PhotoDropzone;

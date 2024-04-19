@@ -14,7 +14,6 @@ import {
   FOR_YOU,
 } from "../consts";
 import PhotoDropzone from "../content_clients/PhotoDropzone";
-import _ from "underscore";
 import PropTypes from "prop-types";
 import Popup from "../components/Popup";
 import PlaylistDetails from "../components/PlaylistDetails";
@@ -32,14 +31,13 @@ function LandingPage(props) {
   const [isValidPrompt, setIsValidPrompt] = useState(false);
   const [isValidExistingPlaylist, setIsValidExistingPlaylist] = useState(false);
   const [isValidPlaylistName, setIsValidPlaylistName] = useState(false);
-  const [files, setFiles] = useState([]);
 
   useEffect(() => {
     if (alignment === PROMPT) {
       const isValid = isValidPrompt && isValidPlaylistName;
       setIsValidInput(isValid);
     } else if (alignment === PHOTO) {
-      const isValid = isValidPlaylistName && !_.isEqual(files, []);
+      const isValid = isValidPlaylistName && (props.body[0][PHOTO] !== undefined);
       setIsValidInput(isValid);
     } else if (alignment === CONFIGURATION) {
       setIsValidInput(isValidPlaylistName);
@@ -54,7 +52,7 @@ function LandingPage(props) {
     isValidPrompt,
     isValidPlaylistName,
     isValidExistingPlaylist,
-    files,
+    props.body
   ]);
 
   const playlistDetails = (
@@ -125,8 +123,6 @@ function LandingPage(props) {
           setErrorMessage={props.setErrorMessage}
           setPlaylistLink={props.setPlaylistLink}
           isValidInput={isValidInput}
-          files={files}
-          setFiles={setFiles}
           setCaseId={props.setCaseId}
         ></SendButton>
       </Box>
@@ -154,7 +150,7 @@ function LandingPage(props) {
     [CONFIGURATION]: (
       <RequestBody body={props.body} setBody={props.setBody}></RequestBody>
     ),
-    [PHOTO]: <PhotoDropzone files={files} setFiles={setFiles}></PhotoDropzone>,
+    [PHOTO]: (<PhotoDropzone body={props.body} setBody={props.setBody}></PhotoDropzone>),
     [EXISTING_PLAYLIST]: (
       <div className="text-field">
         <FormTextField
@@ -191,7 +187,6 @@ function LandingPage(props) {
 LandingPage.propTypes = {
   isValidInput: PropTypes.bool,
   alignment: PropTypes.string,
-  files: PropTypes.array,
   body: PropTypes.array,
   setBody: PropTypes.func,
   setPlaylistLink: PropTypes.func,

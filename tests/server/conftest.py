@@ -1,7 +1,7 @@
 from _pytest.fixtures import fixture
 from aiohttp import ClientSession
 from aioresponses import aioresponses
-from genie_common.openai import OpenAIClient
+from genie_common.clients.openai import OpenAIClient
 from spotipyio import SpotifyClient
 from spotipyio.logic.authentication.spotify_session import SpotifySession
 
