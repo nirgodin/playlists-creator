@@ -1,3 +1,5 @@
+import asyncio
+
 from _pytest.fixtures import fixture
 from aiohttp import ClientSession
 from aioresponses import aioresponses
@@ -8,6 +10,14 @@ from spotipyio.logic.authentication.spotify_session import SpotifySession
 from server.component_factory import get_artists_searcher
 from server.logic.ocr.artists_searcher import ArtistsSearcher
 from server.logic.openai.openai_adapter import OpenAIAdapter
+from tests.server.consts import MILVUS_TEST_URI
+
+
+@fixture(scope="session")
+def event_loop():
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
 
 
 @fixture(scope="session")
@@ -28,7 +38,7 @@ def spotify_client(spotify_session: SpotifySession) -> SpotifyClient:
 
 @fixture(scope="class")
 def mock_responses() -> aioresponses:
-    with aioresponses() as mock_responses:
+    with aioresponses(passthrough=[MILVUS_TEST_URI]) as mock_responses:
         yield mock_responses
 
 
