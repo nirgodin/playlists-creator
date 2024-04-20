@@ -10,7 +10,6 @@ from spotipyio.logic.authentication.spotify_session import SpotifySession
 from server.component_factory import get_artists_searcher
 from server.logic.ocr.artists_searcher import ArtistsSearcher
 from server.logic.openai.openai_adapter import OpenAIAdapter
-from tests.server.consts import MILVUS_TEST_URI
 
 
 @fixture(scope="session")
@@ -38,7 +37,7 @@ def spotify_client(spotify_session: SpotifySession) -> SpotifyClient:
 
 @fixture(scope="class")
 def mock_responses() -> aioresponses:
-    with aioresponses(passthrough=[MILVUS_TEST_URI]) as mock_responses:
+    with aioresponses() as mock_responses:
         yield mock_responses
 
 
