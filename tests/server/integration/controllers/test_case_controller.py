@@ -51,7 +51,7 @@ class TestCaseController:
 
     @pytest.mark.parametrize("route", ["progress", "playlist"])
     async def test_missing_case__returns_400_response(self, route: str, resources: TestResources):
-        missing_case_id = random_alphanumeric_string()
+        missing_case_id = random_alphanumeric_string(length=randint(1, 10))
         expected_response = {MESSAGE: CASE_FAILURE_MESSAGE_FORMAT.format(case_id=missing_case_id)}
 
         response = resources.client.get(

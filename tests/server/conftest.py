@@ -1,3 +1,5 @@
+import asyncio
+
 from _pytest.fixtures import fixture
 from aiohttp import ClientSession
 from aioresponses import aioresponses
@@ -8,6 +10,13 @@ from spotipyio.logic.authentication.spotify_session import SpotifySession
 from server.component_factory import get_artists_searcher
 from server.logic.ocr.artists_searcher import ArtistsSearcher
 from server.logic.openai.openai_adapter import OpenAIAdapter
+
+
+@fixture(scope="session")
+def event_loop():
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
 
 
 @fixture(scope="session")

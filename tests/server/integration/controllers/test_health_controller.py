@@ -14,7 +14,7 @@ from tests.server.integration.test_resources import TestResources
 
 
 class TestHealthController:
-    async def test_check_server_health__is_healthy__returns_200(self, resources):
+    async def test_check_server_health__is_healthy__returns_200(self, resources: TestResources):
         resources.app.dependency_overrides[get_health_controller] = partial(
             self._get_health_controller_with_healthy_milvus,
             resources.engine,
