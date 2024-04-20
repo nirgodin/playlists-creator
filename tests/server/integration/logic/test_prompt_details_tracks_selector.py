@@ -1,4 +1,4 @@
-from random import uniform
+from random import uniform, randint
 from time import sleep
 from typing import List, Any, Dict
 
@@ -122,7 +122,7 @@ class TestPromptDetailsTracksSelector:
 
     @fixture(scope="class")
     def textual_parameters(self) -> str:
-        return random_alphanumeric_string()
+        return random_alphanumeric_string(length=randint(1, 10))
 
     @fixture(scope="class")
     def musical_parameters(self, random_explicit: bool) -> List[QueryCondition]:

@@ -1,6 +1,6 @@
 import json
 from logging import ERROR, WARNING
-from random import choice
+from random import choice, randint
 
 import pytest
 from _pytest.logging import LogCaptureFixture
@@ -77,7 +77,7 @@ class TestOpenAIAdapter:
 
     @staticmethod
     def _given_invalid_response(mock_responses: aioresponses) -> None:
-        content = random_alphanumeric_string()
+        content = random_alphanumeric_string(length=randint(1, 10))
         mock_responses.post(
             url="https://api.openai.com/v1/chat/completions",
             payload=build_chat_completions_response(content)
