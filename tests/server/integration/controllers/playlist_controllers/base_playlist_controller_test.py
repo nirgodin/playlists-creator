@@ -185,7 +185,7 @@ class BasePlaylistControllerTest(ABC):
         assert actual.playlist_id == test_context.playlist_id
 
     @staticmethod
-    def _assert_expected_endpoints_calls(test_context) -> None:
+    def _assert_expected_endpoints_calls(test_context: PlaylistControllerTestContext) -> None:
         test_context.mock_responses.assert_called_with(
             url=f'https://api.spotify.com/v1/playlists/{test_context.playlist_id}/tracks',
             json={"uris": test_context.uris},
