@@ -35,7 +35,7 @@ class PromptController(BaseContentController):
                                            spotify_client: SpotifyClient) -> PlaylistResources:
         serialized_prompt = await self._serialize_prompt(request_body, case_id)
 
-        with self._context.case_progress_reporter.report(case_id, CaseStatus.TRACKS):
+        async with self._context.case_progress_reporter.report(case_id, CaseStatus.TRACKS):
             tracks_uris = await self._to_uris(serialized_prompt, spotify_client)
 
         return PlaylistResources(
@@ -61,7 +61,7 @@ class PromptController(BaseContentController):
         logger.info("Serializing user text to known data model")
         user_text = self._extract_user_text(request_body)
 
-        with self._context.case_progress_reporter.report(case_id, CaseStatus.PROMPT):
+        async with self._context.case_progress_reporter.report(case_id, CaseStatus.PROMPT):
             return await self._serialization_manager.serialize(user_text)
 
     async def _to_uris(self,

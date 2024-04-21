@@ -16,10 +16,16 @@ from server.logic.data_collection.spotify_playlist_details_collector import Play
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \
     BasePlaylistControllerTest
+from tests.server.integration.controllers.playlist_controllers.playlist_controller_test_context import \
+    PlaylistControllerTestContext
 from tests.server.utils import build_spotify_url, random_playlist_item, random_track_uri
 
 
 class TestForYouController(BasePlaylistControllerTest):
+    async def test_post(self, test_context: PlaylistControllerTestContext):
+        response = self._request(test_context)
+        await self._assert_expected_base_controller_logic(response, test_context)
+
     @fixture(scope="class")
     def controller(self, uris: List[str], context: PlaylistCreationContext) -> ForYouController:
         mock_playlist_imitator = AsyncMock(PlaylistImitator)
