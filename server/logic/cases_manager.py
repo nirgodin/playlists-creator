@@ -15,7 +15,7 @@ class CasesManager:
         self._case_progress_reporter = case_progress_reporter
 
     async def create(self, endpoint: PlaylistEndpoint) -> str:
-        case_id = random_alphanumeric_string(length=32)
+        case_id = random_alphanumeric_string(min_length=32, max_length=32)
 
         async with self._case_progress_reporter.report(case_id=case_id, status=CaseStatus.CREATED):
             case = Case(id=case_id, endpoint=endpoint)

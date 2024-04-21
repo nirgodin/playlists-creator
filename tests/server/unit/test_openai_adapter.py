@@ -77,7 +77,7 @@ class TestOpenAIAdapter:
 
     @staticmethod
     def _given_invalid_response(mock_responses: aioresponses) -> None:
-        content = random_alphanumeric_string(length=randint(1, 10))
+        content = random_alphanumeric_string(min_length=1)
         mock_responses.post(
             url="https://api.openai.com/v1/chat/completions",
             payload=build_chat_completions_response(content)
