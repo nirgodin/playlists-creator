@@ -32,7 +32,7 @@ class TestWrappedController(BasePlaylistControllerTest):
     def endpoint(self) -> PlaylistEndpoint:
         return PlaylistEndpoint.WRAPPED
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def expected_progress_statuses(self) -> List[CaseStatus]:
         return [
             CaseStatus.CREATED,
@@ -42,14 +42,14 @@ class TestWrappedController(BasePlaylistControllerTest):
             CaseStatus.COMPLETED,
         ]
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def payload(self, time_range: str) -> Dict[str, Union[str, dict]]:
         payload = self._get_basic_request_payload()
         payload[PLAYLIST_DETAILS][TIME_RANGE] = time_range
 
         return payload
 
-    @fixture(autouse=True, scope="class")
+    @fixture(autouse=True, scope="function")
     def additional_responses(self, uris: List[str], time_range: str, mock_responses: aioresponses) -> None:
         playlist_items = [random_playlist_item(uri) for uri in uris]
         mock_responses.get(

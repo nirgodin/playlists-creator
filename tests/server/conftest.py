@@ -35,7 +35,7 @@ def spotify_client(spotify_session: SpotifySession) -> SpotifyClient:
     return SpotifyClient.create(spotify_session)
 
 
-@fixture(scope="class")
+@fixture(scope="function")
 def mock_responses() -> aioresponses:
     with aioresponses() as mock_responses:
         yield mock_responses

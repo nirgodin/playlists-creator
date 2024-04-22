@@ -28,7 +28,7 @@ from tests.server.utils import build_spotify_url, random_encoded_image
 
 
 class BasePlaylistControllerTest(ABC):
-    @fixture(autouse=True, scope="class")
+    @fixture(autouse=True, scope="function")
     async def set_up(self,
                      endpoint: PlaylistEndpoint,
                      controller: BaseContentController,
@@ -43,7 +43,7 @@ class BasePlaylistControllerTest(ABC):
             await records.insert()
             yield
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def test_context(self,
                      payload: Dict[str, Union[str, dict]],
                      mock_responses: aioresponses,
@@ -74,12 +74,12 @@ class BasePlaylistControllerTest(ABC):
     def endpoint(self) -> PlaylistEndpoint:
         raise NotImplementedError
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     @abstractmethod
     def payload(self) -> Dict[str, Union[str, dict]]:
         raise NotImplementedError
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     @abstractmethod
     def expected_progress_statuses(self) -> List[CaseStatus]:
         raise NotImplementedError
@@ -89,7 +89,7 @@ class BasePlaylistControllerTest(ABC):
     def uris(self) -> List[str]:
         raise NotImplementedError
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def case_id(self) -> str:
         with patch("server.logic.cases_manager.random_alphanumeric_string") as mock_random_alphanumeric_string:
             case_id = random_alphanumeric_string()
@@ -97,15 +97,15 @@ class BasePlaylistControllerTest(ABC):
 
             yield case_id
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def playlist_id(self) -> str:
         return random_alphanumeric_string()
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def user_id(self) -> str:
         return random_alphanumeric_string()
 
-    @fixture(autouse=True, scope="class")
+    @fixture(autouse=True, scope="function")
     def responses(self, mock_responses: aioresponses, user_id: str, playlist_id: str) -> None:
         """ In case you want to add more responses, use a dedicated `additional_responses` fixtures on child class """
         cover = random_encoded_image()

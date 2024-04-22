@@ -73,7 +73,7 @@ class TestPromptController(BasePlaylistControllerTest):
         await self._assert_case_completed(test_context)
         await self._assert_case_has_no_playlist_id(test_context)
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def controller(self,
                    context: PlaylistCreationContext,
                    serialization_manager: AsyncMock,
@@ -88,7 +88,7 @@ class TestPromptController(BasePlaylistControllerTest):
     def serialization_manager(self) -> AsyncMock:
         return AsyncMock(PromptSerializationManager)
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def tracks_selector(self, uris: List[str]) -> AsyncMock:
         mock_tracks_selector = AsyncMock(PromptDetailsTracksSelector)
         mock_tracks_selector.select_tracks.return_value = uris
@@ -111,7 +111,7 @@ class TestPromptController(BasePlaylistControllerTest):
     def prompt(self) -> str:
         return random_alphanumeric_string()
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def payload(self, prompt: str) -> Dict[str, Union[bytes, str, dict]]:
         payload = self._get_basic_request_payload()
         payload[PLAYLIST_DETAILS][PROMPT] = prompt
@@ -134,7 +134,7 @@ class TestPromptController(BasePlaylistControllerTest):
         n_elements = randint(1, 50)
         return [random_track_uri() for _ in range(n_elements)]
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def tracks_details(self, uris: List[str], mock_responses: aioresponses) -> List[TrackDetails]:
         tracks_details = []
 

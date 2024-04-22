@@ -35,7 +35,7 @@ class TestArtistsSearcher:
         assert_expected_level_logs_count(caplog, level="WARNING", expected=len(invalid_responses_artists))
         assert_expected_level_logs_count(caplog, level="ERROR", expected=len(exception_artists))
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def artists_names(self,
                       found_artists: Dict[str, str],
                       not_found_artists: Dict[str, str],
@@ -53,7 +53,7 @@ class TestArtistsSearcher:
 
         return artists
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def found_artists(self, mock_responses: aioresponses) -> Dict[str, str]:
         artists = self._random_artists_ids_names_mapping()
         self._set_artists_responses(
@@ -64,7 +64,7 @@ class TestArtistsSearcher:
 
         return artists
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def expected(self, found_artists: Dict[str, str]) -> List[str]:
         return list(found_artists.keys())
 
@@ -73,7 +73,7 @@ class TestArtistsSearcher:
         artists = random_string_dict()
         return {id_: name for id_, name in artists.items() if id_ and name}
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def not_found_artists(self, mock_responses: aioresponses) -> Dict[str, str]:
         artists = self._random_artists_ids_names_mapping()
         self._set_artists_responses(
@@ -88,7 +88,7 @@ class TestArtistsSearcher:
 
         return artists
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def not_matched_artists(self, mock_responses: aioresponses) -> Dict[str, str]:
         artists = self._random_artists_ids_names_mapping()
         self._set_artists_responses(
@@ -105,7 +105,7 @@ class TestArtistsSearcher:
 
         return artists
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def invalid_responses_artists(self, mock_responses: aioresponses) -> Dict[str, str]:
         artists = self._random_artists_ids_names_mapping()
         self._set_artists_responses(
@@ -116,7 +116,7 @@ class TestArtistsSearcher:
 
         return artists
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def exception_artists(self, mock_responses: aioresponses) -> Dict[str, str]:
         artists = self._random_artists_ids_names_mapping()
         self._set_artists_responses(

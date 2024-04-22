@@ -43,7 +43,7 @@ class TestForYouController(BasePlaylistControllerTest):
     def endpoint(self) -> PlaylistEndpoint:
         return PlaylistEndpoint.FOR_YOU
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def expected_progress_statuses(self) -> List[CaseStatus]:
         return [
             CaseStatus.CREATED,
@@ -52,7 +52,7 @@ class TestForYouController(BasePlaylistControllerTest):
             CaseStatus.COMPLETED,
         ]
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def payload(self) -> Dict[str, Union[str, dict]]:
         return self._get_basic_request_payload()
 
@@ -61,7 +61,7 @@ class TestForYouController(BasePlaylistControllerTest):
         n_elements = randint(1, 50)
         return [random_track_uri() for _ in range(n_elements)]
 
-    @fixture(autouse=True, scope="class")
+    @fixture(autouse=True, scope="function")
     def additional_responses(self, uris: List[str], mock_responses: aioresponses) -> None:
         time_range = TimeRange.MEDIUM_TERM.value
         playlist_items = [random_playlist_item(uri) for uri in uris]
