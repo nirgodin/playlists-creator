@@ -1,5 +1,5 @@
 from base64 import b64decode
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from genie_common.models.openai import ImageSize, DallEModel
 from genie_common.tools.logs import logger
@@ -14,6 +14,7 @@ from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.playlist_resources import PlaylistResources
 from server.data.prompt_details import PromptDetails
+from server.data.track_details import TrackDetails
 from server.logic.prompt.prompt_serialization_manager import PromptSerializationManager
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from server.utils.image_utils import current_timestamp_image_path, save_image_from_bytes
@@ -65,18 +66,22 @@ class PromptController(BaseContentController):
             return await self._serialization_manager.serialize(user_text)
 
     async def _to_uris(self,
-                       serialized_prompt: Optional[DataClass],
+                       serialized_prompt: Optional[Union[PromptDetails, List[TrackDetails]]],
                        spotify_client: SpotifyClient) -> Optional[List[str]]:
         if isinstance(serialized_prompt, PromptDetails):
             return await self._prompt_details_tracks_selector.select_tracks(serialized_prompt)
 
-        if isinstance(serialized_prompt, list):  # TODO: Extract to dedicated class / function
-            search_items = [details.to_search_item() for details in serialized_prompt]
-            tracks = await spotify_client.search.run(search_items)
-
-            return [track[URI] for track in tracks][:MAX_SPOTIFY_PLAYLIST_SIZE]
+        if isinstance(serialized_prompt, list):
+            return await self._search_matching_tracks(serialized_prompt, spotify_client)
 
         logger.info("Prompt was not serialized to any relevant model. Returning None instead")
+
+    @staticmethod
+    async def _search_matching_tracks(tracks_details: List[TrackDetails], spotify_client: SpotifyClient) -> List[str]:
+        search_items = [details.to_search_item() for details in tracks_details]
+        tracks = await spotify_client.search.run(search_items)
+
+        return [track[URI] for track in tracks][:MAX_SPOTIFY_PLAYLIST_SIZE]
 
     @staticmethod
     def _extract_user_text(request_body: dict) -> str:
