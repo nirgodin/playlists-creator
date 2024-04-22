@@ -122,7 +122,7 @@ class TestPromptDetailsTracksSelector:
 
     @fixture(scope="class")
     def textual_parameters(self) -> str:
-        return random_alphanumeric_string(length=randint(1, 10))
+        return random_alphanumeric_string(min_length=1)
 
     @fixture(scope="class")
     def musical_parameters(self, random_explicit: bool) -> List[QueryCondition]:

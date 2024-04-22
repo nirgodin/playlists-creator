@@ -16,10 +16,16 @@ from server.logic.data_collection.spotify_playlist_details_collector import Play
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \
     BasePlaylistControllerTest
+from tests.server.integration.controllers.playlist_controllers.playlist_controller_test_context import \
+    PlaylistControllerTestContext
 from tests.server.utils import build_spotify_url, random_playlist_item, random_track_uri
 
 
 class TestForYouController(BasePlaylistControllerTest):
+    async def test_post(self, test_context: PlaylistControllerTestContext):
+        response = self._request(test_context)
+        await self._assert_expected_base_controller_logic(response, test_context)
+
     @fixture(scope="class")
     def controller(self, uris: List[str], context: PlaylistCreationContext) -> ForYouController:
         mock_playlist_imitator = AsyncMock(PlaylistImitator)
@@ -37,7 +43,7 @@ class TestForYouController(BasePlaylistControllerTest):
     def endpoint(self) -> PlaylistEndpoint:
         return PlaylistEndpoint.FOR_YOU
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def expected_progress_statuses(self) -> List[CaseStatus]:
         return [
             CaseStatus.CREATED,
@@ -46,7 +52,7 @@ class TestForYouController(BasePlaylistControllerTest):
             CaseStatus.COMPLETED,
         ]
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def payload(self) -> Dict[str, Union[str, dict]]:
         return self._get_basic_request_payload()
 
@@ -55,7 +61,7 @@ class TestForYouController(BasePlaylistControllerTest):
         n_elements = randint(1, 50)
         return [random_track_uri() for _ in range(n_elements)]
 
-    @fixture(autouse=True, scope="class")
+    @fixture(autouse=True, scope="function")
     def additional_responses(self, uris: List[str], mock_responses: aioresponses) -> None:
         time_range = TimeRange.MEDIUM_TERM.value
         playlist_items = [random_playlist_item(uri) for uri in uris]

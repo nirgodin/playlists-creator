@@ -16,9 +16,15 @@ from server.logic.parameters_transformer import ParametersTransformer
 from server.utils.spotify_utils import to_uris
 from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \
     BasePlaylistControllerTest
+from tests.server.integration.controllers.playlist_controllers.playlist_controller_test_context import \
+    PlaylistControllerTestContext
 
 
 class TestConfigurationController(BasePlaylistControllerTest):
+    async def test_post(self, test_context: PlaylistControllerTestContext):
+        response = self._request(test_context)
+        await self._assert_expected_base_controller_logic(response, test_context)
+
     @fixture(scope="class")
     def controller(self, context: PlaylistCreationContext, db_client: DatabaseClient) -> ConfigurationController:
         return ConfigurationController(

@@ -1,18 +1,15 @@
-import json
 from http import HTTPStatus
 from typing import Annotated, Dict
 
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Depends
 from genie_datastores.postgres.models import PlaylistEndpoint
 from starlette.background import BackgroundTasks
 from starlette.responses import JSONResponse
 
-from server.component_factory import get_request_body_controller, get_photo_controller, \
-    get_cases_controller, get_cases_manager, get_endpoint_controller_mapping
-from server.consts.app_consts import PHOTO
+from server.component_factory import get_request_body_controller, get_cases_controller, get_cases_manager, \
+    get_endpoint_controller_mapping
 from server.controllers.case_controller import CasesController
 from server.controllers.content_controllers.base_content_controller import BaseContentController
-from server.controllers.content_controllers.photo_controller import PhotoController
 from server.controllers.request_body_controller import RequestBodyController
 from server.logic.cases_manager import CasesManager
 

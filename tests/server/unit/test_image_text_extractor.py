@@ -24,7 +24,7 @@ class TestImageTextExtractor:
 
     @fixture(scope="class")
     def text(self) -> str:
-        return random_alphanumeric_string(length=10)
+        return random_alphanumeric_string(min_length=10)
 
     @fixture(scope="class")
     def image_path(self, image: Image) -> str:

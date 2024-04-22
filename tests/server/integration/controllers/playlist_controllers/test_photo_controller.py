@@ -18,12 +18,18 @@ from server.logic.ocr.image_text_extractor import ImageTextExtractor
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \
     BasePlaylistControllerTest
+from tests.server.integration.controllers.playlist_controllers.playlist_controller_test_context import \
+    PlaylistControllerTestContext
 from tests.server.utils import random_encoded_image, build_spotify_url, \
     build_chat_completions_response, build_artists_search_response
 
 
 class TestPhotoController(BasePlaylistControllerTest):
-    @fixture(autouse=True, scope="class")
+    async def test_post(self, test_context: PlaylistControllerTestContext):
+        response = self._request(test_context)
+        await self._assert_expected_base_controller_logic(response, test_context)
+
+    @fixture(autouse=True, scope="function")
     def additional_responses(self,
                              artists_ids_to_names: Dict[str, str],
                              uris: List[str],
@@ -61,7 +67,7 @@ class TestPhotoController(BasePlaylistControllerTest):
     def endpoint(self) -> PlaylistEndpoint:
         return PlaylistEndpoint.PHOTO
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def payload(self) -> Dict[str, Union[bytes, str, dict]]:
         payload = self._get_basic_request_payload()
         photo = random_encoded_image()
@@ -81,7 +87,7 @@ class TestPhotoController(BasePlaylistControllerTest):
             CaseStatus.COMPLETED,
         ]
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def uris(self, artists_ids_to_names: Dict[str, str], mock_responses: aioresponses) -> List[str]:
         uris = []
 
@@ -94,7 +100,7 @@ class TestPhotoController(BasePlaylistControllerTest):
 
         yield sorted(uris)
 
-    @fixture(scope="class")
+    @fixture(scope="function")
     def artists_ids_to_names(self, mock_responses: aioresponses) -> Dict[str, str]:
         n_artists = randint(1, 5)
         artists = random_string_dict(length=n_artists)
