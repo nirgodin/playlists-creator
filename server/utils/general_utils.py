@@ -1,13 +1,12 @@
 import os.path
 import random
-from typing import List, Union, Type
+from typing import List
 
 from genie_common.tools import logger
 from genie_datastores.google.drive import GoogleDriveClient
 
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID, TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID
 from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH, TRACK_NAMES_EMBEDDINGS_PATH
-from server.consts.typing_consts import DataClass
 from server.logic.playlist_imitation.playlist_imitator_database_creator import PlaylistImitatorDatabaseCreator
 
 
