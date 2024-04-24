@@ -17,13 +17,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: GCP Authentication
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
       - name: Deploy to App Engine
         id: deploy
         uses: google-github-actions/deploy-appengine@v2.1.0
         with:
           deliverables: app.yaml
           project_id: ${{ secrets.GCP_PROJECT }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
+#          credentials: ${{ secrets.GCP_CREDENTIALS }}
           env_vars: |-
             DATABASE_FOLDER_DRIVE_ID=${{ secrets.DATABASE_FOLDER_DRIVE_ID }}
             DATABASE_URL=${{ secrets.DATABASE_URL }}
