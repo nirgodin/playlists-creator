@@ -22,6 +22,7 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Deploy to App Engine
         id: deploy
