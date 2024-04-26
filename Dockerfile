@@ -14,7 +14,6 @@ WORKDIR /tmp
 COPY ./client/ /tmp/
 RUN npm ci
 RUN npm run build --mode production
-COPY ./client/ /tmp/
 
 # Stage 2 - Python requirements
 FROM python:3.10-slim as requirements-stage
