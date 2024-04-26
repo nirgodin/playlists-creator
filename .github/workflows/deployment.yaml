@@ -17,6 +17,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Environment variables
+        shell: bash
+        run: |
+            echo "REACT_APP_PASSWORD=${{ secrets.REACT_APP_PASSWORD }}" > ./client/.env.production
+            echo "REACT_APP_SPOTIFY_CLIENT_ID=${{ secrets.REACT_APP_SPOTIFY_CLIENT_ID }}" >> ./client/.env.production
+            echo "REACT_APP_SPOTIFY_REDIRECT_URI=${{ secrets.REACT_APP_SPOTIFY_REDIRECT_URI }}" >> ./client/.env.production
+            echo "REACT_APP_USERNAME=${{ secrets.REACT_APP_USERNAME }}" >> ./client/.env.production
+            echo "REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}" >> ./client/.env.production
+            cat ./client/.env.production
+
       - name: GCP Authentication
         id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -30,12 +40,6 @@ jobs:
         with:
           deliverables: app.yaml
           project_id: ${{ secrets.GCP_PROJECT }}
-          build_env_vars: |-
-            REACT_APP_PASSWORD=${{ secrets.REACT_APP_PASSWORD }}
-            REACT_APP_SPOTIFY_CLIENT_ID=${{ secrets.REACT_APP_SPOTIFY_CLIENT_ID }}
-            REACT_APP_SPOTIFY_REDIRECT_URI=${{ secrets.REACT_APP_SPOTIFY_REDIRECT_URI }}
-            REACT_APP_USERNAME=${{ secrets.REACT_APP_USERNAME }}
-            REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
           env_vars: |-
             DATABASE_FOLDER_DRIVE_ID=${{ secrets.DATABASE_FOLDER_DRIVE_ID }}
             DATABASE_URL=${{ secrets.DATABASE_URL }}
