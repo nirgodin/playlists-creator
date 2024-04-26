@@ -4,7 +4,6 @@ WORKDIR /tmp
 COPY ./client/ /tmp/
 RUN npm ci
 RUN npm run build --mode production
-COPY ./client/ /tmp/
 
 # Stage 2 - Python requirements
 FROM python:3.10-slim as requirements-stage
@@ -21,6 +20,7 @@ WORKDIR $APP_HOME
 COPY . ./
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
+    git \
     libfontconfig1 \
     libice6 \
     libsm6 \
