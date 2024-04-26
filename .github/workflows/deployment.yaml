@@ -8,7 +8,6 @@ on:
 
 jobs:
   if_merged:
-    if: github.event.pull_request.merged
     build:
       name: Deploy to App Engine
       runs-on: ubuntu-latest
@@ -29,6 +28,7 @@ jobs:
         - name: GCP Authentication
           id: 'auth'
           uses: 'google-github-actions/auth@v2'
+          if: github.event.pull_request.merged
           with:
             service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
             credentials_json: ${{ secrets.GCP_CREDENTIALS }}
@@ -36,6 +36,7 @@ jobs:
         - name: Deploy to App Engine
           id: deploy
           uses: google-github-actions/deploy-appengine@v2.1.0
+          if: github.event.pull_request.merged
           with:
             deliverables: app.yaml
             project_id: ${{ secrets.GCP_PROJECT }}
