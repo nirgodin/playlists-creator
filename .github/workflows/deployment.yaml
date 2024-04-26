@@ -25,7 +25,6 @@ jobs:
             echo "REACT_APP_SPOTIFY_REDIRECT_URI=${{ secrets.REACT_APP_SPOTIFY_REDIRECT_URI }}" >> ./client/.env.production
             echo "REACT_APP_USERNAME=${{ secrets.REACT_APP_USERNAME }}" >> ./client/.env.production
             echo "REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}" >> ./client/.env.production
-            cat ./client/.env.production
 
       - name: GCP Authentication
         id: 'auth'
