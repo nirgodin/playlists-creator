@@ -30,7 +30,12 @@ jobs:
         with:
           deliverables: app.yml
           project_id: ${{ secrets.GCP_PROJECT }}
-#          credentials: ${{ secrets.GCP_CREDENTIALS }}
+          build_env_vars: |-
+            REACT_APP_PASSWORD=${{ secrets.REACT_APP_PASSWORD }}
+            REACT_APP_SPOTIFY_CLIENT_ID=${{ secrets.REACT_APP_SPOTIFY_CLIENT_ID }}
+            REACT_APP_SPOTIFY_REDIRECT_URI=${{ secrets.REACT_APP_SPOTIFY_REDIRECT_URI }}
+            REACT_APP_USERNAME=${{ secrets.REACT_APP_USERNAME }}
+            REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
           env_vars: |-
             DATABASE_FOLDER_DRIVE_ID=${{ secrets.DATABASE_FOLDER_DRIVE_ID }}
             DATABASE_URL=${{ secrets.DATABASE_URL }}
