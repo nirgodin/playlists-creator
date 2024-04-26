@@ -25,3 +25,9 @@ __pycache__
 /.idea/vcs.xml
 /.idea/workspace.xml
 /.DS_Store
+
+# Tests
+/tests
+
+# Env
+.env

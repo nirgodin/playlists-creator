@@ -38,3 +38,4 @@
 
 # Env
 /service_account_secrets.json
+/.env
