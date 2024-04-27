@@ -100,10 +100,3 @@ class PlaylistDetailsSerializer:
         return {
             FOLLOWERS: self._extract_artist_followers
         }
-
-
-if __name__ == '__main__':
-    with open('/Users/nirgodin/Downloads/playlist_details_sample.json', 'r') as f:
-        raw_details = json.load(f)
-
-    PlaylistDetailsSerializer().serialize(raw_details)
