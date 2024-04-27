@@ -14,26 +14,23 @@ from server.utils.image_utils import save_image_from_url, current_timestamp_imag
 class PlaylistImitator:
     def __init__(self,
                  session: ClientSession,
-                 case_progress_reporter: CaseProgressReporter,
                  tracks_selector: PlaylistImitatorTracksSelector,
                  playlist_details_serializer: PlaylistDetailsSerializer = PlaylistDetailsSerializer(),
                  transformation_pipeline: PlaylistDetailsPipeline = PlaylistDetailsPipeline(is_training=False)):
         self._session = session
-        self._case_progress_reporter = case_progress_reporter
         self._playlist_details_serializer = playlist_details_serializer
         self._tracks_selector = tracks_selector
         self._transformation_pipeline = transformation_pipeline
 
-    async def imitate_playlist(self, case_id: str, playlist_details: PlaylistDetails, dir_path: str) -> PlaylistResources:
-        async with self._case_progress_reporter.report(case_id=case_id, status="tracks"):
-            transformed_playlist_data = self._transform_playlist_data(playlist_details)
-            tracks_uris = self._tracks_selector.select_tracks(transformed_playlist_data)  # TODO: Think how to do this
-            cover_image_path = None  # await self._save_original_cover_image(dir_path, playlist_details.cover_image_url)
+    async def imitate_playlist(self, playlist_details: PlaylistDetails, dir_path: str) -> PlaylistResources:
+        transformed_playlist_data = self._transform_playlist_data(playlist_details)
+        tracks_uris = self._tracks_selector.select_tracks(transformed_playlist_data)  # TODO: Think how to do this
+        cover_image_path = None  # await self._save_original_cover_image(dir_path, playlist_details.cover_image_url)
 
-            return PlaylistResources(
-                uris=tracks_uris,
-                cover_image_path=cover_image_path
-            )
+        return PlaylistResources(
+            uris=tracks_uris,
+            cover_image_path=cover_image_path
+        )
 
     def _transform_playlist_data(self, playlist_details: PlaylistDetails) -> DataFrame:
         serialized_playlist_data = self._playlist_details_serializer.serialize(playlist_details)

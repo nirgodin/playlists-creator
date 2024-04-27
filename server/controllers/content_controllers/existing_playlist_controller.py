@@ -6,6 +6,7 @@ from spotipyio import SpotifyClient
 from server.consts.app_consts import PLAYLIST_DETAILS, EXISTING_PLAYLIST
 from server.consts.data_consts import TRACK
 from server.controllers.content_controllers.base_content_controller import BaseContentController
+from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.playlist_imitation.playlist_details import PlaylistDetails
 from server.data.playlist_resources import PlaylistResources
@@ -29,11 +30,12 @@ class ExistingPlaylistController(BaseContentController):
                                            dir_path: str,
                                            spotify_client: SpotifyClient) -> PlaylistResources:
         existing_playlist_url = request_body[PLAYLIST_DETAILS][EXISTING_PLAYLIST]
-        playlist_details = await self._extract_raw_playlist_details(
-            case_id=case_id,
-            playlist_url=existing_playlist_url,
-            spotify_client=spotify_client
-        )
+
+        async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.PLAYLIST_DETAILS):
+            playlist_details = await self._extract_raw_playlist_details(
+                playlist_url=existing_playlist_url,
+                spotify_client=spotify_client
+            )
 
         if playlist_details is None:
             return PlaylistResources(None, None)
@@ -48,7 +50,6 @@ class ExistingPlaylistController(BaseContentController):
         )
 
     async def _extract_raw_playlist_details(self,
-                                            case_id: str,
                                             playlist_url: str,
                                             spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
         playlist_id = self._extract_playlist_id_from_url(playlist_url)
@@ -57,7 +58,6 @@ class ExistingPlaylistController(BaseContentController):
         tracks = [track.get(TRACK) for track in items]
 
         return await self._playlist_details_collector.collect_playlist(
-            case_id=case_id,
             tracks=tracks,
             spotify_client=spotify_client
         )

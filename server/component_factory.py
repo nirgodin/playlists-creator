@@ -96,7 +96,6 @@ async def get_playlist_imitator() -> PlaylistImitator:
     session = await get_session()
     return PlaylistImitator(
         session=session,
-        case_progress_reporter=get_case_progress_reporter(),
         tracks_selector=PlaylistImitatorTracksSelector(
             database_filterer=PlaylistImitatorDatabaseFilterer(),
             similarity_scores_computer=SimilarityScoresComputer()
@@ -308,7 +307,7 @@ async def get_for_you_controller() -> ForYouController:
 
 
 def get_playlist_details_collector() -> PlaylistDetailsCollector:
-    return PlaylistDetailsCollector(get_case_progress_reporter())
+    return PlaylistDetailsCollector()
 
 
 def get_cases_controller() -> CasesController:
