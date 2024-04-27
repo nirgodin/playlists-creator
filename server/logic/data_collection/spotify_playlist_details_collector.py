@@ -1,45 +1,51 @@
-from typing import List, Optional, Callable, Dict
+from functools import partial
+from typing import List, Optional
 
+from genie_common.tools import AioPoolExecutor
 from spotipyio import SpotifyClient
 
 from server.consts.api_consts import ID, MAX_TRACKS_NUMBER_PER_REQUEST
-from server.consts.data_consts import ARTISTS, AUDIO_FEATURES, TRACKS, IMAGES
-from server.consts.openai_consts import URL
-from server.data.playlist_imitation.playlist_details import PlaylistDetails
+from server.consts.data_consts import ARTISTS
+from server.data.track_features import TrackFeatures
 from server.utils.spotify_utils import sample_uris
 
 
 class PlaylistDetailsCollector:
-    async def collect_playlist(self,
-                               tracks: List[dict],
-                               spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
+    def __init__(self, pool_executor: AioPoolExecutor):
+        self._pool_executor = pool_executor
+
+    async def collect(self,
+                      tracks: List[dict],
+                      spotify_client: SpotifyClient) -> List[TrackFeatures]:
+        if not tracks:
+            return []
+
         tracks_sample = sample_uris(tracks, MAX_TRACKS_NUMBER_PER_REQUEST)
-        tracks_data = await self._collect_tracks_data(tracks_sample, spotify_client)
-        # tracks_data[COVER_IMAGE_URL] = self._extract_playlist_image_url(playlist)  # TODO: Think how to integrate
+        return await self._pool_executor.run(
+            iterable=tracks_sample,
+            func=partial(self._collect_tracks_data, spotify_client),
+            expected_type=TrackFeatures
+        )
 
-        return PlaylistDetails.from_dict(tracks_data)
+    async def _collect_tracks_data(self, spotify_client: SpotifyClient, track: dict) -> Optional[TrackFeatures]:
+        artist = await self._fetch_artist_features(track, spotify_client)
+        audio = await self._fetch_audio_features(track, spotify_client)
 
-    async def _collect_tracks_data(self, tracks: List[dict], spotify_client: SpotifyClient) -> Dict[str, List[dict]]:
-        track_data = {}
+        if artist and audio:
+            return TrackFeatures(
+                track=track,
+                artist=artist,
+                audio=audio
+            )
 
-        for name, fetch_fn in self._fetch_functions.items():
-            result = await fetch_fn(tracks, spotify_client)
-            track_data[name] = result
+    async def _fetch_artist_features(self, track: dict, spotify_client: SpotifyClient) -> Optional[dict]:
+        artist_id = self._extract_main_artist_id(track)
 
-        return track_data
+        if artist_id is not None:
+            artists = await spotify_client.artists.info.run([artist_id])
 
-    @staticmethod
-    async def _fetch_audio_features(tracks: List[dict], spotify_client: SpotifyClient) -> List[dict]:
-        tracks_ids = [track.get(ID) for track in tracks if track.get(ID) is not None]
-        return await spotify_client.audio_features.run(tracks_ids)
-
-    async def _fetch_tracks_artists(self, tracks: List[dict], spotify_client: SpotifyClient) -> List[dict]:
-        artists_ids = [self._extract_main_artist_id(track) for track in tracks]
-        return await spotify_client.artists.info.run(artists_ids)
-
-    @staticmethod
-    async def _fetch_tracks_details(tracks: List[dict], spotify_client: SpotifyClient) -> List[dict]:
-        return [track for track in tracks if track is not None]
+            if artists:
+                return artists[0]
 
     @staticmethod
     def _extract_main_artist_id(track: dict) -> Optional[str]:
@@ -51,17 +57,11 @@ class PlaylistDetailsCollector:
         return first_artist.get(ID)
 
     @staticmethod
-    def _extract_playlist_image_url(playlist: dict) -> Optional[str]:
-        images = playlist.get(IMAGES, [])
+    async def _fetch_audio_features(track: dict, spotify_client: SpotifyClient) -> Optional[dict]:
+        track_id = track.get(ID)
 
-        if images:
-            first_image = images[0]
-            return first_image.get(URL)
+        if track_id is not None:
+            audio_features = await spotify_client.audio_features.run([track_id])
 
-    @property
-    def _fetch_functions(self) -> Dict[str, Callable]:
-        return {
-            TRACKS: self._fetch_tracks_details,
-            ARTISTS: self._fetch_tracks_artists,
-            AUDIO_FEATURES: self._fetch_audio_features
-        }
+            if audio_features:
+                return audio_features[0]
