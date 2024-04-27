@@ -307,7 +307,8 @@ async def get_for_you_controller() -> ForYouController:
 
 
 def get_playlist_details_collector() -> PlaylistDetailsCollector:
-    return PlaylistDetailsCollector()
+    pool_executor = AioPoolExecutor()
+    return PlaylistDetailsCollector(pool_executor)
 
 
 def get_cases_controller() -> CasesController:

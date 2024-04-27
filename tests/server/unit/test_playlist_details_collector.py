@@ -15,11 +15,11 @@ from tests.server.utils import random_spotify_id, build_spotify_url
 
 
 class TestPlaylistDetailsCollector:
-    async def test_collect__empty_playlist__returns_empty_list(self,
-                                                               collector: PlaylistDetailsCollector,
-                                                               spotify_client: SpotifyClient):
+    async def test_collect__empty_playlist__returns_none(self,
+                                                         collector: PlaylistDetailsCollector,
+                                                         spotify_client: SpotifyClient):
         actual = await collector.collect([], spotify_client)
-        assert actual == []
+        assert actual is None
 
     async def test_collect__non_empty_playlist__returns_tracks_features_list(self,
                                                                              collector: PlaylistDetailsCollector,

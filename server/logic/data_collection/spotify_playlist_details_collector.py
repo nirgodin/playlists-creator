@@ -16,16 +16,15 @@ class PlaylistDetailsCollector:
 
     async def collect(self,
                       tracks: List[dict],
-                      spotify_client: SpotifyClient) -> List[TrackFeatures]:
-        if not tracks:
-            return []
+                      spotify_client: SpotifyClient) -> Optional[List[TrackFeatures]]:
+        if tracks:
+            tracks_sample = sample_uris(tracks, MAX_TRACKS_NUMBER_PER_REQUEST)
 
-        tracks_sample = sample_uris(tracks, MAX_TRACKS_NUMBER_PER_REQUEST)
-        return await self._pool_executor.run(
-            iterable=tracks_sample,
-            func=partial(self._collect_tracks_data, spotify_client),
-            expected_type=TrackFeatures
-        )
+            return await self._pool_executor.run(
+                iterable=tracks_sample,
+                func=partial(self._collect_tracks_data, spotify_client),
+                expected_type=TrackFeatures
+            )
 
     async def _collect_tracks_data(self, spotify_client: SpotifyClient, track: dict) -> Optional[TrackFeatures]:
         artist = await self._fetch_artist_features(track, spotify_client)
