@@ -1,13 +1,13 @@
-import json
-from typing import Dict, Callable, Optional
+from typing import Dict, List
 
 import pandas as pd
-from genie_common.utils import chain_dicts
+from genie_common.tools import SyncPoolExecutor
+from genie_common.utils import chain_dicts, safe_nested_get
 from pandas import DataFrame
 
 from server.consts.data_consts import FOLLOWERS, TOTAL, ALBUM, ARTIST, NAME, \
     POPULARITY
-from server.data.playlist_imitation.playlist_details import PlaylistDetails
+from server.data.track_features import TrackFeatures
 from server.logic.playlist_imitation.playlist_imitator_consts import AUDIO_FEATURES_IRRELEVANT_KEYS, \
     ARTISTS_FEATURES_IRRELEVANT_KEYS, TRACKS_FEATURES_IRRELEVANT_KEYS, ALBUM_RELEVANT_FEATURES
 
@@ -22,31 +22,34 @@ ALBUM_REQUIRED_PREFIX_FEATURES = [
 
 
 class PlaylistDetailsSerializer:
-    def serialize(self, playlist_details: PlaylistDetails) -> DataFrame:
-        serialized_details = []
+    def __init__(self, pool_executor: SyncPoolExecutor = SyncPoolExecutor()):
+        self._pool_executor = pool_executor
 
-        for i in range(len(playlist_details.tracks)):  # TODO: Transform to single request per resource to save IO operations
-            details = [
-                self._serialize_single_track_audio_features(playlist_details.audio_features[i]),
-                self._serialize_single_track_features(playlist_details.tracks[i]),
-                self._serialize_single_artist_features(playlist_details.artists[i])
-            ]
-            serialized_track_details = chain_dicts(*details)
-            serialized_details.append(serialized_track_details)
-
+    def serialize(self, tracks_features: List[TrackFeatures]) -> DataFrame:
+        serialized_details = self._pool_executor.run(
+            iterable=tracks_features,
+            func=self._serialize_single_track_features,
+            expected_type=dict
+        )
         return pd.DataFrame.from_records(serialized_details)
 
+    def _serialize_single_track_features(self, track_features: TrackFeatures) -> dict:
+        details = [
+            self._serialize_audio_features(track_features.audio),
+            self._serialize_track_features(track_features.track),
+            self._serialize_artist_features(track_features.artist)
+        ]
+        return chain_dicts(*details)
+
     @staticmethod
-    def _serialize_single_track_audio_features(audio_features: dict) -> Dict[str, float]:
+    def _serialize_audio_features(audio_features: dict) -> Dict[str, float]:
         return {k: v for k, v in audio_features.items() if k not in AUDIO_FEATURES_IRRELEVANT_KEYS}
 
-    def _serialize_single_track_features(self, track: dict) -> dict:
+    def _serialize_track_features(self, track: dict) -> dict:
         track_features = self._extract_album_features(track)
 
         for k, v in track.items():
-            if k in TRACKS_FEATURES_IRRELEVANT_KEYS:
-                continue
-            else:
+            if k not in TRACKS_FEATURES_IRRELEVANT_KEYS:
                 track_features[k] = v
 
         return track_features
@@ -73,16 +76,16 @@ class PlaylistDetailsSerializer:
 
         return album_features
 
-    def _serialize_single_artist_features(self, artist: dict) -> dict:
+    @staticmethod
+    def _serialize_artist_features(artist: dict) -> dict:
         artist_features = {}
 
         for k, v in artist.items():
             if k in ARTISTS_FEATURES_IRRELEVANT_KEYS:
                 continue
 
-            if k in self._artists_features_to_extraction_methods_mapping.keys():
-                extraction_method = self._artists_features_to_extraction_methods_mapping[k]
-                v = extraction_method(artist)
+            if k == FOLLOWERS:
+                v = safe_nested_get(artist, [FOLLOWERS, TOTAL])
 
             if k in ARTIST_REQUIRED_PREFIX_FEATURES:
                 artist_features[f'{ARTIST}_{k}'] = v
@@ -90,13 +93,3 @@ class PlaylistDetailsSerializer:
                 artist_features[k] = v
 
         return artist_features
-
-    @staticmethod
-    def _extract_artist_followers(artist_features: dict) -> Optional[int]:
-        return artist_features.get(FOLLOWERS, {}).get(TOTAL)
-
-    @property
-    def _artists_features_to_extraction_methods_mapping(self) -> Dict[str, Callable]:
-        return {
-            FOLLOWERS: self._extract_artist_followers
-        }
