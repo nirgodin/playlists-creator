@@ -38,7 +38,7 @@ class ForYouController(BaseContentController):
             )
 
         async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.TRACKS):
-            tracks_uris = self._playlists_imitator.imitate_playlist(tracks_features)
+            tracks_uris = await self._playlists_imitator.imitate(tracks_features)
 
         return PlaylistResources(
             uris=tracks_uris,

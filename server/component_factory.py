@@ -7,8 +7,8 @@ from typing import Dict, List, Optional
 from aiohttp import ClientSession
 from async_lru import alru_cache
 from genie_common.clients.openai import OpenAIClient
-from genie_common.tools import AioPoolExecutor
 from genie_common.clients.utils import create_client_session, build_authorization_headers
+from genie_common.tools import AioPoolExecutor
 from genie_datastores.google.drive import GoogleDriveClient, GoogleDriveDownloadMetadata
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
@@ -48,15 +48,12 @@ from server.logic.ocr.image_text_extractor import ImageTextExtractor
 from server.logic.openai.columns_descriptions_creator import ColumnsDescriptionsCreator
 from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
-from server.logic.playlist_imitation.playlist_imitator_database_filterer import PlaylistImitatorDatabaseFilterer
-from server.logic.playlist_imitation.playlist_imitator_tracks_selector import PlaylistImitatorTracksSelector
 from server.logic.playlists_creator import PlaylistsCreator
 from server.logic.prompt.prompt_serialization_manager import PromptSerializationManager
 from server.logic.prompt.prompt_serializer_interface import IPromptSerializer
 from server.logic.prompt.query_conditions_prompt_serializer import QueryConditionsPromptSerializer
 from server.logic.prompt.tracks_names_prompt_serializer import TracksNamesPromptSerializer
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
-from server.logic.similarity_scores_computer import SimilarityScoresComputer
 from server.middlewares.authentication_middleware import BasicAuthBackend
 from server.tools.cached_token_generator import CachedTokenGenerator
 from server.tools.case_progress_reporter import CaseProgressReporter
@@ -97,15 +94,10 @@ async def get_openai_adapter() -> OpenAIAdapter:
 
 @alru_cache
 async def get_playlist_imitator() -> PlaylistImitator:
-    tracks_selector = PlaylistImitatorTracksSelector(
-        database_filterer=PlaylistImitatorDatabaseFilterer(),
-        similarity_scores_computer=SimilarityScoresComputer()
-    )
-    column_transformer = get_column_transformer()
-
+    milvus_client = await get_milvus_client()
     return PlaylistImitator(
-        column_transformer=column_transformer,
-        tracks_selector=tracks_selector
+        column_transformer=get_column_transformer(),
+        milvus_client=milvus_client
     )
 
 

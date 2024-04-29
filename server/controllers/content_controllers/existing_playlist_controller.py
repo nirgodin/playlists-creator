@@ -41,7 +41,7 @@ class ExistingPlaylistController(BaseContentController):
             return PlaylistResources(None, None)
 
         async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.TRACKS):
-            tracks_uris = self._playlist_imitator.imitate_playlist(tracks_features)
+            tracks_uris = await self._playlist_imitator.imitate(tracks_features)
 
         return PlaylistResources(
             uris=tracks_uris,
