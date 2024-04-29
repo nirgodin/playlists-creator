@@ -7,7 +7,6 @@ from genie_datastores.google.drive import GoogleDriveClient
 
 from server.consts.env_consts import DATABASE_FOLDER_DRIVE_ID, TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID
 from server.consts.path_consts import RESOURCES_DIR_PATH, DATA_PATH, TRACK_NAMES_EMBEDDINGS_PATH
-from server.logic.playlist_imitation.playlist_imitator_database_creator import PlaylistImitatorDatabaseCreator
 
 
 def build_prompt(prompt_prefix: str, prompt_suffix: str) -> str:
@@ -39,5 +38,3 @@ def download_database() -> None:
             folder_id=os.environ[TRACK_NAMES_EMBEDDINGS_FOLDER_DRIVE_ID],
             local_dir=RESOURCES_DIR_PATH
         )
-
-    PlaylistImitatorDatabaseCreator().create()
