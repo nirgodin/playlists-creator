@@ -32,17 +32,18 @@ class ForYouController(BaseContentController):
         )
 
         async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.PLAYLIST_DETAILS):
-            playlist_details = await self._playlist_details_collector.collect_playlist(
+            tracks_features = await self._playlist_details_collector.collect(
                 tracks=response[ITEMS],
                 spotify_client=spotify_client
             )
 
         async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.TRACKS):
-            return await self._playlists_imitator.imitate_playlist(
-                case_id=case_id,
-                playlist_details=playlist_details,
-                dir_path=dir_path
-            )
+            tracks_uris = self._playlists_imitator.imitate_playlist(tracks_features)
+
+        return PlaylistResources(
+            uris=tracks_uris,
+            cover_image_path=dir_path  # TODO: Handle this
+        )
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> None:  # TODO: Implement
         raise NotImplementedError

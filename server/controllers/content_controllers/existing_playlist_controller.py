@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from genie_common.models.openai import ImageSize
 from spotipyio import SpotifyClient
@@ -8,8 +8,8 @@ from server.consts.data_consts import TRACK
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
-from server.data.playlist_imitation.playlist_details import PlaylistDetails
 from server.data.playlist_resources import PlaylistResources
+from server.data.track_features import TrackFeatures
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from server.utils.spotify_utils import extract_tracks_from_response
@@ -32,15 +32,21 @@ class ExistingPlaylistController(BaseContentController):
         existing_playlist_url = request_body[PLAYLIST_DETAILS][EXISTING_PLAYLIST]
 
         async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.PLAYLIST_DETAILS):
-            playlist_details = await self._extract_raw_playlist_details(
+            tracks_features = await self._extract_raw_playlist_details(
                 playlist_url=existing_playlist_url,
                 spotify_client=spotify_client
             )
 
-        if playlist_details is None:
+        if tracks_features is None:
             return PlaylistResources(None, None)
 
-        return await self._playlist_imitator.imitate_playlist(playlist_details, dir_path)
+        async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.TRACKS):
+            tracks_uris = self._playlist_imitator.imitate_playlist(tracks_features)
+
+        return PlaylistResources(
+            uris=tracks_uris,
+            cover_image_path=dir_path  # TODO: Handle this
+        )
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> Optional[str]:
         return await self._context.openai_client.images_variation.collect(
@@ -51,13 +57,13 @@ class ExistingPlaylistController(BaseContentController):
 
     async def _extract_raw_playlist_details(self,
                                             playlist_url: str,
-                                            spotify_client: SpotifyClient) -> Optional[PlaylistDetails]:
+                                            spotify_client: SpotifyClient) -> Optional[List[TrackFeatures]]:
         playlist_id = self._extract_playlist_id_from_url(playlist_url)
         playlist = await spotify_client.playlists.info.run_single(playlist_id)
         items = extract_tracks_from_response(playlist)
         tracks = [track.get(TRACK) for track in items]
 
-        return await self._playlist_details_collector.collect_playlist(
+        return await self._playlist_details_collector.collect(
             tracks=tracks,
             spotify_client=spotify_client
         )
