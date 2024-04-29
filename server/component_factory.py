@@ -1,4 +1,5 @@
 import os
+import pickle
 from functools import lru_cache
 from http import HTTPStatus
 from typing import Dict, List, Optional
@@ -8,11 +9,13 @@ from async_lru import alru_cache
 from genie_common.clients.openai import OpenAIClient
 from genie_common.tools import AioPoolExecutor
 from genie_common.clients.utils import create_client_session, build_authorization_headers
+from genie_datastores.google.drive import GoogleDriveClient, GoogleDriveDownloadMetadata
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import PlaylistEndpoint
 from genie_datastores.postgres.operations import get_database_engine
 from genie_datastores.redis.operations import get_redis
+from sklearn.compose import ColumnTransformer
 from spotipyio import AccessTokenGenerator, EntityMatcher, SearchResultArtistEntityExtractor
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
@@ -21,6 +24,7 @@ from starlette.responses import JSONResponse
 
 from server.consts.env_consts import OPENAI_API_KEY, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
     SPOTIPY_REDIRECT_URI
+from server.consts.path_consts import PLAYLIST_IMITATOR_PIPELINE_PATH
 from server.controllers.case_controller import CasesController
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
@@ -93,13 +97,15 @@ async def get_openai_adapter() -> OpenAIAdapter:
 
 @alru_cache
 async def get_playlist_imitator() -> PlaylistImitator:
-    session = await get_session()
+    tracks_selector = PlaylistImitatorTracksSelector(
+        database_filterer=PlaylistImitatorDatabaseFilterer(),
+        similarity_scores_computer=SimilarityScoresComputer()
+    )
+    column_transformer = get_column_transformer()
+
     return PlaylistImitator(
-        session=session,
-        tracks_selector=PlaylistImitatorTracksSelector(
-            database_filterer=PlaylistImitatorDatabaseFilterer(),
-            similarity_scores_computer=SimilarityScoresComputer()
-        )
+        column_transformer=column_transformer,
+        tracks_selector=tracks_selector
     )
 
 
@@ -234,7 +240,8 @@ async def get_prompt_serialization_manager() -> PromptSerializationManager:
     )
 
 
-async def get_query_conditions_prompt_serializer(descriptions_creator: Optional[ColumnsDescriptionsCreator]) -> QueryConditionsPromptSerializer:
+async def get_query_conditions_prompt_serializer(
+        descriptions_creator: Optional[ColumnsDescriptionsCreator]) -> QueryConditionsPromptSerializer:
     if descriptions_creator is None:
         descriptions_creator = get_columns_descriptions_creator()
 
@@ -242,7 +249,8 @@ async def get_query_conditions_prompt_serializer(descriptions_creator: Optional[
     return QueryConditionsPromptSerializer(columns_details)
 
 
-async def get_prioritized_prompt_serializers(descriptions_creator: Optional[ColumnsDescriptionsCreator] = None) -> List[IPromptSerializer]:
+async def get_prioritized_prompt_serializers(descriptions_creator: Optional[ColumnsDescriptionsCreator] = None) -> List[
+    IPromptSerializer]:
     query_conditions_prompt_serializer = await get_query_conditions_prompt_serializer(descriptions_creator)
     return [
         query_conditions_prompt_serializer,
@@ -371,3 +379,16 @@ async def get_health_controller() -> HealthController:
         redis=get_redis(),
         milvus=milvus
     )
+
+
+def get_column_transformer() -> ColumnTransformer:
+    if not os.path.exists(PLAYLIST_IMITATOR_PIPELINE_PATH):
+        drive_client = GoogleDriveClient.create()
+        file_metadata = GoogleDriveDownloadMetadata(
+            local_path=PLAYLIST_IMITATOR_PIPELINE_PATH,
+            file_id=os.environ["TRACKS_FEATURES_COLUMN_TRANSFORMER_DRIVE_ID"]
+        )
+        drive_client.download(file_metadata)
+
+    with open(PLAYLIST_IMITATOR_PIPELINE_PATH, "rb") as f:
+        return pickle.load(f)
