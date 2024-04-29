@@ -3,10 +3,12 @@ from typing import List
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.models import SearchRequest
 from sklearn.compose import ColumnTransformer
+from spotipyio import SpotifySearchType
 
 from server.consts.api_consts import ID
 from server.data.track_features import TrackFeatures
 from server.logic.playlist_imitation.playlist_details_serializer import PlaylistDetailsSerializer
+from server.utils.spotify_utils import to_uris
 
 
 class PlaylistImitator:
@@ -21,9 +23,10 @@ class PlaylistImitator:
     async def imitate(self, tracks_features: List[TrackFeatures]) -> List[str]:
         serialized_playlist_data = self._playlist_details_serializer.serialize(tracks_features)
         transformed_playlist_data = self._column_transformer.transform(serialized_playlist_data)
-        playlist_vector = transformed_playlist_data.median(axis=0)
+        playlist_vector = transformed_playlist_data.median(axis=0).tolist()
+        tracks_ids = await self._search_features_db_for_nearest_neighbors(playlist_vector)
 
-        return await self._search_features_db_for_nearest_neighbors(playlist_vector)
+        return to_uris(SpotifySearchType.TRACK, *tracks_ids)
 
     async def _search_features_db_for_nearest_neighbors(self, playlist_vector: List[float]) -> List[str]:
         request = SearchRequest(
