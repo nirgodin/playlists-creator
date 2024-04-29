@@ -2,19 +2,13 @@ import json
 from functools import lru_cache
 from typing import Tuple, List, Dict
 
-import pandas as pd
 from genie_datastores.postgres.models import BaseORMModel, AudioFeatures, Artist, SpotifyTrack, TrackLyrics, RadioTrack
 from pandas import DataFrame, Series
 from sqlalchemy.sql.elements import BinaryExpression
 
 from server.consts.data_consts import DEFAULT_OUTLIER_THRESHOLD, SERIES, Z_SCORE
-from server.consts.path_consts import DATA_PATH, COLUMNS_DESCRIPTIONS_PATH
+from server.consts.path_consts import COLUMNS_DESCRIPTIONS_PATH
 from server.utils.statistics_utils import calculate_z_score
-
-
-@lru_cache(maxsize=1)
-def load_data() -> DataFrame:
-    return pd.read_csv(DATA_PATH)
 
 
 def sort_data_columns_alphabetically(data: DataFrame) -> DataFrame:
