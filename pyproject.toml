@@ -6,7 +6,7 @@ authors = ["nirgodin <70273595+nirgodin@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
+python = ">=3.10,<3.12"
 aiohttp = "3.8.4"
 pandas = "1.5.3"
 gunicorn = "20.1.0"
@@ -16,7 +16,7 @@ pytesseract = "0.3.10"
 tqdm = "4.65.0"
 asyncio-pool = "0.6.0"
 google-api-python-client = "2.87.0" # TODO: Delete as soon as database is fully integrated
-scikit-learn = "1.2.2"
+scikit-learn = ">=1.4.2,<1.5"
 fastapi = "0.101.0"
 starlette = "0.27.0"
 python-multipart = "0.0.6"
