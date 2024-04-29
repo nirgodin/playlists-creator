@@ -6,10 +6,12 @@ from genie_common.utils import chain_dicts, safe_nested_get
 from pandas import DataFrame
 
 from server.consts.data_consts import FOLLOWERS, TOTAL, ALBUM, ARTIST, NAME, \
-    POPULARITY
+    POPULARITY, RELEASE_DATE, RELEASE_YEAR
 from server.data.track_features import TrackFeatures
 from server.logic.playlist_imitation.playlist_imitator_consts import AUDIO_FEATURES_IRRELEVANT_KEYS, \
     ARTISTS_FEATURES_IRRELEVANT_KEYS, TRACKS_FEATURES_IRRELEVANT_KEYS, ALBUM_RELEVANT_FEATURES
+from server.utils.data_utils import sort_data_columns_alphabetically
+from server.utils.regex_utils import extract_year
 
 ARTIST_REQUIRED_PREFIX_FEATURES = [
     NAME,
@@ -31,7 +33,9 @@ class PlaylistDetailsSerializer:
             func=self._serialize_single_track_features,
             expected_type=dict
         )
-        return pd.DataFrame.from_records(serialized_details)
+        data = pd.DataFrame.from_records(serialized_details)
+
+        return sort_data_columns_alphabetically(data)
 
     def _serialize_single_track_features(self, track_features: TrackFeatures) -> dict:
         details = [
@@ -71,6 +75,8 @@ class PlaylistDetailsSerializer:
                 continue
             elif k in ALBUM_REQUIRED_PREFIX_FEATURES:
                 album_features[f'{ALBUM}_{k}'] = v
+            elif k == RELEASE_DATE:
+                album_features[RELEASE_YEAR] = extract_year(v)
             else:
                 album_features[k] = v
 
