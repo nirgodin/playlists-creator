@@ -43,17 +43,10 @@ class TestPlaylistDetailsSerializer:
             'tempo': track_features.audio['tempo'],
             'time_signature': track_features.audio['time_signature'],
             'valence': track_features.audio['valence'],
-            'total_tracks': track_features.track['album']['total_tracks'],
-            'album_name': track_features.track['album']['name'],
             'release_year': extract_year(track_features.track['album']['release_date']),
-            'disc_number': track_features.track['disc_number'],
             'explicit': track_features.track['explicit'],
-            'name': track_features.track['name'],
             'popularity': track_features.track['popularity'],
             'track_number': track_features.track['track_number'],
-            'uri': track_features.track['uri'],
             'artist_followers': track_features.artist['followers']['total'],
-            'genres': track_features.artist['genres'],
-            'artist_name': track_features.artist['name'],
             'artist_popularity': track_features.artist['popularity']
         }

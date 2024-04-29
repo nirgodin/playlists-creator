@@ -18,9 +18,6 @@ ARTIST_REQUIRED_PREFIX_FEATURES = [
     POPULARITY,
     FOLLOWERS
 ]
-ALBUM_REQUIRED_PREFIX_FEATURES = [
-    NAME
-]
 
 
 class PlaylistDetailsSerializer:
@@ -73,8 +70,6 @@ class PlaylistDetailsSerializer:
         for k, v in raw_album_features.items():
             if k not in ALBUM_RELEVANT_FEATURES:
                 continue
-            elif k in ALBUM_REQUIRED_PREFIX_FEATURES:
-                album_features[f'{ALBUM}_{k}'] = v
             elif k == RELEASE_DATE:
                 album_features[RELEASE_YEAR] = extract_year(v)
             else:
