@@ -1,0 +1,29 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Environment variables
+        shell: bash
+        run: |
+          echo "REACT_APP_PASSWORD=${{ secrets.REACT_APP_PASSWORD }}" > ./client/.env.production
+          echo "REACT_APP_SPOTIFY_CLIENT_ID=${{ secrets.REACT_APP_SPOTIFY_CLIENT_ID }}" >> ./client/.env.production
+          echo "REACT_APP_SPOTIFY_REDIRECT_URI=${{ secrets.REACT_APP_SPOTIFY_REDIRECT_URI }}" >> ./client/.env.production
+          echo "REACT_APP_USERNAME=${{ secrets.REACT_APP_USERNAME }}" >> ./client/.env.production
+          echo "REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}" >> ./client/.env.production
+
+      - name: Heroku deployment
+        uses: akhileshns/heroku-deploy@v3.13.15
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          usedocker: true
