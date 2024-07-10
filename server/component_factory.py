@@ -13,10 +13,10 @@ from genie_datastores.google.drive import GoogleDriveClient, GoogleDriveDownload
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import PlaylistEndpoint
-from genie_datastores.postgres.operations import get_database_engine
 from genie_datastores.redis.operations import get_redis
 from sklearn.compose import ColumnTransformer
 from spotipyio import AccessTokenGenerator, EntityMatcher, SearchResultArtistEntityExtractor
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
@@ -384,3 +384,8 @@ def get_column_transformer() -> ColumnTransformer:
 
     with open(PLAYLIST_IMITATOR_PIPELINE_PATH, "rb") as f:
         return pickle.load(f)
+
+
+@lru_cache
+def get_database_engine() -> AsyncEngine:
+    return create_async_engine(os.environ["GENIE_DATABASE_URL"])
