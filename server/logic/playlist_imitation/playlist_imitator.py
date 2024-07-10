@@ -1,48 +1,38 @@
-from aiohttp import ClientSession
-from pandas import DataFrame
+from typing import List
 
-from server.consts.data_consts import SONG, ARTIST_NAME, NAME
-from server.data.playlist_resources import PlaylistResources
-from server.data.playlist_imitation.playlist_details import PlaylistDetails
-from server.logic.playlist_imitation.playlist_details_pipeline import PlaylistDetailsPipeline
+from genie_datastores.milvus import MilvusClient
+from genie_datastores.milvus.models import SearchRequest
+from sklearn.compose import ColumnTransformer
+from spotipyio import SpotifySearchType
+
+from server.consts.api_consts import ID
+from server.data.track_features import TrackFeatures
 from server.logic.playlist_imitation.playlist_details_serializer import PlaylistDetailsSerializer
-from server.logic.playlist_imitation.playlist_imitator_tracks_selector import PlaylistImitatorTracksSelector
-from server.tools.case_progress_reporter import CaseProgressReporter
-from server.utils.image_utils import save_image_from_url, current_timestamp_image_path
+from server.utils.spotify_utils import to_uris
 
 
 class PlaylistImitator:
     def __init__(self,
-                 session: ClientSession,
-                 case_progress_reporter: CaseProgressReporter,
-                 tracks_selector: PlaylistImitatorTracksSelector,
-                 playlist_details_serializer: PlaylistDetailsSerializer = PlaylistDetailsSerializer(),
-                 transformation_pipeline: PlaylistDetailsPipeline = PlaylistDetailsPipeline(is_training=False)):
-        self._session = session
-        self._case_progress_reporter = case_progress_reporter
+                 column_transformer: ColumnTransformer,
+                 milvus_client: MilvusClient,
+                 playlist_details_serializer: PlaylistDetailsSerializer = PlaylistDetailsSerializer()):
         self._playlist_details_serializer = playlist_details_serializer
-        self._tracks_selector = tracks_selector
-        self._transformation_pipeline = transformation_pipeline
+        self._column_transformer = column_transformer
+        self._milvus_client = milvus_client
 
-    async def imitate_playlist(self, case_id: str, playlist_details: PlaylistDetails, dir_path: str) -> PlaylistResources:
-        async with self._case_progress_reporter.report(case_id=case_id, status="tracks"):
-            transformed_playlist_data = self._transform_playlist_data(playlist_details)
-            tracks_uris = self._tracks_selector.select_tracks(transformed_playlist_data)  # TODO: Think how to do this
-            cover_image_path = None  # await self._save_original_cover_image(dir_path, playlist_details.cover_image_url)
+    async def imitate(self, tracks_features: List[TrackFeatures]) -> List[str]:
+        serialized_playlist_data = self._playlist_details_serializer.serialize(tracks_features)
+        transformed_playlist_data = self._column_transformer.transform(serialized_playlist_data)
+        playlist_vector = transformed_playlist_data.median(axis=0).tolist()
+        tracks_ids = await self._search_features_db_for_nearest_neighbors(playlist_vector)
 
-            return PlaylistResources(
-                uris=tracks_uris,
-                cover_image_path=cover_image_path
-            )
+        return to_uris(SpotifySearchType.TRACK, *tracks_ids)
 
-    def _transform_playlist_data(self, playlist_details: PlaylistDetails) -> DataFrame:
-        serialized_playlist_data = self._playlist_details_serializer.serialize(playlist_details)
-        serialized_playlist_data[SONG] = serialized_playlist_data[ARTIST_NAME] + ' - ' + serialized_playlist_data[NAME]
+    async def _search_features_db_for_nearest_neighbors(self, playlist_vector: List[float]) -> List[str]:
+        request = SearchRequest(
+            collection_name="tracks_features",
+            vector=playlist_vector,
+        )
+        response = await self._milvus_client.vectors.search(request)  # TODO: Integrate here distance threshold
 
-        return self._transformation_pipeline.transform(serialized_playlist_data)
-
-    async def _save_original_cover_image(self, dir_path: str, cover_image_url: str) -> str:
-        image_path = current_timestamp_image_path(dir_path)
-        await save_image_from_url(self._session, cover_image_url, image_path)
-
-        return image_path
+        return [track[ID] for track in response]

@@ -4,6 +4,7 @@ from spotipyio.logic.collectors.top_items_collectors.time_range import TimeRange
 
 from server.consts.data_consts import ITEMS
 from server.controllers.content_controllers.base_content_controller import BaseContentController
+from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.playlist_resources import PlaylistResources
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
@@ -29,15 +30,19 @@ class ForYouController(BaseContentController):
             time_range=TimeRange.MEDIUM_TERM,
             limit=50
         )
-        playlist_details = await self._playlist_details_collector.collect_playlist(
-            case_id=case_id,
-            tracks=response[ITEMS],
-            spotify_client=spotify_client
-        )
-        return await self._playlists_imitator.imitate_playlist(
-            case_id=case_id,
-            playlist_details=playlist_details,
-            dir_path=dir_path
+
+        async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.PLAYLIST_DETAILS):
+            tracks_features = await self._playlist_details_collector.collect(
+                tracks=response[ITEMS],
+                spotify_client=spotify_client
+            )
+
+        async with self._context.case_progress_reporter.report(case_id=case_id, status=CaseStatus.TRACKS):
+            tracks_uris = await self._playlists_imitator.imitate(tracks_features)
+
+        return PlaylistResources(
+            uris=tracks_uris,
+            cover_image_path=dir_path  # TODO: Handle this
         )
 
     async def _generate_playlist_cover(self, request_body: dict, image_path: str) -> None:  # TODO: Implement

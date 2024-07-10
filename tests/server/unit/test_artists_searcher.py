@@ -6,12 +6,9 @@ from _pytest.fixtures import fixture
 from _pytest.logging import LogCaptureFixture
 from aiohttp import ClientError
 from aioresponses import aioresponses
-from genie_common.tools import AioPoolExecutor
 from genie_common.utils import random_string_dict, random_alphanumeric_string
 from spotipyio import SpotifyClient
 
-from server.component_factory import get_artists_searcher
-from server.consts.api_consts import ID
 from server.consts.data_consts import ARTISTS, ITEMS, NAME
 from server.logic.ocr.artists_searcher import ArtistsSearcher
 from tests.server.utils import build_spotify_url, assert_expected_level_logs_count, build_artists_search_response

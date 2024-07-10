@@ -8,7 +8,6 @@ from server.component_factory import get_authentication_middleware, get_cors_mid
 from server.consts.env_consts import USERNAME, PASSWORD
 from server.controllers.api_routes import api_router
 from server.controllers.server_routes import server_router
-from server.utils.general_utils import download_database
 
 
 class ApplicationBuilder:
@@ -18,10 +17,7 @@ class ApplicationBuilder:
         self._middlewares = middlewares or self._get_default_middlewares()
         self._routers = routers or self._get_default_routers()
 
-    def build(self, should_download: bool = False) -> FastAPI:
-        if should_download:
-            download_database()
-
+    def build(self) -> FastAPI:
         app = FastAPI(middleware=self._middlewares)
         self._include_routers(app)
 

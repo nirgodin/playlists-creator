@@ -29,10 +29,8 @@ class TestForYouController(BasePlaylistControllerTest):
     @fixture(scope="class")
     def controller(self, uris: List[str], context: PlaylistCreationContext) -> ForYouController:
         mock_playlist_imitator = AsyncMock(PlaylistImitator)
-        mock_playlist_imitator.imitate_playlist.return_value = PlaylistResources(
-            uris=uris,
-            cover_image_path=""
-        )
+        mock_playlist_imitator.imitate.return_value = uris
+
         return ForYouController(
             context=context,
             playlists_imitator=mock_playlist_imitator,
@@ -47,6 +45,8 @@ class TestForYouController(BasePlaylistControllerTest):
     def expected_progress_statuses(self) -> List[CaseStatus]:
         return [
             CaseStatus.CREATED,
+            CaseStatus.PLAYLIST_DETAILS,
+            CaseStatus.TRACKS,
             CaseStatus.PLAYLIST,
             CaseStatus.COVER,
             CaseStatus.COMPLETED,

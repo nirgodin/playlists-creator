@@ -1,52 +1,56 @@
-import json
-from typing import Dict, Callable, Optional
+from typing import Dict, List
 
 import pandas as pd
-from genie_common.utils import chain_dicts
+from genie_common.tools import SyncPoolExecutor
+from genie_common.utils import chain_dicts, safe_nested_get
 from pandas import DataFrame
 
 from server.consts.data_consts import FOLLOWERS, TOTAL, ALBUM, ARTIST, NAME, \
-    POPULARITY
-from server.data.playlist_imitation.playlist_details import PlaylistDetails
+    POPULARITY, RELEASE_DATE, RELEASE_YEAR
+from server.data.track_features import TrackFeatures
 from server.logic.playlist_imitation.playlist_imitator_consts import AUDIO_FEATURES_IRRELEVANT_KEYS, \
     ARTISTS_FEATURES_IRRELEVANT_KEYS, TRACKS_FEATURES_IRRELEVANT_KEYS, ALBUM_RELEVANT_FEATURES
+from server.utils.data_utils import sort_data_columns_alphabetically
+from server.utils.regex_utils import extract_year
 
 ARTIST_REQUIRED_PREFIX_FEATURES = [
     NAME,
     POPULARITY,
     FOLLOWERS
 ]
-ALBUM_REQUIRED_PREFIX_FEATURES = [
-    NAME
-]
 
 
 class PlaylistDetailsSerializer:
-    def serialize(self, playlist_details: PlaylistDetails) -> DataFrame:
-        serialized_details = []
+    def __init__(self, pool_executor: SyncPoolExecutor = SyncPoolExecutor()):
+        self._pool_executor = pool_executor
 
-        for i in range(len(playlist_details.tracks)):  # TODO: Transform to single request per resource to save IO operations
-            details = [
-                self._serialize_single_track_audio_features(playlist_details.audio_features[i]),
-                self._serialize_single_track_features(playlist_details.tracks[i]),
-                self._serialize_single_artist_features(playlist_details.artists[i])
-            ]
-            serialized_track_details = chain_dicts(*details)
-            serialized_details.append(serialized_track_details)
+    def serialize(self, tracks_features: List[TrackFeatures]) -> DataFrame:
+        serialized_details = self._pool_executor.run(
+            iterable=tracks_features,
+            func=self._serialize_single_track_features,
+            expected_type=dict
+        )
+        data = pd.DataFrame.from_records(serialized_details)
 
-        return pd.DataFrame.from_records(serialized_details)
+        return sort_data_columns_alphabetically(data)
+
+    def _serialize_single_track_features(self, track_features: TrackFeatures) -> dict:
+        details = [
+            self._serialize_audio_features(track_features.audio),
+            self._serialize_track_features(track_features.track),
+            self._serialize_artist_features(track_features.artist)
+        ]
+        return chain_dicts(*details)
 
     @staticmethod
-    def _serialize_single_track_audio_features(audio_features: dict) -> Dict[str, float]:
+    def _serialize_audio_features(audio_features: dict) -> Dict[str, float]:
         return {k: v for k, v in audio_features.items() if k not in AUDIO_FEATURES_IRRELEVANT_KEYS}
 
-    def _serialize_single_track_features(self, track: dict) -> dict:
+    def _serialize_track_features(self, track: dict) -> dict:
         track_features = self._extract_album_features(track)
 
         for k, v in track.items():
-            if k in TRACKS_FEATURES_IRRELEVANT_KEYS:
-                continue
-            else:
+            if k not in TRACKS_FEATURES_IRRELEVANT_KEYS:
                 track_features[k] = v
 
         return track_features
@@ -66,23 +70,23 @@ class PlaylistDetailsSerializer:
         for k, v in raw_album_features.items():
             if k not in ALBUM_RELEVANT_FEATURES:
                 continue
-            elif k in ALBUM_REQUIRED_PREFIX_FEATURES:
-                album_features[f'{ALBUM}_{k}'] = v
+            elif k == RELEASE_DATE:
+                album_features[RELEASE_YEAR] = extract_year(v)
             else:
                 album_features[k] = v
 
         return album_features
 
-    def _serialize_single_artist_features(self, artist: dict) -> dict:
+    @staticmethod
+    def _serialize_artist_features(artist: dict) -> dict:
         artist_features = {}
 
         for k, v in artist.items():
             if k in ARTISTS_FEATURES_IRRELEVANT_KEYS:
                 continue
 
-            if k in self._artists_features_to_extraction_methods_mapping.keys():
-                extraction_method = self._artists_features_to_extraction_methods_mapping[k]
-                v = extraction_method(artist)
+            if k == FOLLOWERS:
+                v = safe_nested_get(artist, [FOLLOWERS, TOTAL])
 
             if k in ARTIST_REQUIRED_PREFIX_FEATURES:
                 artist_features[f'{ARTIST}_{k}'] = v
@@ -90,20 +94,3 @@ class PlaylistDetailsSerializer:
                 artist_features[k] = v
 
         return artist_features
-
-    @staticmethod
-    def _extract_artist_followers(artist_features: dict) -> Optional[int]:
-        return artist_features.get(FOLLOWERS, {}).get(TOTAL)
-
-    @property
-    def _artists_features_to_extraction_methods_mapping(self) -> Dict[str, Callable]:
-        return {
-            FOLLOWERS: self._extract_artist_followers
-        }
-
-
-if __name__ == '__main__':
-    with open('/Users/nirgodin/Downloads/playlist_details_sample.json', 'r') as f:
-        raw_details = json.load(f)
-
-    PlaylistDetailsSerializer().serialize(raw_details)

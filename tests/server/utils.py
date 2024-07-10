@@ -46,8 +46,12 @@ def build_spotify_url(routes: List[str], params: Optional[Dict[str, Any]] = None
     return url
 
 
+def random_spotify_id() -> str:
+    return random_alphanumeric_string(min_length=22, max_length=22)
+
+
 def random_track_uri() -> str:
-    track_id = random_alphanumeric_string(min_length=32, max_length=32)
+    track_id = random_spotify_id()
     uris = to_uris(SpotifySearchType.TRACK, track_id)
 
     return uris[0]
