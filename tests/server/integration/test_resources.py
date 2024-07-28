@@ -41,10 +41,10 @@ class TestResources:
     async def __aenter__(self) -> "TestResources":
         self.postgres_testkit.__enter__()
         self.redis_testkit.__enter__()
-        self.milvus_testkit.__enter__()
+        # self.milvus_testkit.__enter__()
         self.engine = self.postgres_testkit.get_database_engine()
         self.redis = self.redis_testkit.get_redis()
-        self.milvus = await MilvusClient(self.milvus_testkit.uri).__aenter__()
+        # self.milvus = await MilvusClient(self.milvus_testkit.uri).__aenter__()
 
         return self
 
@@ -53,9 +53,9 @@ class TestResources:
         self.postgres_testkit.__exit__(exc_type, exc_val, exc_tb)
         self.redis = None
         self.redis_testkit.__exit__(exc_type, exc_val, exc_tb)
-        await self.milvus.__aexit__(exc_type, exc_val, exc_tb)
+        # await self.milvus.__aexit__(exc_type, exc_val, exc_tb)
         self.milvus = None
-        self.milvus_testkit.__exit__(exc_type, exc_val, exc_tb)
+        # self.milvus_testkit.__exit__(exc_type, exc_val, exc_tb)
 
     def _create_default_app(self) -> FastAPI:
         authentication_middleware = get_authentication_middleware(self.username, self.password)
