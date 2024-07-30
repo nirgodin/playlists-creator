@@ -21,14 +21,14 @@ starlette = "0.27.0"
 python-multipart = "0.0.6"
 uvicorn = "0.20.0"
 async-lru = "2.0.4"
-genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "05f3c77", extras = ["postgres", "milvus", "redis", "google_drive"]}
+genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "46217c40", extras = ["postgres", "milvus", "redis", "google_drive"]}
 spotipyio = {git = "https://github.com/nirgodin/spotipyio.git", rev = "ef9870e2"}
 async-cache = "1.1.1"
 pyhumps = "3.8.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0.2,<9.0"
-genie-testkit = {git = "https://github.com/nirgodin/genie-testkit.git", rev = "6c2220d", extras = ["postgres", "redis", "milvus"]}
+genie-testkit = {git = "https://github.com/nirgodin/genie-testkit.git", rev = "dbdeb909", extras = ["postgres", "redis", "milvus"]}
 pytest-asyncio = ">=0.21.1,<0.22"
 httpx = ">=0.27.0,<0.28"
 aioresponses = ">=0.7.6,<1.0"
