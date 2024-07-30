@@ -31,6 +31,7 @@ from server.controllers.content_controllers.configuration_controller import Conf
 from server.controllers.content_controllers.existing_playlist_controller import ExistingPlaylistController
 from server.controllers.content_controllers.for_you_controller import ForYouController
 from server.controllers.content_controllers.photo_controller import PhotoController
+from server.controllers.content_controllers.playlists_merger_controller import PlaylistsMergerController
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.controllers.content_controllers.wrapped_controller import WrappedController
 from server.controllers.health_controller import HealthController
@@ -295,6 +296,11 @@ async def get_wrapped_controller() -> WrappedController:
     return WrappedController(context)
 
 
+async def get_playlists_merger_controller() -> PlaylistsMergerController:
+    context = await get_playlist_creation_context()
+    return PlaylistsMergerController(context)
+
+
 async def get_for_you_controller() -> ForYouController:
     context = await get_playlist_creation_context()
     playlists_imitator = await get_playlist_imitator()
@@ -330,6 +336,7 @@ async def get_endpoint_controller_mapping() -> Dict[PlaylistEndpoint, BaseConten
         PlaylistEndpoint.PHOTO: await get_photo_controller(),
         PlaylistEndpoint.PROMPT: await get_prompt_controller(),
         PlaylistEndpoint.WRAPPED: await get_wrapped_controller(),
+        PlaylistEndpoint.MERGE_PLAYLISTS: await get_playlists_merger_controller(),
     }
 
 
