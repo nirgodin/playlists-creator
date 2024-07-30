@@ -22,7 +22,7 @@ python-multipart = "0.0.6"
 uvicorn = "0.20.0"
 async-lru = "2.0.4"
 genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "46217c40", extras = ["postgres", "milvus", "redis", "google_drive"]}
-spotipyio = {git = "https://github.com/nirgodin/spotipyio.git", rev = "ef9870e2"}
+spotipyio = {git = "https://github.com/nirgodin/spotipyio.git", rev = "902f1aa7"}
 async-cache = "1.1.1"
 pyhumps = "3.8.0"
 
