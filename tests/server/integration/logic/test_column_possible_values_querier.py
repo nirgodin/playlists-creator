@@ -2,8 +2,8 @@ from typing import List, Dict
 
 from _pytest.fixtures import fixture
 from genie_common.utils import get_all_enum_values, random_alphanumeric_string
-from genie_datastores.postgres.models import SpotifyTrack, TrackLyrics, AudioFeatures, DataSource, \
-    BaseORMModel
+from genie_datastores.postgres.models import SpotifyTrack, TrackLyrics, AudioFeatures, BaseORMModel
+from genie_datastores.models import DataSource
 from genie_datastores.postgres.testing import postgres_session
 
 from server.data.column_details import ColumnDetails
