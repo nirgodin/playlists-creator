@@ -12,7 +12,7 @@ from spotipyio import SpotifySearchType
 
 from server.consts.api_consts import ID
 from server.consts.app_consts import MESSAGE
-from server.consts.data_consts import URI, ARTISTS, ITEMS, NAME
+from server.consts.data_consts import URI, ARTISTS, ITEMS, NAME, TRACKS, TRACK
 from server.consts.openai_consts import CONTENT, CHOICES
 from server.utils.spotify_utils import to_uris
 
@@ -86,5 +86,18 @@ def build_artists_search_response(artist_id: str, artist_name: str) -> dict:
             ITEMS: [
                 {ID: artist_id, NAME: artist_name}
             ]
+        }
+    }
+
+
+def build_track_item(uri: str) -> dict:
+    return {TRACK: {URI: uri}}
+
+
+def build_playlist_response(uris: List[str]) -> dict:
+    items = [build_track_item(uri) for uri in uris]
+    return {
+        TRACKS: {
+            ITEMS: items
         }
     }
