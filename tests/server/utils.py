@@ -1,5 +1,6 @@
 from base64 import b64encode
 from io import BytesIO
+from random import randint
 from typing import List, Any, Dict, Optional
 from urllib.parse import urlencode
 
@@ -55,6 +56,11 @@ def random_track_uri() -> str:
     uris = to_uris(SpotifySearchType.TRACK, track_id)
 
     return uris[0]
+
+
+def some_tracks_uris() -> List[str]:
+    n_elements = randint(1, 50)
+    return [random_track_uri() for _ in range(n_elements)]
 
 
 def assert_expected_level_logs_count(caplog: LogCaptureFixture, level: str, expected: int) -> None:

@@ -1,4 +1,3 @@
-from random import randint
 from typing import Dict, List, Union
 from unittest.mock import AsyncMock
 
@@ -11,14 +10,13 @@ from server.consts.data_consts import ITEMS
 from server.controllers.content_controllers.for_you_controller import ForYouController
 from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
-from server.data.playlist_resources import PlaylistResources
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \
     BasePlaylistControllerTest
 from tests.server.integration.controllers.playlist_controllers.playlist_controller_test_context import \
     PlaylistControllerTestContext
-from tests.server.utils import build_spotify_url, random_playlist_item, random_track_uri
+from tests.server.utils import build_spotify_url, random_playlist_item, some_tracks_uris
 
 
 class TestForYouController(BasePlaylistControllerTest):
@@ -58,8 +56,7 @@ class TestForYouController(BasePlaylistControllerTest):
 
     @fixture(scope="class")
     def uris(self) -> List[str]:
-        n_elements = randint(1, 50)
-        return [random_track_uri() for _ in range(n_elements)]
+        return some_tracks_uris()
 
     @fixture(autouse=True, scope="function")
     def additional_responses(self, uris: List[str], mock_responses: aioresponses) -> None:

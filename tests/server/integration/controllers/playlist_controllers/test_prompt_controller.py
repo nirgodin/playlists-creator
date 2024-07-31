@@ -1,35 +1,30 @@
-import json
 from random import randint, choice
 from typing import List, Dict, Union
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import AsyncMock
 
 from _pytest.fixtures import fixture
 from aioresponses import aioresponses
-from genie_common.utils import random_alphanumeric_string, random_string_array, random_string_dict
+from genie_common.utils import random_alphanumeric_string, random_string_array
 from genie_datastores.postgres.models import PlaylistEndpoint, CaseProgress, Case
 from genie_datastores.postgres.operations import execute_query
 from sqlalchemy import select
 
-from server.consts.app_consts import PHOTO, PLAYLIST_DETAILS, PROMPT
-from server.consts.data_consts import TRACKS, URI
-from server.controllers.content_controllers.photo_controller import PhotoController
+from server.consts.app_consts import PLAYLIST_DETAILS, PROMPT
+from server.consts.data_consts import URI
 from server.controllers.content_controllers.prompt_controller import PromptController
 from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
 from server.data.prompt_details import PromptDetails
 from server.data.query_condition import QueryCondition
 from server.data.track_details import TrackDetails
-from server.logic.ocr.artists_searcher import ArtistsSearcher
-from server.logic.ocr.image_text_extractor import ImageTextExtractor
-from server.logic.openai.openai_adapter import OpenAIAdapter
 from server.logic.prompt.prompt_serialization_manager import PromptSerializationManager
 from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelector
 from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \
     BasePlaylistControllerTest
 from tests.server.integration.controllers.playlist_controllers.playlist_controller_test_context import \
     PlaylistControllerTestContext
-from tests.server.utils import random_encoded_image, build_spotify_url, \
-    build_chat_completions_response, build_artists_search_response, random_track_uri
+from tests.server.utils import build_spotify_url, \
+    some_tracks_uris
 
 
 class TestPromptController(BasePlaylistControllerTest):
@@ -131,8 +126,7 @@ class TestPromptController(BasePlaylistControllerTest):
 
     @fixture(scope="class")
     def uris(self) -> List[str]:
-        n_elements = randint(1, 50)
-        return [random_track_uri() for _ in range(n_elements)]
+        return some_tracks_uris()
 
     @fixture(scope="function")
     def tracks_details(self, uris: List[str], mock_responses: aioresponses) -> List[TrackDetails]:
