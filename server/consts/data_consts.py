@@ -53,3 +53,7 @@ REMOVE_OUTLIERS_COLUMNS = [
 ]
 IN_OPERATOR = 'in'
 NUMERIC_OPERATORS = '<= or >='
+PLAYLISTS = "playlists"
+URIS = "uris"
+USERS = "users"
+ME = "me"

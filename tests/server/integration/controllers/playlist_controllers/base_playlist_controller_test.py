@@ -16,6 +16,7 @@ from server.component_factory import get_endpoint_controller_mapping, get_cases_
 from server.consts.api_consts import ID
 from server.consts.app_consts import ACCESS_CODE, PLAYLIST_DETAILS, PLAYLIST_NAME, PLAYLIST_DESCRIPTION, \
     IS_PUBLIC
+from server.consts.data_consts import PLAYLISTS, TRACKS, URIS, USERS, IMAGES, ME
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
@@ -110,18 +111,18 @@ class BasePlaylistControllerTest(ABC):
         """ In case you want to add more responses, use a dedicated `additional_responses` fixtures on child class """
         cover = random_encoded_image()
         mock_responses.get(
-            url=build_spotify_url(["me"]),
+            url=build_spotify_url([ME]),
             payload={ID: user_id}
         )
         mock_responses.post(
-            url=build_spotify_url(["users", user_id, "playlists"]),
+            url=build_spotify_url([USERS, user_id, PLAYLISTS]),
             payload={ID: playlist_id}
         )
         mock_responses.post(
-            url=build_spotify_url(["playlists", playlist_id, "tracks"])
+            url=build_spotify_url([PLAYLISTS, playlist_id, TRACKS])
         )
         mock_responses.put(
-            url=build_spotify_url(["playlists", playlist_id, "images"])
+            url=build_spotify_url([PLAYLISTS, playlist_id, IMAGES])
         )
 
         mock_responses.post(url='https://api.openai.com/v1/images/generations', payload={"data": [{"b64_json": cover}]})
@@ -187,8 +188,8 @@ class BasePlaylistControllerTest(ABC):
     @staticmethod
     def _assert_expected_endpoints_calls(test_context: PlaylistControllerTestContext) -> None:
         test_context.mock_responses.assert_called_with(
-            url=f'https://api.spotify.com/v1/playlists/{test_context.playlist_id}/tracks',
-            json={"uris": test_context.uris},
+            url=f'https://api.spotify.com/v1/{PLAYLISTS}/{test_context.playlist_id}/{TRACKS}',
+            json={URIS: test_context.uris},
             method="POST"
         )
         # mock_responses.assert_called_with(f'https://api.spotify.com/v1/playlists/{playlist_id}/images', method="POST")

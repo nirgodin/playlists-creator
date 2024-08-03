@@ -7,6 +7,7 @@ from aioresponses import aioresponses
 from genie_common.utils import random_string_array, chain_lists
 from spotipyio import SpotifyClient
 
+from server.consts.data_consts import PLAYLISTS
 from server.logic.playlists_merger import PlaylistsMerger
 from tests.server.utils import some_tracks_uris, build_spotify_url, build_playlist_response
 
@@ -94,7 +95,7 @@ class TestPlaylistsMerger:
                                               playlists_ids_uris_map: Dict[str, List[str]]) -> None:
         for playlist_id, expected_uris in playlists_ids_uris_map.items():
             mock_responses.get(
-                url=build_spotify_url(["playlists", playlist_id]),  # TODO: Extract to consts
+                url=build_spotify_url([PLAYLISTS, playlist_id]),  # TODO: Extract to consts
                 payload=build_playlist_response(expected_uris)
             )
 
@@ -102,6 +103,6 @@ class TestPlaylistsMerger:
     def _given_invalid_playlists_info_responses(mock_responses: aioresponses, playlists_ids: List[str]) -> None:
         for playlist_id in playlists_ids:
             mock_responses.get(
-                url=build_spotify_url(["playlists", playlist_id]),  # TODO: Extract to consts
+                url=build_spotify_url([PLAYLISTS, playlist_id]),  # TODO: Extract to consts
                 status=HTTPStatus.BAD_REQUEST.value
             )
