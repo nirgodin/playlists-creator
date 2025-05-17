@@ -20,13 +20,13 @@ starlette = "0.27.0"
 python-multipart = "0.0.6"
 uvicorn = "0.20.0"
 async-lru = "2.0.4"
-genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "fcb7f7ec", extras = ["postgres", "milvus", "redis", "google_drive"]}
+genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "01e96cf9", extras = ["postgres", "milvus", "redis", "google_drive"]}
 spotipyio = { version = ">=1.1.0,<2", extras = ["redis"] }
 async-cache = "1.1.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0.2,<9.0"
-genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "fcb7f7ec", extras = ["postgres-testing", "mongo-testing"]}
+genie-datastores = {git = "https://github.com/nirgodin/genie-datastores.git", rev = "01e96cf9", extras = ["postgres-testing", "redis-testing", "milvus-testing"]}
 pytest-asyncio = ">=0.21.1,<0.22"
 httpx = ">=0.27.0,<0.28"
 aioresponses = ">=0.7.6,<1.0"
