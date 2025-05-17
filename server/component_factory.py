@@ -59,6 +59,7 @@ from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelec
 from server.middlewares.authentication_middleware import BasicAuthBackend
 from server.tools.cached_token_generator import CachedTokenGenerator
 from server.tools.case_progress_reporter import CaseProgressReporter
+from server.tools.search_result_artist_entity_extractor import SearchResultArtistEntityExtractor
 from server.tools.spotify_session_creator import SpotifySessionCreator
 from server.utils.data_utils import get_columns_descriptions, get_possible_values_columns, get_orm_conditions_map
 
@@ -126,7 +127,7 @@ async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
 def get_artists_searcher() -> ArtistsSearcher:
     pool_executor = AioPoolExecutor()
     entity_matcher = EntityMatcher(
-        extractors={ArtistsEntityExtractor(): 1},
+        extractors={SearchResultArtistEntityExtractor(): 1},
         min_present_fields=1,
         threshold=0.8
     )

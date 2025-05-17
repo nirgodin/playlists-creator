@@ -33,7 +33,7 @@ class ArtistsSearcher:
                 search_types=[SpotifySearchType.ARTIST],
             ),
         )
-        response = await spotify_client.search.run_single(search_item)
+        response = await spotify_client.search.search_item.run_single(search_item)
 
         if not isinstance(response, dict):
             logger.warning(f"Received unexpected response type `{type(response)}` from Spotify. Returning None instead")
