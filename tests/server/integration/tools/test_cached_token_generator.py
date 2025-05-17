@@ -6,9 +6,8 @@ from _pytest.fixtures import fixture
 from redis import Redis
 from genie_common.encoders import GzipJsonEncoder
 from genie_common.utils import random_alphanumeric_string, random_string_array
-from spotipyio import AccessTokenGenerator
-from spotipyio.consts.api_consts import ACCESS_TOKEN, REFRESH_TOKEN
-from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
+from spotipyio.auth import SpotifyGrantType
+from spotipyio.logic.authorization import AccessTokenGenerator
 
 from server.tools.cached_token_generator import CachedTokenGenerator
 from tests.server.integration.test_resources import TestResources
@@ -65,11 +64,11 @@ class TestCachedTokenGenerator:
     def response(self) -> Dict[str, str]:
         scopes = random_string_array()
         return {
-            ACCESS_TOKEN: random_alphanumeric_string(),
+            "access_token": random_alphanumeric_string(),
             "token_type": random_alphanumeric_string(),
             "scope": " ".join(scopes),
             "expires_in": randint(0, 3000),
-            REFRESH_TOKEN: random_alphanumeric_string(),
+            "refresh_token": random_alphanumeric_string(),
         }
 
     @fixture(scope="function")

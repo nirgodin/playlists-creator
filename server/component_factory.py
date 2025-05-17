@@ -15,7 +15,9 @@ from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import PlaylistEndpoint
 from genie_datastores.redis.operations import get_redis
 from sklearn.compose import ColumnTransformer
-from spotipyio import AccessTokenGenerator, EntityMatcher, SearchResultArtistEntityExtractor
+from spotipyio.logic.authorization import AccessTokenGenerator
+from spotipyio.tools.extractors import ArtistsEntityExtractor
+from spotipyio.tools.matching import EntityMatcher
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
@@ -124,7 +126,7 @@ async def get_prompt_details_tracks_selector() -> PromptDetailsTracksSelector:
 def get_artists_searcher() -> ArtistsSearcher:
     pool_executor = AioPoolExecutor()
     entity_matcher = EntityMatcher(
-        extractors={SearchResultArtistEntityExtractor(): 1},
+        extractors={ArtistsEntityExtractor(): 1},
         min_present_fields=1,
         threshold=0.8
     )

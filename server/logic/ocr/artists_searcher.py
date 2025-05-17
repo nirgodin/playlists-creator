@@ -3,9 +3,9 @@ from typing import List, Optional
 
 from genie_common.tools import AioPoolExecutor, logger
 from genie_common.utils import safe_nested_get
-from spotipyio import SpotifyClient, SearchItemMetadata, SearchItemFilters, EntityMatcher, MatchingEntity
-from spotipyio.logic.collectors.search_collectors.search_item import SearchItem
-from spotipyio.logic.collectors.search_collectors.spotify_search_type import SpotifySearchType
+from spotipyio import SpotifyClient
+from spotipyio.models import SearchItemFilters, MatchingEntity, SearchItem, SpotifySearchType, SearchItemMetadata
+from spotipyio.tools.matching import EntityMatcher
 
 from server.consts.api_consts import ID
 from server.consts.data_consts import ARTISTS, ITEMS

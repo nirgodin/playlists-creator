@@ -1,7 +1,7 @@
 from typing import List
 
 from genie_common.utils import safe_nested_get
-from spotipyio.logic.collectors.search_collectors.spotify_search_type import SpotifySearchType
+from spotipyio.models import SpotifySearchType
 
 from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.data_consts import ITEMS, TRACKS
