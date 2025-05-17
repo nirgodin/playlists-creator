@@ -4,8 +4,9 @@ from _pytest.fixtures import fixture
 from aiohttp import ClientSession
 from aioresponses import aioresponses
 from genie_common.clients.openai import OpenAIClient
-from spotipyio import SpotifyClient
-from spotipyio.logic.authentication.spotify_session import SpotifySession
+from genie_common.utils import random_alphanumeric_string
+from spotipyio import SpotifyClient, SpotifySession
+from spotipyio.auth import ClientCredentials
 
 from server.component_factory import get_artists_searcher
 from server.logic.ocr.artists_searcher import ArtistsSearcher
@@ -27,7 +28,14 @@ async def client_session() -> ClientSession:
 
 @fixture(scope="session")
 def spotify_session(client_session: ClientSession) -> SpotifySession:
-    return SpotifySession(session=client_session)
+    return SpotifySession(
+        session=client_session,
+        credentials=ClientCredentials(
+            client_id=random_alphanumeric_string(),
+            client_secret=random_alphanumeric_string(),
+            redirect_uri=random_alphanumeric_string()
+        )
+    )
 
 
 @fixture(scope="session")

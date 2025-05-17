@@ -3,7 +3,7 @@ from typing import List
 from _pytest.fixtures import fixture
 from genie_datastores.postgres.models import SpotifyTrack, SpotifyArtist
 from genie_datastores.postgres.operations import insert_records
-from genie_datastores.postgres.testing import PostgresMockFactory, postgres_session
+from genie_datastores.testing.postgres import PostgresMockFactory, postgres_session
 
 from server.logic.configuration_photo_prompt.z_score_calculator import ZScoreCalculator
 from tests.server.integration.test_resources import TestResources

@@ -79,7 +79,7 @@ class PromptController(BaseContentController):
     @staticmethod
     async def _search_matching_tracks(tracks_details: List[TrackDetails], spotify_client: SpotifyClient) -> List[str]:
         search_items = [details.to_search_item() for details in tracks_details]
-        tracks = await spotify_client.search.run(search_items)
+        tracks = await spotify_client.search.search_item.run(search_items)
 
         return [track[URI] for track in tracks][:MAX_SPOTIFY_PLAYLIST_SIZE]
 

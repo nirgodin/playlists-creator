@@ -60,7 +60,7 @@ class PlaylistDetailsCollector:
         track_id = track.get(ID)
 
         if track_id is not None:
-            audio_features = await spotify_client.audio_features.run([track_id])
+            audio_features = await spotify_client.tracks.audio_features.run([track_id])
 
             if audio_features:
                 return audio_features[0]

@@ -2,7 +2,7 @@ from typing import Optional
 
 from aiohttp import ClientSession
 from genie_common.tools import logger
-from spotipyio.logic.creators.playlists.playlists_creation_request import PlaylistCreationRequest
+from spotipyio.models import PlaylistCreationRequest
 
 from server.consts.api_consts import ID
 from server.consts.app_consts import PLAYLIST_NAME, PLAYLIST_DESCRIPTION, IS_PUBLIC

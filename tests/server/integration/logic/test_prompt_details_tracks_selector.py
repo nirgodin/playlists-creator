@@ -1,4 +1,4 @@
-from random import uniform, randint
+from random import uniform
 from time import sleep
 from typing import List, Any, Dict
 
@@ -9,8 +9,8 @@ from genie_common.clients.openai.openai_consts import DATA, EMBEDDING
 from genie_common.models.openai import EmbeddingsModel
 from genie_common.utils import random_alphanumeric_string, random_boolean
 from genie_datastores.postgres.models import AudioFeatures, SpotifyTrack, RadioTrack
-from genie_datastores.postgres.testing import postgres_session
-from spotipyio import SpotifySearchType
+from genie_datastores.testing.postgres import postgres_session
+from spotipyio.models import SpotifySearchType
 
 from server.consts.api_consts import ID
 from server.consts.data_consts import IN_OPERATOR

@@ -3,7 +3,7 @@ from typing import List
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.models import SearchRequest
 from sklearn.compose import ColumnTransformer
-from spotipyio import SpotifySearchType
+from spotipyio.models import SpotifySearchType
 
 from server.consts.api_consts import ID
 from server.data.track_features import TrackFeatures

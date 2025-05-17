@@ -3,8 +3,8 @@ from typing import Dict
 
 from genie_common.encoders import GzipJsonEncoder
 from genie_datastores.redis import RedisClient
-from spotipyio import AccessTokenGenerator
-from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
+from spotipyio.auth import SpotifyGrantType
+from spotipyio.logic.authorization import AccessTokenGenerator
 
 from server.consts.app_consts import ACCESS_CODE_CACHE_TTL
 

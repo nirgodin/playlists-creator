@@ -3,8 +3,9 @@ from typing import Optional
 from fastapi import FastAPI
 from genie_common.utils import random_alphanumeric_string
 from genie_datastores.milvus import MilvusClient
-from genie_datastores.postgres.testing import PostgresMockFactory
-from genie_testkit import PostgresTestkit, RedisTestkit, MilvusTestkit
+from genie_datastores.testing.postgres import PostgresMockFactory, PostgresTestkit
+from genie_datastores.testing.redis import RedisTestkit
+from genie_datastores.testing.milvus import MilvusTestkit
 from redis import Redis
 from sqlalchemy.ext.asyncio import AsyncEngine
 from starlette.testclient import TestClient

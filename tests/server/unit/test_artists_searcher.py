@@ -130,7 +130,7 @@ class TestArtistsSearcher:
                                payload_func: Optional[Callable[[str, str], Any]] = None,
                                exception: Optional[Exception] = None) -> None:
         for artist_id, artist_name in artists.items():
-            params = {"q": f"artist:{artist_name}", "type": "artist"}
+            params = {"limit": "50", "offset": "0", "q": f"artist:{artist_name}", "type": "artist"}
             url = build_spotify_url(["search"], params)
 
             if exception is not None:

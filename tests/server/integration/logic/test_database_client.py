@@ -5,7 +5,7 @@ from _pytest.fixtures import fixture
 from genie_common.utils import random_boolean
 from genie_datastores.postgres.models import RadioTrack, AudioFeatures, SpotifyTrack, Artist, TrackLyrics
 from genie_datastores.postgres.operations import insert_records
-from genie_datastores.postgres.testing import postgres_session, PostgresMockFactory
+from genie_datastores.testing.postgres import postgres_session, PostgresMockFactory
 
 from server.data.query_condition import QueryCondition
 from server.logic.database_client import DatabaseClient

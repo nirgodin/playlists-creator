@@ -5,13 +5,12 @@ from unittest.mock import AsyncMock
 from _pytest.fixtures import fixture
 from aioresponses import aioresponses
 from genie_datastores.postgres.models import PlaylistEndpoint
-from spotipyio.logic.collectors.top_items_collectors.time_range import TimeRange
+from spotipyio.models import TimeRange
 
 from server.consts.data_consts import ITEMS
 from server.controllers.content_controllers.for_you_controller import ForYouController
 from server.data.case_status import CaseStatus
 from server.data.playlist_creation_context import PlaylistCreationContext
-from server.data.playlist_resources import PlaylistResources
 from server.logic.data_collection.spotify_playlist_details_collector import PlaylistDetailsCollector
 from server.logic.playlist_imitation.playlist_imitator import PlaylistImitator
 from tests.server.integration.controllers.playlist_controllers.base_playlist_controller_test import \

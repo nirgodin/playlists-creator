@@ -6,7 +6,7 @@ from genie_common.tools import logger
 from genie_datastores.milvus import MilvusClient
 from genie_datastores.milvus.models import SearchRequest
 from genie_datastores.milvus.utils import convert_iterable_to_milvus_filter
-from spotipyio.logic.collectors.search_collectors.spotify_search_type import SpotifySearchType
+from spotipyio.models import SpotifySearchType
 
 from server.consts.api_consts import ID
 from server.data.prompt_details import PromptDetails

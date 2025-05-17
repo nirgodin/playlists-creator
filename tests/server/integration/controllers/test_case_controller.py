@@ -6,7 +6,7 @@ from _pytest.fixtures import fixture
 from genie_common.utils import random_alphanumeric_string
 from genie_datastores.postgres.models import Case
 from genie_datastores.postgres.operations import insert_records
-from genie_datastores.postgres.testing import postgres_session
+from genie_datastores.testing.postgres import postgres_session
 
 from server.component_factory import get_cases_controller
 from server.consts.app_consts import MESSAGE

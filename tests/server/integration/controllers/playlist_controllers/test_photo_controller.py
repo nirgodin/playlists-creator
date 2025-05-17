@@ -127,7 +127,7 @@ class TestPhotoController(BasePlaylistControllerTest):
 
     @staticmethod
     def _set_single_artist_search_response(artist_id: str, artist_name: str, mock_responses: aioresponses) -> None:
-        params = {"q": f"artist:{artist_name}", "type": "artist"}
+        params = {"limit": 50, "offset": 0, "q": f"artist:{artist_name}", "type": "artist"}
         url = build_spotify_url(["search"], params)
         payload = build_artists_search_response(artist_id, artist_name)
         mock_responses.get(url=url, payload=payload)

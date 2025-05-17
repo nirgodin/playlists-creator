@@ -1,6 +1,5 @@
 from spotipyio import SpotifyClient
-from spotipyio.logic.collectors.top_items_collectors.items_type import ItemsType
-from spotipyio.logic.collectors.top_items_collectors.time_range import TimeRange
+from spotipyio.models import ItemsType, TimeRange
 
 from server.consts.data_consts import ITEMS
 from server.controllers.content_controllers.base_content_controller import BaseContentController
