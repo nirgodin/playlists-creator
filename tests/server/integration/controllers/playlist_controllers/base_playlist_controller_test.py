@@ -4,12 +4,13 @@ from typing import Dict, List, Union
 from unittest.mock import patch
 
 from _pytest.fixtures import fixture
+from aiohttp import payload_type
 from aioresponses import aioresponses
 from fastapi.openapi.models import Response
 from genie_common.utils import random_alphanumeric_string, random_boolean
 from genie_datastores.postgres.models import PlaylistEndpoint, CaseProgress, Case
 from genie_datastores.postgres.operations import execute_query
-from genie_datastores.postgres.testing import postgres_session
+from genie_datastores.testing.postgres import postgres_session
 from sqlalchemy import select
 
 from server.component_factory import get_endpoint_controller_mapping, get_cases_manager
@@ -118,7 +119,8 @@ class BasePlaylistControllerTest(ABC):
             payload={ID: playlist_id}
         )
         mock_responses.post(
-            url=build_spotify_url(["playlists", playlist_id, "tracks"])
+            url=build_spotify_url(["playlists", playlist_id, "tracks"]),
+            payload={"snapshot_id": random_alphanumeric_string()}
         )
         mock_responses.put(
             url=build_spotify_url(["playlists", playlist_id, "images"])
@@ -188,7 +190,7 @@ class BasePlaylistControllerTest(ABC):
     def _assert_expected_endpoints_calls(test_context: PlaylistControllerTestContext) -> None:
         test_context.mock_responses.assert_called_with(
             url=f'https://api.spotify.com/v1/playlists/{test_context.playlist_id}/tracks',
-            json={"uris": test_context.uris},
+            json={"position": None, "uris": test_context.uris},
             method="POST"
         )
         # mock_responses.assert_called_with(f'https://api.spotify.com/v1/playlists/{playlist_id}/images', method="POST")

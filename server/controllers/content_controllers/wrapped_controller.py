@@ -1,12 +1,10 @@
-import os.path
 from base64 import b64decode
 from typing import Optional
 
 from genie_common.models.openai import DallEModel, ImageSize
 from genie_common.utils import safe_nested_get
 from spotipyio import SpotifyClient
-from spotipyio.logic.collectors.top_items_collectors.items_type import ItemsType
-from spotipyio.logic.collectors.top_items_collectors.time_range import TimeRange
+from spotipyio.models import ItemsType, TimeRange
 
 from server.consts.app_consts import PLAYLIST_DETAILS, TIME_RANGE
 from server.consts.data_consts import URI, ITEMS

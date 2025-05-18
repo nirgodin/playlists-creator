@@ -1,9 +1,8 @@
 from contextlib import asynccontextmanager
 
 from genie_common.clients.utils import build_authorization_headers, create_client_session
-from spotipyio.consts.api_consts import ACCESS_TOKEN
-from spotipyio.logic.authentication.spotify_grant_type import SpotifyGrantType
-from spotipyio.logic.authentication.spotify_session import SpotifySession
+from spotipyio import SpotifySession
+from spotipyio.auth import SpotifyGrantType
 
 from server.tools.cached_token_generator import CachedTokenGenerator
 
@@ -26,7 +25,7 @@ class SpotifySessionCreator:
 
     async def _build_session(self, access_code: str) -> SpotifySession:
         response = await self._token_generator.generate(SpotifyGrantType.AUTHORIZATION_CODE, access_code)
-        access_token = response[ACCESS_TOKEN]
+        access_token = response["access_token"]
         headers = build_authorization_headers(access_token)
         raw_session = create_client_session(headers)
         client_session = await raw_session.__aenter__()

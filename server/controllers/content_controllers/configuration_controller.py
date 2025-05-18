@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from genie_common.models.openai import ImageSize
 from spotipyio import SpotifyClient
-from spotipyio.logic.collectors.search_collectors.spotify_search_type import SpotifySearchType
+from spotipyio.models import SpotifySearchType
 
 from server.consts.app_consts import FILTER_PARAMS
 from server.controllers.content_controllers.base_content_controller import BaseContentController

@@ -4,7 +4,7 @@ from typing import List, Union
 from _pytest.fixtures import fixture
 from genie_datastores.postgres.models import SpotifyTrack, TrackLyrics, AudioFeatures, SpotifyArtist, Artist, \
     ShazamArtist, RadioTrack
-from genie_datastores.postgres.testing import PostgresMockFactory
+from genie_datastores.testing.postgres import PostgresMockFactory
 
 from server.logic.database_client import DatabaseClient
 from server.utils.data_utils import get_possible_values_columns, get_orm_conditions_map

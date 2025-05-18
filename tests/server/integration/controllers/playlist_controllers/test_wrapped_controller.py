@@ -5,7 +5,7 @@ from _pytest.fixtures import fixture
 from aioresponses import aioresponses
 from genie_common.utils import random_enum_value
 from genie_datastores.postgres.models import PlaylistEndpoint
-from spotipyio.logic.collectors.top_items_collectors.time_range import TimeRange
+from spotipyio.models import TimeRange
 
 from server.consts.app_consts import PLAYLIST_DETAILS, TIME_RANGE
 from server.consts.data_consts import ITEMS

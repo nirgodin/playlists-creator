@@ -5,7 +5,7 @@ from _pytest.fixtures import fixture
 from genie_common.utils import random_string_array, random_alphanumeric_string, random_enum_value, random_boolean, \
     random_datetime
 from genie_datastores.postgres.models import SpotifyAlbumType
-from genie_datastores.postgres.testing import PostgresMockFactory
+from genie_datastores.testing.postgres import PostgresMockFactory
 
 from server.data.track_features import TrackFeatures
 from tests.server.utils import random_spotify_id

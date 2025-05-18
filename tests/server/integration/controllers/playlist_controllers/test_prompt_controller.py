@@ -10,6 +10,7 @@ from genie_datastores.postgres.models import PlaylistEndpoint, CaseProgress, Cas
 from genie_datastores.postgres.operations import execute_query
 from sqlalchemy import select
 
+from server.consts.api_consts import MAX_SPOTIFY_PLAYLIST_SIZE
 from server.consts.app_consts import PHOTO, PLAYLIST_DETAILS, PROMPT
 from server.consts.data_consts import TRACKS, URI
 from server.controllers.content_controllers.photo_controller import PhotoController
@@ -131,7 +132,7 @@ class TestPromptController(BasePlaylistControllerTest):
 
     @fixture(scope="class")
     def uris(self) -> List[str]:
-        n_elements = randint(1, 50)
+        n_elements = randint(1, MAX_SPOTIFY_PLAYLIST_SIZE)
         return [random_track_uri() for _ in range(n_elements)]
 
     @fixture(scope="function")

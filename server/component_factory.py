@@ -15,7 +15,9 @@ from genie_datastores.milvus.operations import get_milvus_uri, get_milvus_token
 from genie_datastores.postgres.models import PlaylistEndpoint
 from genie_datastores.redis.operations import get_redis
 from sklearn.compose import ColumnTransformer
-from spotipyio import AccessTokenGenerator, EntityMatcher, SearchResultArtistEntityExtractor
+from spotipyio.logic.authorization import AccessTokenGenerator
+from spotipyio.tools.extractors import ArtistsEntityExtractor
+from spotipyio.tools.matching import EntityMatcher
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
@@ -57,6 +59,7 @@ from server.logic.prompt_details_tracks_selector import PromptDetailsTracksSelec
 from server.middlewares.authentication_middleware import BasicAuthBackend
 from server.tools.cached_token_generator import CachedTokenGenerator
 from server.tools.case_progress_reporter import CaseProgressReporter
+from server.tools.search_result_artist_entity_extractor import SearchResultArtistEntityExtractor
 from server.tools.spotify_session_creator import SpotifySessionCreator
 from server.utils.data_utils import get_columns_descriptions, get_possible_values_columns, get_orm_conditions_map
 

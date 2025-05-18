@@ -1,10 +1,10 @@
-from random import randint, choice
+from random import choice
 from typing import Union, Dict, List
 from unittest.mock import AsyncMock
 
 from _pytest.fixtures import fixture
-from genie_datastores.postgres.models import PlaylistEndpoint, AudioFeatures, RadioTrack, SpotifyTrack
-from spotipyio import SpotifySearchType
+from genie_datastores.postgres.models import PlaylistEndpoint, RadioTrack, SpotifyTrack
+from spotipyio.models import SpotifySearchType
 
 from server.consts.app_consts import FILTER_PARAMS
 from server.controllers.content_controllers.configuration_controller import ConfigurationController

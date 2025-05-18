@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image
 from _pytest.logging import LogCaptureFixture
 from genie_common.utils import random_alphanumeric_string
-from spotipyio import SpotifySearchType
+from spotipyio.models import SpotifySearchType
 
 from server.consts.api_consts import ID
 from server.consts.app_consts import MESSAGE
