@@ -27,6 +27,7 @@ from starlette.responses import JSONResponse
 from server.consts.env_consts import OPENAI_API_KEY, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, \
     SPOTIPY_REDIRECT_URI
 from server.consts.path_consts import PLAYLIST_IMITATOR_PIPELINE_PATH
+from server.controllers.analytics.charts_analytics_controller import ChartsAnalyticsController
 from server.controllers.case_controller import CasesController
 from server.controllers.content_controllers.base_content_controller import BaseContentController
 from server.controllers.content_controllers.configuration_controller import ConfigurationController
@@ -392,3 +393,7 @@ def get_column_transformer() -> ColumnTransformer:
 @lru_cache
 def get_database_engine() -> AsyncEngine:
     return create_async_engine(os.environ["GENIE_DATABASE_URL"])
+
+
+async def get_charts_analytics_controller() -> ChartsAnalyticsController:
+    return ChartsAnalyticsController(get_database_engine())
